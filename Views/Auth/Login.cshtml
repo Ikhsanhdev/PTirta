@@ -1,0 +1,90 @@
+@{
+  Layout = "_BlankLayout";
+  ViewData["Title"] = "Login Basic - Pages";
+}
+
+@section VendorStyles {
+  <link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/page-auth.css">
+}
+
+@section VendorScripts {
+  <script src="~/vendor/libs/parsleyjs/parsley.min.js"></script>
+}
+
+@section PageScripts {
+  <script src="~/js/pages/auth/auth.min.js" asp-append-version="true"></script>
+}
+
+@* ************** Content ************** *@
+
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner">
+      <!-- Register -->
+      <div class="card px-sm-6 px-0">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center">
+            <a href="/" class="app-brand-link gap-2">
+              <span class="app-brand-logo demo">@await Html.PartialAsync("../_Partials/_Macros")</span>
+              <span class="app-brand-text demo text-heading fw-bold">@TempData.Peek("appName")</span>
+            </a>
+          </div>
+          <!-- /Logo -->
+          <h4 class="mb-1">Welcome to @TempData.Peek("appName")! 👋</h4>
+          <p class="mb-6">Please sign-in to your account and start the adventure</p>
+            <h6 style="display: none;" id="login-label" class="mb-1 text-center text-danger">Login Gagal. Username atau
+          Password salah!</h6>
+          <form id="formAuthentication" class="mb-6" onsubmit="verifyLogin(this,event)">
+          <div class="mb-6">
+            <label for="Username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="Username" name="Username" placeholder="Enter your username"
+              autofocus required data-parsley-errors-container="#error-username"
+              data-parsley-required-message="Username Wajib Diisi." />
+            <div id="error-username" class="text-danger"></div>
+          </div>
+          <div class="mb-6 form-password-toggle">
+            <label class="form-label" for="Password">Password</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="Password" class="form-control" name="Password"
+                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                aria-describedby="password" required data-parsley-errors-container="#error-password"
+                data-parsley-required-message="Password Wajib Diisi." />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+            <div id="error-password" class="text-danger"></div>
+          </div>
+          <div class="my-8">
+            <div class="d-flex justify-content-between">
+              <div class="form-check mb-0 ms-2">
+                <input class="form-check-input" type="checkbox" id="Rememberme" name="Rememberme">
+                <label class="form-check-label" for="Rememberme">
+                  Remember Me
+                </label>
+              </div>
+              <a href="/Auth/ForgotPasswordCover">
+                <p class="mb-0">Forgot Password?</p>
+              </a>
+            </div>
+          </div>
+          <button id="btn-login" type="submit" class="btn btn-primary d-grid w-100">
+            Sign in
+          </button>
+        </form>
+
+          <p class="text-center">
+            <span>New on our platform?</span>
+            <a href="/Auth/RegisterBasic">
+              <span>Create an account</span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <!-- /Register -->
+    </div>
+  </div>
+</div>
