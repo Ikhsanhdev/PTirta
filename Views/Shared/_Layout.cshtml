@@ -45,20 +45,20 @@
                     <li><a sp-area="" asp-controller="Produk" asp-action="Produk">Produk</a></li>
                     <li><a href="projects.html">Proyek</a></li>
                     <li><a href="blog.html">Peta</a></li>
-                    <li class="dropdown"><a href=""><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    @* <li class="dropdown"><a href=""><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
                             <li><a href="">Dropdown 1</a></li>
                             <li><a href="">Dropdown 2</a></li>
                             <li><a href="">Dropdown 3</a></li>
                             <li><a href="">Dropdown 4</a></li>
                         </ul>
-                    </li>
+                    </li> *@
                     <li><a href="contact.html">Contact</a></li>
-                    @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
+                    @* @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
                         <li><a href="/Auth/Login">LOGIN</a></li>
                     } else {
                         <li><button type="button" class="btn btn-warning" onClick="window.location.href='/Admin'"><i class="fa-solid fa-right-to-bracket"></i> ADMIN</button></li>
-                    }
+                    } *@
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
