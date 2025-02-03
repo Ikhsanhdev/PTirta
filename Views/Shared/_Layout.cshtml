@@ -32,17 +32,17 @@
 <body>
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a class="navbar-brand" asp-area="" asp-controller="Main" asp-action="Index">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
-                <img src="assets/img/higertech.png" alt="Higertech Logo" style="height: auto; max-height: 50px;">
+                <img src="@Url.Content("~/assets/img/higertech.png")" alt="Higertech Logo" style="height: auto; max-height: 50px;">
                 <!-- <h1 class="sitename">UpConstruction</h1> <span>.</span> -->
             </a>
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a asp-area="" asp-controller="Main" asp-action="Index">Home</a></li>
                     <li><a href="about.html">E-Catalog</a></li>
-                    <li><a href="services.html">Produk</a></li>
+                    <li><a sp-area="" asp-controller="Produk" asp-action="Produk">Produk</a></li>
                     <li><a href="projects.html">Proyek</a></li>
                     <li><a href="blog.html">Peta</a></li>
                     <li class="dropdown"><a href=""><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -76,7 +76,7 @@
             <div class="row gy-4">
                 <div class="col-lg-4 col-md-6 footer-about">
                     <a href="index.html" class="logo d-flex align-items-center">
-                        <span class="sitename">UpConstruction</span>
+                        <span class="sitename">PT. Higertech Karya Sinergi</span>
                     </a>
                     <div class="footer-contact pt-3">
                         <p>Jl. Jatihandap No.36, Jatihandap,</p>
@@ -179,6 +179,6 @@
     <!-- Main JS File -->
     <script src="~/assets/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @await RenderSectionAsync("Styles", required: false)
+    @RenderSection("styles", required: false)
 </body>
 </html>
