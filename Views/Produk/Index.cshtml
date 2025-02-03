@@ -22,8 +22,10 @@
         }
 
         .card-img-top {
-            max-height: 450px; /* Ukuran gambar diperkecil */
-            object-fit: contain;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 8/9; /* Rasio 16:9 agar seragam */
+            object-fit: cover; /* Memastikan gambar tidak terdistorsi */
             padding: 10px;
         }
 

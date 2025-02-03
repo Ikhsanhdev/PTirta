@@ -13,7 +13,7 @@ public class ProdukController : Controller
         _logger = logger;
     }
 
-    public IActionResult Produk()
+    public IActionResult Index()
     {
         return View();
     }
