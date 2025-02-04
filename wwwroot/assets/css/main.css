@@ -143,9 +143,16 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  --background-color: rgba(255, 255, 255, 0);
+  /* Edited */
+  --background-color: rgba(255, 255, 255, 0.95);
+  --heading-color: #3c3c3c;
+  --nav-color: #3c3c3c;
+  --nav-hover-color: #3c3c3c;
+
+  /* First */
+  /* --background-color: rgba(255, 255, 255, 0); */
   --default-color: #ffffff;
-  --heading-color: #ffffff;
+  /* --heading-color: #ffffff; */
   color: var(--default-color);
   background-color: var(--background-color);
   padding: 20px 0;
@@ -172,18 +179,18 @@ h6 {
   color: var(--color-primary);
 }
 
-.scrolled .header {
+/* .scrolled .header {
   box-shadow: 0px 0 18px rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* Global Header on Scroll
 ------------------------------*/
-.scrolled .header {
+/* .scrolled .header {
   --background-color: rgba(255, 255, 255, 0.95);
   --heading-color: #3c3c3c;
   --nav-color: #3c3c3c;
   --nav-hover-color: #3c3c3c;
-}
+} */
 
 /*--------------------------------------------------------------
 # Navigation Menu
@@ -2865,4 +2872,11 @@ section,
   padding-left: 5px;
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
+}
+
+/* Custom */
+.article-image {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: cover;
 }

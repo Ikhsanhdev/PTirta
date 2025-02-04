@@ -23,6 +23,11 @@ public class MainController : Controller
         return View();
     }
 
+     public IActionResult Article()
+    {
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

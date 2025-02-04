@@ -17,4 +17,12 @@ public class AdminController : Controller
     {
         return View();
     }
+     public IActionResult Article()
+    {
+        return View("~/Views/Admin/Article/Index.cshtml");
+    }
+      public IActionResult CreateEdit()
+    {
+        return View("~/Views/Admin/Article/CreateEdit.cshtml");
+    }
 }
