@@ -2880,3 +2880,8 @@ section,
   max-height: 500px;
   object-fit: cover;
 }
+.project-image {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+}
