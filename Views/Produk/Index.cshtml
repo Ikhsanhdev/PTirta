@@ -57,6 +57,22 @@
             width: 200px; /* Atur lebar select agar tidak terlalu besar */
         }
 
+        .product-detail-image {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .modal-product-specs {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .modal-product-specs li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
     </style>
 }
 
@@ -118,9 +134,9 @@
             <!-- Produk 4 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/AwlrSonar.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">AWLR SONAR</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
@@ -129,9 +145,9 @@
             <!-- Produk 5 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/Reedswitch.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">REED SWITCH</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
@@ -140,9 +156,9 @@
             <!-- Produk 6 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/AVW200.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">AVW 200</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
@@ -151,9 +167,9 @@
             <!-- Produk 7 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="700">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/AdaptorModem.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">ADAPTOR MODEM</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
@@ -162,9 +178,9 @@
             <!-- Produk 8 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="800">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/SedimenDasar.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">ALAT PENGAMBIL SEDIMEN DASAR</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
@@ -173,12 +189,44 @@
             <!-- Produk 9 -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="900">
                 <div class="card border-0 shadow">
-                    <img src="/assets/img/kerja4.jpg" alt="Gambar Kerja 4" class="card-img-top">
+                    <img src="/assets/img/produk/AnemometerGermany.png" alt="Gambar Kerja 4" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">CURAH HUJAN TELEMETRI</h5>
+                        <h5 class="card-title">ANEMOMETER GERMANY</h5>
                         <button class="btn btn-primary w-100">Lihat</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Detail Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="modalProductImage" src="" alt="Produk" class="product-detail-image mb-3">
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="modalProductTitle">Nama Produk</h4>
+                            <ul class="modal-product-specs" id="modalProductSpecs">
+                                <!-- Spesifikasi akan diisi secara dinamis -->
+                            </ul>
+                            <div class="mt-3">
+                                <h5>Deskripsi</h5>
+                                <p id="modalProductDescription">Deskripsi produk akan muncul di sini.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary">Konsultasi</button>
+                </div> *@
             </div>
         </div>
     </div>
@@ -186,13 +234,97 @@
 
 @section Scripts{
     <script>
+        // Lengkapi data produk
+        const productData = {
+            'CURAH HUJAN TELEMETRI': {
+                image: '/assets/img/produk/curahhujan.png',
+                specs: [
+                    'Tipe: Telemetri Curah Hujan Otomatis',
+                    'Akurasi: ± 0.2 mm',
+                    'Kemampuan: Pengukuran Real-time',
+                    'Transmisi Data: Wireless/GSM',
+                    'Cakupan Wilayah: Hingga 10 km'
+                ],
+                description: 'Alat pengukur curah hujan telemetri canggih yang memberikan data akurat dan real-time. Cocok untuk pemantauan lingkungan, pertanian, dan manajemen bencana.',
+                category: 'hidrologi'
+            },
+            'DATA LOGGER TELEMETRI HGT_L01': {
+                image: '/assets/img/produk/loggerlo1.png',
+                specs: [
+                    'Tipe: Data Logger Telemetri',
+                    'Kapasitas Penyimpanan: 64 GB',
+                    'Konektivitas: WiFi, GSM, Bluetooth',
+                    'Daya Tahan Baterai: 30 hari',
+                    'Sensor Terintegrasi: Suhu, Kelembaban'
+                ],
+                description: 'Data logger canggih untuk monitoring lingkungan dengan kemampuan transmisi data real-time dan penyimpanan data yang luas.',
+                category: 'klimatologi'
+            },
+            'PEILSCHAAL': {
+                image: '/assets/img/produk/piscal.png',
+                specs: [
+                    'Tipe: Alat Ukur Ketinggian Air',
+                    'Akurasi: ± 1 cm',
+                    'Bahan: Stainless Steel',
+                    'Panjang: Dapat disesuaikan',
+                    'Aplikasi: Pemantauan Hidrolik'
+                ],
+                description: 'Alat pengukur ketinggian air presisi untuk keperluan hidrologi dan manajemen sumber daya air.',
+                category: 'hidrologi'
+            },
+            'AWLR SONAR': {
+                image: '/assets/img/produk/AwlrSonar.png',
+                specs: [
+                    'Tipe: Automatic Water Level Recorder',
+                    'Teknologi: Sensor Sonar',
+                    'Jarak Pengukuran: 0-30 meter',
+                    'Akurasi: ± 0.5 cm',
+                    'Transmisi Data: Real-time'
+                ],
+                description: 'Sistem pencatat ketinggian air otomatis menggunakan teknologi sonar canggih untuk pemantauan berkelanjutan.',
+                category: 'hidrologi'
+            }
+            // Tambahkan produk lainnya di sini
+        };
+
+        // Tangkap semua tombol "Lihat"
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('click', function() {
+                // Ambil judul produk
+                const productTitle = this.closest('.card-body').querySelector('.card-title').textContent;
+                
+                // Ambil data produk
+                const product = productData[productTitle];
+                
+                if (product) {
+                    // Update modal
+                    document.getElementById('modalProductTitle').textContent = productTitle;
+                    document.getElementById('modalProductImage').src = product.image;
+                    
+                    // Update spesifikasi
+                    const specsList = document.getElementById('modalProductSpecs');
+                    specsList.innerHTML = product.specs.map(spec => `<li>${spec}</li>`).join('');
+                    
+                    // Update deskripsi
+                    document.getElementById('modalProductDescription').textContent = product.description;
+                    
+                    // Tampilkan modal
+                    var productModal = new bootstrap.Modal(document.getElementById('productModal'));
+                    productModal.show();
+                }
+            });
+        });
+
         // Menangani perubahan kategori filter
         document.getElementById('categoryFilter').addEventListener('change', function () {
             var selectedCategory = this.value;
-            var products = document.querySelectorAll('.product');
+            var products = document.querySelectorAll('.col-md-4');
 
             products.forEach(function (product) {
-                if (selectedCategory === 'semua' || product.classList.contains(selectedCategory)) {
+                const productTitle = product.querySelector('.card-title').textContent;
+                const productInfo = productData[productTitle];
+
+                if (selectedCategory === 'semua' || (productInfo && productInfo.category === selectedCategory)) {
                     product.style.display = 'block';
                 } else {
                     product.style.display = 'none';

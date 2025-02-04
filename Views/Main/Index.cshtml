@@ -3,14 +3,28 @@
     ViewData["Title"] = "Home";
 }
 
+@section Styles {
+    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
+    <style>
+        .hero .dynamic-text {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transition: opacity 0.5s ease-in-out;
+        }
+        .dark-background {
+            background-color: rgba(0,0,0,0.6);
+        }
+    </style>
+}
+
 <!-- Hero Section -->
 <section id="hero" class="hero section dark-background">
     <div class="info d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-lg-6 text-center">
-                    <h2>Telemetry Specialist - Solusi Peralatan Telemetry</h2>
-                    <p>Higertech menyediakan berbagai macam produk teknologi yang melakukan pengukuran jarak jauh dan data yang akurat untuk Duga Air, Curah Hujan, Klimatologi dan Kualitas Air sebagai solusi untuk kebutuhan anda.</p>
+                    <h2 id="dynamicTitle" class="dynamic-text">Telemetry Specialist - Solusi Peralatan Telemetry</h2>
+                    <p id="dynamicDescription" class="dynamic-text">Higertech menyediakan berbagai macam produk teknologi yang melakukan pengukuran jarak jauh dan data yang akurat untuk Duga Air, Curah Hujan, Klimatologi dan Kualitas Air sebagai solusi untuk kebutuhan anda.</p>
                     <a href="#constructions" class="btn-get-started">Get Started</a>
                 </div>
             </div>
@@ -18,27 +32,27 @@
     </div>
 
     <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-item">
+        <div class="carousel-item" data-description="Pengukuran Duga Air Akurat">
             <img src="assets/img/hero-carousel/pasang1.jpg" alt="">
         </div>
 
-        <div class="carousel-item active">
+        <div class="carousel-item active" data-description="Sistem Monitoring Curah Hujan Canggih">
             <img src="assets/img/hero-carousel/pasang2.jpg" alt="">
         </div>
 
-        <div class="carousel-item">
+        <div class="carousel-item" data-description="Teknologi Klimatologi Modern">
             <img src="assets/img/hero-carousel/pasang3.jpg" alt="">
         </div>
 
-        <div class="carousel-item">
+        <div class="carousel-item" data-description="Analisis Kualitas Air Terpercaya">
             <img src="assets/img/hero-carousel/pasang4.jpg" alt="">
         </div>
 
-        <div class="carousel-item">
+        <div class="carousel-item" data-description="Solusi Telemetri Terintegrasi">
             <img src="assets/img/hero-carousel/pasang5.jpg" alt="">
         </div>
 
-        <div class="carousel-item">
+        <div class="carousel-item" data-description="Teknologi Pengukuran Jarak Jauh">
             <img src="assets/img/hero-carousel/pasang6.jpg" alt="">
         </div>
 
@@ -335,3 +349,32 @@
         </div>
     </div>
 </section><!-- /Testimonials Section -->
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('hero-carousel');
+            const dynamicTitle = document.getElementById('dynamicTitle');
+            const dynamicDescription = document.getElementById('dynamicDescription');
+
+            carousel.addEventListener('slide.bs.carousel', function(event) {
+                const nextSlide = event.relatedTarget;
+                const description = nextSlide.getAttribute('data-description');
+
+                // Fade out current text
+                dynamicTitle.style.opacity = 0;
+                dynamicDescription.style.opacity = 0;
+
+                // Wait for fade out, then update text and fade in
+                setTimeout(() => {
+                    dynamicTitle.textContent = 'Telemetry Specialist - Higertech';
+                    dynamicDescription.textContent = description;
+
+                    dynamicTitle.style.opacity = 1;
+                    dynamicDescription.style.opacity = 1;
+                }, 500);
+            });
+        });
+    </script>
+}
