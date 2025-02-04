@@ -1,0 +1,58 @@
+@{
+  Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+  ViewData["Title"] = "Dashboard - Analytics";
+}
+@section VendorStyles {
+  <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+}
+@section VendorScripts {
+  <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
+}
+@section PageScripts {
+  <script src="~/js/dashboards-analytics.js"></script>
+}
+
+@* ************** Content ************** *@
+<div class="row">
+  <div class="col-xxl-12 mb-6 order-0">
+    <div class="card mb-5">
+      <h5 class="card-header">Tambah Data</h5>
+      <div class="card-body">
+        <div>
+          <label for="articleTitle" class="form-label">Judul Artikel</label>
+          <input type="text" class="form-control" id="articleTitle" placeholder="Masukkan judul artikel"
+            aria-describedby="articleTitleHelp" />
+          <div id="articleTitleHelp" class="form-text">Tulis judul yang menarik untuk artikel Anda.</div>
+        </div>
+
+        <div class="mt-3">
+          <label for="articleContent" class="form-label">Konten Artikel</label>
+          <textarea class="form-control" id="articleContent" placeholder="Tulis isi artikel di sini..." rows="5"
+            aria-describedby="articleContentHelp"></textarea>
+          <div id="articleContentHelp" class="form-text">Isi lengkap artikel akan ditampilkan di sini.</div>
+        </div>
+
+        <div class="mt-3">
+          <label for="articleAuthor" class="form-label">Penulis</label>
+          <input type="text" class="form-control" id="articleAuthor" placeholder="Nama penulis"
+            aria-describedby="articleAuthorHelp" />
+          <div id="articleAuthorHelp" class="form-text">Masukkan nama penulis artikel.</div>
+        </div>
+
+        <div class="mt-3">
+          <label for="articleImage" class="form-label">URL Gambar</label>
+          <input type="text" class="form-control" id="articleImage" placeholder="https://contoh.com/gambar.jpg"
+            aria-describedby="articleImageHelp" />
+          <div id="articleImageHelp" class="form-text">Masukkan URL gambar untuk artikel.</div>
+        </div>
+
+        <div class="mt-3 float-end">
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <!--/ Transactions -->
+</div>
