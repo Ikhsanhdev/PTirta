@@ -4,11 +4,11 @@ using Higertech.Models;
 
 namespace Higertech.Controllers;
 
-public class ProdukController : Controller
+public class ProductController : Controller
 {
-    private readonly ILogger<ProdukController> _logger;
+    private readonly ILogger<ProductController> _logger;
 
-    public ProdukController(ILogger<ProdukController> logger)
+    public ProductController(ILogger<ProductController> logger)
     {
         _logger = logger;
     }
