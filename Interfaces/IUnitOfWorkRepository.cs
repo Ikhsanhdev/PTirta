@@ -6,5 +6,7 @@ namespace Higertech.Interfaces
   {
     IUserRepository User { get; }
     IProductRepository Product { get; }
+    IArticleRepository Article { get; }
+    IProjectRepository Project { get; }
   }
 }

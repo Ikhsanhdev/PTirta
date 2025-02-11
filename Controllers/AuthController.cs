@@ -16,7 +16,7 @@ public class AuthController : Controller
   {
     _unitOfWorkService = unitOfWorkService;
   }
-
+  
   public IActionResult Login()
   {
     ClaimsPrincipal claimUser = HttpContext.User;
@@ -25,7 +25,7 @@ public class AuthController : Controller
     {
       return Redirect("/");
     }
-    return View();
+    return View("~/Views/Auth/Login.cshtml");
   }
 
   [HttpPost]
@@ -63,10 +63,10 @@ public class AuthController : Controller
     }
     catch (System.Exception ex)
     {
-        // Log the exception details to console or logging provider
-        Console.WriteLine($"Exception in Login: {ex.Message} \n {ex.StackTrace}");
+      // Log the exception details to console or logging provider
+      Console.WriteLine($"Exception in Login: {ex.Message} \n {ex.StackTrace}");
 
-        return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message, StackTrace = ex.StackTrace });
+      return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message, StackTrace = ex.StackTrace });
     }
   }
 

@@ -1,9 +1,7 @@
-using Higertech.Models;
 using Dapper;
+using Higertech.Models;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Higertech.Repositories;
 
@@ -20,7 +18,6 @@ public interface IProductRepository
 public class ProductRepository : IProductRepository
 {
     private readonly string _connectionString;
-
     public ProductRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection") ?? "";

@@ -15,5 +15,17 @@ namespace Higertech.Repositories
 
     public IUserRepository User { get; }
     public IProductRepository Product { get;}
+      IArticleRepository articleRepository,
+      IProjectRepository projectRepository
+    )
+    {
+      User = userRepository;
+      Article = articleRepository;
+      Project = projectRepository;
+    }
+
+    public IUserRepository User { get; }
+    public IArticleRepository Article { get; }
+    public IProjectRepository Project { get; }
   }
 }
