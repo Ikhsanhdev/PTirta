@@ -1,18 +1,19 @@
-using Dapper;
 using Higertech.Models;
+using Higertech.ViewModels;
+using Dapper;
 using Npgsql;
-
+using Serilog;
+using Higertech.Models.Datatables;
 
 namespace Higertech.Repositories;
 
 public interface IProductRepository
 {
-    Task<Product?> GetByIdAsync(Guid id);
-    Task<Product?> GetByNameAsync(string nama_produk);
-    Task<IEnumerable<Product>> GetAllAsync();
-    Task<int> CreateAsync(Product product);
-    Task<int> UpdateAsync(Product product);
-    Task<int> DeleteAsync(Guid id);
+    Task<List<Product>> GetAllAsync();
+    Task<(IReadOnlyList<dynamic>, int)> GetDataProduct(JqueryDataTableRequest request);
+    Task<ProductVM?> GetProductByIdAsync(Guid id);
+    Task<AjaxResponse> SaveAsync(ProductVM product);
+    Task<bool> DeleteAsync(Guid id);
 }
 
 public class ProductRepository : IProductRepository
@@ -23,57 +24,175 @@ public class ProductRepository : IProductRepository
         _connectionString = configuration.GetConnectionString("DefaultConnection") ?? "";
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<List<Product>> GetAllAsync()
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC";
-        return await connection.QueryAsync<Product>(sql);
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = @$"
+                    SELECT
+                        id AS ""Id"",
+                        nama_produk AS ""NamaProduk"",
+                        gambar_url AS ""GambarUrl"",
+                        kategori AS ""Kategori"",
+                        deskripsi AS ""Deskripsi"",
+                        created_at AS ""CreatedAt"",
+                        updated_at AS ""UpdatedAt""
+                    FROM products
+                    WHERE deleted_at IS NULL
+                    ORDER BY created_at DESC 
+                    LIMIT 10;";
+
+            var result = await connection.QueryAsync<Product>(query);
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
+            throw;
+        }
     }
 
-    public async Task<Product?> GetByIdAsync(Guid id)
+    public async Task<AjaxResponse> SaveAsync(ProductVM product)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = "SELECT * FROM products WHERE id = @id AND deleted_at IS NULL";
-        return await connection.QueryFirstOrDefaultAsync<Product>(sql, new { id = id });
+        AjaxResponse result = new();
+        try
+        {
+            string query;
+            string status = "Tambah";
+
+            if (product.id == Guid.Empty)
+            {
+                query = @"
+                    INSERT INTO products 
+                    (nama_produk, gambar_url, kategori, deskripsi)
+                    VALUES 
+                    (@nama_produk, @gambar_url, @kategori, @deskripsi)
+                    RETURNING *;";
+            }
+            else
+            {
+                status = "Memperbarui";
+                product.updated_at = DateTime.Now;
+                query = @"
+                    UPDATE products
+                    SET nama_produk = @nama_produk, 
+                        gambar_url = @gambar_url, 
+                        kategori = @kategori, 
+                        deskripsi = @deskripsi,
+                        updated_at = @updated_at
+                    WHERE id = @id
+                    RETURNING *;";
+            }
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var data = await connection.ExecuteAsync(query, product);
+                result.Code = 200;
+                result.Message = $"{status} data berhasil";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Code = 500;
+            result.Message = $"Terjadi Kesalahan.\nError: {ex}";
+        }
+        return result;
     }
 
-    public async Task<Product?> GetByNameAsync(string nama_produk)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = "SELECT * FROM products WHERE nama_produk = @nama_produk AND deleted_at IS NULL";
-        return await connection.QueryFirstOrDefaultAsync<Product>(sql, new { nama_produk = nama_produk });
+        const string query = @"
+            UPDATE products
+            SET deleted_at = @Date_now
+            WHERE id = @Id;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                int affectedRows = await connection.ExecuteAsync(query, new { Id = id, Date_now = DateTime.Now });
+                return affectedRows > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error deleting product: {Message}", ex.Message);
+            return false;
+        }
     }
 
-    public async Task<int> CreateAsync(Product product)
+    public async Task<ProductVM?> GetProductByIdAsync(Guid id)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = @"
-            INSERT INTO products (id, nama_produk, gambar_url, kategori, created_at, updated_at) 
-            VALUES (@id, @nama_produk, @gambar_url, @kategori, @created_at, @updated_at)";
+        const string query = @"
+            SELECT * FROM products WHERE id = @Id;";
 
-        product.id = Guid.NewGuid();
-        product.created_at = DateTime.UtcNow;
-        product.updated_at = DateTime.UtcNow;
-
-        return await connection.ExecuteAsync(sql, product);
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                ProductVM? product = await connection.QuerySingleOrDefaultAsync<ProductVM>(query, new { Id = id });
+                return product;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error fetching product: {Message}", ex.Message);
+            return null;
+        }
     }
 
-    public async Task<int> UpdateAsync(Product product)
+    public async Task<(IReadOnlyList<dynamic>, int)> GetDataProduct(JqueryDataTableRequest request)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = @"
-            UPDATE products 
-            SET nama_produk = @nama_produk, gambar_url = @gambar_url, kategori = @kategori, updated_at = @updated_at
-            WHERE id = @id";
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            List<dynamic> result = new List<dynamic>();
 
-        product.updated_at = DateTime.UtcNow;
-        return await connection.ExecuteAsync(sql, product);
-    }
+            var query = @"SELECT * FROM products ";
 
-    public async Task<int> DeleteAsync(Guid id)
-    {
-        using var connection = new NpgsqlConnection(_connectionString);
-        string sql = "UPDATE products SET deleted_at = @deleted_at WHERE id = @id";
-        return await connection.ExecuteAsync(sql, new { id = id, deleted_at = DateTime.UtcNow });
+            var parameters = new DynamicParameters();
+            var whereConditions = new List<string>();
+
+            if (!string.IsNullOrEmpty(request.SearchValue))
+            {
+                if (request.SearchValue.Contains('\''))
+                {
+                    request.SearchValue = request.SearchValue.Replace("'", "''");
+                }
+
+                whereConditions.Add(@"
+                    (LOWER(nama_produk) LIKE @SearchValue OR
+                    LOWER(kategori) LIKE @SearchValue OR
+                    LOWER(deskripsi) LIKE @SearchValue)");
+                parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
+            }
+            
+            whereConditions.Add(@" deleted_at IS NULL");
+
+            var whereClause = whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", whereConditions) : "";
+
+            query += whereClause;
+
+            int total = 0;
+            var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
+            total = connection.ExecuteScalar<int>(sql_count, parameters);
+
+            query += @" 
+            OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            parameters.Add("@Skip", request.Skip);
+            parameters.Add("@PageSize", request.PageSize);
+
+            result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
+
+            return (result, total);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error getting product data: {Message}", ex.Message);
+            throw;
+        }
     }
 }

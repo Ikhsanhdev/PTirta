@@ -6,25 +6,20 @@ namespace Higertech.Repositories
   {
     public UnitOfWorkRepository(
       IUserRepository userRepository,
-      IProductRepository productRepository
-    )
-    {
-      User = userRepository;
-      Product = productRepository;
-    }
-
-    public IUserRepository User { get; }
-    public IProductRepository Product { get;}
+      IProductRepository productRepository,
       IArticleRepository articleRepository,
       IProjectRepository projectRepository
     )
     {
       User = userRepository;
+      Product = productRepository;
       Article = articleRepository;
       Project = projectRepository;
     }
 
     public IUserRepository User { get; }
+
+    public IProductRepository Product { get; }
     public IArticleRepository Article { get; }
     public IProjectRepository Project { get; }
   }

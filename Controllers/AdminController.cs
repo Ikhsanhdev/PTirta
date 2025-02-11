@@ -210,4 +210,49 @@ public class AdminController : Controller
         }
     }
     #endregion
+    #region  <=================================== Product ========================================>
+    public IActionResult Product()
+    {
+        return View("~/Views/Admin/Product/Index.cshtml");
+    }
+
+    public async Task<IActionResult> GetProductData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Product.GetDataProduct(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    }
+    #endregion
 }
+
