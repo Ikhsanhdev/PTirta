@@ -20,6 +20,7 @@ namespace Higertech
       #region ========== [ Register Repositories ] ==========
       services.AddScoped<IUserRepository, UserRepository>();
       services.AddScoped<IArticleRepository, ArticleRepository>();
+      services.AddScoped<IProductRepository, ProductRepository>();
       #endregion
     }
   }
