@@ -7,83 +7,25 @@ using Higertech.Models.Datatables;
 
 namespace Higertech.Repositories;
 
-public interface IArticleRepository
+public interface IProjectRepository
 {
-    Task<User?> GetByIdAsync(Guid id);
     Task<List<Article>> GetAllAsync();
-    Task<(IReadOnlyList<dynamic>, int)> GetDataArticle(JqueryDataTableRequest request);
-    Task<User?> GetByTitleAsync(string username);
-    Task<ArticleVM?> GetArticleByIdAsync(Guid id);
-    Task<AjaxResponse> SaveAsync(ArticleVM article);
+    Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request);
+     Task<ProjectVM?> GetProjectByIdAsync(Guid id);
+    Task<AjaxResponse> SaveAsync(ProjectVM article);
     Task<Article?> UpdateArticleAsync(Article article);
-    Task<bool> DeleteArticleAsync(Guid id);
+    Task<bool> DeleteAsync(Guid id);
 }
 
-public class ArticleRepository : IArticleRepository
+public class ProjectRepository : IProjectRepository
 {
     private readonly string _connectionString;
-    public ArticleRepository(IConfiguration configuration)
+    public ProjectRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection") ?? "";
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
-    {
-        try
-        {
-            string query = @"SELECT
-                    id AS ""Id"",
-                    username AS ""Username"",
-                    name AS ""Name"",
-                    email AS ""Email"",
-                    phone AS ""Phone"",
-                    password AS ""Password"",
-                    last_login AS ""LastLogin""
-                FROM users WHERE id = @id";
-
-            using var connection = new NpgsqlConnection(_connectionString);
-            User? user = await connection.QueryFirstOrDefaultAsync<User>(query, new { id });
-            return user;
-        }
-        catch (NpgsqlException)
-        {
-            throw;
-        }
-        catch (System.Exception)
-        {
-            throw;
-        }
-    }
-
-    public async Task<User?> GetByTitleAsync(string username)
-    {
-        try
-        {
-            string query = @"SELECT
-                    id AS ""Id"",
-                    username AS ""Username"",
-                    name AS ""Name"",
-                    email AS ""Email"",
-                    phone AS ""Phone"",
-                    password AS ""Password"",
-                    last_login AS ""LastLogin""
-                FROM users WHERE username = @username";
-
-            using var connection = new NpgsqlConnection(_connectionString);
-            User? user = await connection.QueryFirstOrDefaultAsync<User>(query, new { username });
-            return user;
-        }
-        catch (NpgsqlException)
-        {
-            throw;
-        }
-        catch (System.Exception)
-        {
-            throw;
-        }
-    }
-
-    public async Task<AjaxResponse> SaveAsync(ArticleVM article)
+    public async Task<AjaxResponse> SaveAsync(ProjectVM article)
     {
         AjaxResponse result = new();
         try
@@ -95,8 +37,8 @@ public class ArticleRepository : IArticleRepository
             {
                 query = @"
                     INSERT INTO 
-                    articles ( title, description, author, img_url)
-                    VALUES ( @title, @description, @author, @img_url)
+                    projects ( title, img_url)
+                    VALUES ( @title, @img_url)
                     RETURNING *;";
             }
             else
@@ -104,8 +46,8 @@ public class ArticleRepository : IArticleRepository
                 status = "Memperbarui";
                 article.updated_at = DateTime.Now;
                 query = @"
-                        UPDATE articles
-                        SET title = @title, description = @description, author = @author, img_url = @img_url, updated_at = @updated_at
+                        UPDATE projects
+                        SET title = @title, img_url = @img_url, updated_at = @updated_at
                         WHERE id = @Id
                         RETURNING *;";
 
@@ -153,10 +95,10 @@ public class ArticleRepository : IArticleRepository
         }
     }
 
-    public async Task<bool> DeleteArticleAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         const string query = @"
-            UPDATE articles
+            UPDATE projects
             SET deleted_at = @Date_now
             WHERE id = @Id;";
 
@@ -177,18 +119,18 @@ public class ArticleRepository : IArticleRepository
     }
 
 
-    public async Task<ArticleVM?> GetArticleByIdAsync(Guid id)
+    public async Task<ProjectVM?> GetProjectByIdAsync(Guid id)
     {
         const string query = @"
-            SELECT * FROM articles WHERE id = @Id;";
+            SELECT * FROM projects WHERE id = @Id;";
 
         try
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                ArticleVM? article = await connection.QuerySingleOrDefaultAsync<ArticleVM>(query, new { Id = id });
-                return article;
+                ProjectVM? model = await connection.QuerySingleOrDefaultAsync<ProjectVM>(query, new { Id = id });
+                return model;
             }
         }
         catch (Exception ex)
@@ -207,12 +149,11 @@ public class ArticleRepository : IArticleRepository
                         SELECT
                             id AS ""Id"",
                             title AS ""Title"",
-                            description AS ""Description"",
-                            author AS ""Author"",
                             img_url AS ""ImgUrl"",
                             created_at AS ""CreatedAt"",
                             updated_at AS ""UpdatedAt"";
-                        FROM articles
+                        FROM projects
+                        WHERE deleted_at IS NULL
                         LIMIT 10
                         ORDER BY created_at DESC 
                         ;";
@@ -232,7 +173,7 @@ public class ArticleRepository : IArticleRepository
             }
   }
 
-  public async Task<(IReadOnlyList<dynamic>, int)> GetDataArticle(JqueryDataTableRequest request)
+  public async Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request)
   {
     try
             {
@@ -242,7 +183,7 @@ public class ArticleRepository : IArticleRepository
                 var query = $@"SELECT 
                     *
                     FROM 
-                    articles 
+                    projects 
                     ";
 
                 var parameters = new DynamicParameters();
@@ -257,9 +198,7 @@ public class ArticleRepository : IArticleRepository
 
 
                     whereConditions.Add(@"
-                    (LOWER(title) LIKE @SearchValue OR
-                    LOWER(author) LIKE @SearchValue OR
-                    LOWER(description) LIKE @SearchValue)");  
+                    (LOWER(title) LIKE @SearchValue)");  
                     parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
                 }
                 
@@ -300,4 +239,5 @@ public class ArticleRepository : IArticleRepository
                 throw;
             }
   }
+ 
 }
