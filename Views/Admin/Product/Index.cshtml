@@ -90,7 +90,7 @@
                             }
                         },
                         {
-                            data: 'updated_at',
+                            data: 'created_at',
                             render: function (data, type, row) {
                                 if (!data) return "";
                                 const date = new Date(data);
@@ -160,12 +160,12 @@
       }).then((result) => {
         console.log(result);
         if (result.isConfirmed) {
-          if (result.value.data.code == 200) {
-            showMessage("success", "Sukses!", result.value.data.message);
-            dataTableArticle.ajax.reload();
-          } else {
-            showMessage("error", "Failed", result.value.data.message);
-          }
+            if (result.value.data.code == 200) {
+                showMessage("success", "Sukses!", result.value.data.message);
+                dataTableProduct.ajax.reload(); // Sebelumnya dataTableArticle
+            } else {
+                showMessage("error", "Failed", result.value.data.message);
+            }
         }
       });
     };

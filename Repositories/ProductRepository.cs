@@ -13,7 +13,8 @@ public interface IProductRepository
     Task<(IReadOnlyList<dynamic>, int)> GetDataProduct(JqueryDataTableRequest request);
     Task<ProductVM?> GetProductByIdAsync(Guid id);
     Task<AjaxResponse> SaveAsync(ProductVM product);
-    Task<bool> DeleteAsync(Guid id);
+    Task<Product?> UpdateProductAsync(Product product);
+    Task<bool> DeleteProductAsync(Guid id);
 }
 
 public class ProductRepository : IProductRepository
@@ -50,97 +51,6 @@ public class ProductRepository : IProductRepository
         {
             Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
             throw;
-        }
-    }
-
-    public async Task<AjaxResponse> SaveAsync(ProductVM product)
-    {
-        AjaxResponse result = new();
-        try
-        {
-            string query;
-            string status = "Tambah";
-
-            if (product.id == Guid.Empty)
-            {
-                query = @"
-                    INSERT INTO products 
-                    (nama_produk, gambar_url, kategori, deskripsi)
-                    VALUES 
-                    (@nama_produk, @gambar_url, @kategori, @deskripsi)
-                    RETURNING *;";
-            }
-            else
-            {
-                status = "Memperbarui";
-                product.updated_at = DateTime.Now;
-                query = @"
-                    UPDATE products
-                    SET nama_produk = @nama_produk, 
-                        gambar_url = @gambar_url, 
-                        kategori = @kategori, 
-                        deskripsi = @deskripsi,
-                        updated_at = @updated_at
-                    WHERE id = @id
-                    RETURNING *;";
-            }
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var data = await connection.ExecuteAsync(query, product);
-                result.Code = 200;
-                result.Message = $"{status} data berhasil";
-            }
-        }
-        catch (Exception ex)
-        {
-            result.Code = 500;
-            result.Message = $"Terjadi Kesalahan.\nError: {ex}";
-        }
-        return result;
-    }
-
-    public async Task<bool> DeleteAsync(Guid id)
-    {
-        const string query = @"
-            UPDATE products
-            SET deleted_at = @Date_now
-            WHERE id = @Id;";
-
-        try
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                int affectedRows = await connection.ExecuteAsync(query, new { Id = id, Date_now = DateTime.Now });
-                return affectedRows > 0;
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error deleting product: {Message}", ex.Message);
-            return false;
-        }
-    }
-
-    public async Task<ProductVM?> GetProductByIdAsync(Guid id)
-    {
-        const string query = @"
-            SELECT * FROM products WHERE id = @Id;";
-
-        try
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                ProductVM? product = await connection.QuerySingleOrDefaultAsync<ProductVM>(query, new { Id = id });
-                return product;
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error fetching product: {Message}", ex.Message);
-            return null;
         }
     }
 
@@ -193,6 +103,125 @@ public class ProductRepository : IProductRepository
         {
             Log.Error(ex, "Error getting product data: {Message}", ex.Message);
             throw;
+        }
+    }
+
+    public async Task<ProductVM?> GetProductByIdAsync(Guid id)
+    {
+        const string query = @"
+            SELECT * FROM products WHERE id = @Id;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                ProductVM? product = await connection.QuerySingleOrDefaultAsync<ProductVM>(query, new { Id = id });
+                return product;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching product: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<AjaxResponse> SaveAsync(ProductVM product)
+    {
+        AjaxResponse result = new();
+        try
+        {
+            string query;
+            string status = "Tambah";
+
+            if (product.id == Guid.Empty)
+            {
+                product.created_at = DateTime.Now;
+                query = @"
+                    INSERT INTO products 
+                    (nama_produk, gambar_url, kategori, deskripsi, created_at)
+                    VALUES 
+                    (@nama_produk, @gambar_url, @kategori, @deskripsi, @created_at)
+                    RETURNING *;";
+            }
+            else
+            {
+                status = "Memperbarui";
+                product.updated_at = DateTime.Now;
+                query = @"
+                    UPDATE products
+                    SET nama_produk = @nama_produk, 
+                        gambar_url = @gambar_url, 
+                        kategori = @kategori, 
+                        deskripsi = @deskripsi,
+                        updated_at = @updated_at
+                    WHERE id = @Id
+                    RETURNING *;";
+            }
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var data = await connection.ExecuteAsync(query, product);
+                result.Code = 200;
+                result.Message = $"{status} data berhasil";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Code = 500;
+            result.Message = $"Terjadi Kesalahan.\nError: {ex}";
+        }
+        return result;
+    }
+
+    public async Task<Product?> UpdateProductAsync(Product product)
+    {
+        const string query = @"
+            UPDATE products
+                    SET nama_produk = @nama_produk, 
+                        gambar_url = @gambar_url, 
+                        kategori = @kategori, 
+                        deskripsi = @deskripsi,
+                        updated_at = @updated_at
+                    WHERE id = @Id
+            RETURNING *;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                return await connection.QueryFirstOrDefaultAsync<Product>(query, product);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating product: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<bool> DeleteProductAsync(Guid id)
+    {
+        const string query = @"
+            UPDATE products
+            SET deleted_at = @Date_now
+            WHERE id = @Id;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                int affectedRows = await connection.ExecuteAsync(query, new { Id = id, Date_now = DateTime.Now });
+                return affectedRows > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting product: {ex.Message}");
+            return false;
         }
     }
 }

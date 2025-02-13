@@ -253,6 +253,53 @@ public class AdminController : Controller
             throw;
         }
     }
+
+    [HttpGet("product/create")]
+    public IActionResult CreateEditProduct()
+    {
+        ProductVM model = new ProductVM();
+        return View("~/Views/Admin/Product/CreateEdit.cshtml",model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Product")]
+    public async Task<IActionResult> SaveProduct(ProductVM model)
+    {
+        AjaxResponse response = new();
+        response = await _unitOfWorkRepository.Product.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpGet("product/edit/{id}")]
+    public IActionResult EditProduct(Guid id)
+    {
+        ProductVM model = new ProductVM();
+
+        model = _unitOfWorkRepository.Product.GetProductByIdAsync(id).Result;
+
+        return View("~/Views/Admin/Product/CreateEdit.cshtml", model);
+    }
+
+    [HttpDelete]
+    [Route("/product/delete/{id}")]
+    public async Task<IActionResult> DeleteProduct(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Product.DeleteProductAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
     #endregion
 }
 

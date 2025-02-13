@@ -21,31 +21,32 @@
           @(Model.id != Guid.Empty ? "Edit Data" : "Tambah Data")
         </h5>
         <div class="card-body">
-          <input type="hidden" asp-for="id" class="form-control" id="id">
+            <input type="hidden" asp-for="id" class="form-control" id="id">
 
-          <div>
-            <label for="productNama" class="form-label">Nama Produk</label>
-            <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk" placeholder="Masukkan nama produk">
-          </div>
+            <div>
+                <label for="productNama" class="form-label">Nama Produk</label>
+                <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk" placeholder="Masukkan nama produk">
+            </div>
 
-          <div class="mt-3">
-            <label for="productDeskripsi" class="form-label">Deskripsi Produk</label>
-            <input type="text" asp-for="deskripsi" class="form-control" id="deskripsi" placeholder="Masukkan keterangan">
-          </div>
+            <div class="mt-3">
+                <label for="productDeskripsi" class="form-label">Deskripsi Produk</label>
+                <input type="text" asp-for="deskripsi" class="form-control" id="deskripsi" placeholder="Masukkan keterangan">
+            </div>
 
-          <div class="mt-3">
-            <label for="productKategori" class="form-label">Kategori</label>
-            <input type="text" asp-for="kategori" class="form-control" id="kategori" placeholder="Masukkan kategori produk">
-          </div>
+            <div class="mt-3">
+                <label for="productKategori" class="form-label">Kategori</label>
+                <input type="text" asp-for="kategori" class="form-control" id="kategori" placeholder="Masukkan kategori produk">
+            </div>
 
-          <div class="mt-3">
-            <label for="productGambar" class="form-label">URL Gambar</label>
-            <input type="text" asp-for="gambar_url" class="form-control" id="gambar_url" placeholder="Masukkan URL gambar">
-          </div>
+            <div class="mt-3">
+                <label for="productGambar" class="form-label">URL Gambar</label>
+                <input type="text" asp-for="gambar_url" class="form-control" id="gambar_url" placeholder="Masukkan URL gambar">
+            </div>
 
-          <div class="mt-3 float-end">
-            <button type="submit" class="btn btn-primary">Save</button>
-          </div>
+            <div class="mt-3 float-end">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="/Admin/Product" class="btn btn-info ms-2">Back</a>
+            </div>
 
         </div>
       </div>
@@ -65,13 +66,18 @@
     window.createEditForm = (form, evt) => {
       evt.preventDefault();
 
+      console.log("Save Data");
       var btnSubmit = $(form).find("button[type=submit]");
-      var id = document.getElementById("id").value;
+      var id = document.getElementById("id").value
+      if (id != null && id != "") {
+        console.log("Edit Data");
+      } else {
+        console.log("Create Data");
+      }
 
       $(form).parsley().validate();
       if ($(form).parsley().isValid()) {
         beforeLoadingButton(btnSubmit);
-
         let formData = new FormData();
         formData.append("id", document.getElementById("id").value);
         formData.append("nama_produk", document.getElementById("nama_produk").value);
@@ -81,23 +87,24 @@
 
         console.log("FormData:", Object.fromEntries(formData.entries()));
 
-        axios.post("/Admin/SaveProduct", formData)
-          .then((res) => {
-            let result = res.data;
-            if (result.code == 200) {
-              Swal.fire("Sukses!", result.message, "success");
-              dataTableProduct.ajax.reload();
-            } else {
-              Swal.fire("Gagal!", result.message, "error");
-            }
-            afterLoadingButton(btnSubmit);
-          })
-          .catch((err) => {
-            console.log(err);
-            Swal.fire("Gagal!", "Terjadi kesalahan saat menyimpan data.", "error");
-            afterLoadingButton(btnSubmit);
-          });
-      }
+        postData("/Admin/Product", formData)
+            .then((res) => {
+                let result = res.data;
+                if (result.code == 200) {
+                    showMessage("success", "Sukses!", result.message).then(() => {
+                        // Redirect ke halaman index setelah klik OK
+                        window.location.href = "/Admin/Product";
+                    });
+                } else {
+                    showMessage("error", "Gagal!", result.message);
+                }
+                afterLoadingButton(btnSubmit);
+            })
+            .catch((err) => {
+                console.log(err);
+                afterLoadingButton(btnSubmit);
+            });
+        }
     };
   </script>
 }
