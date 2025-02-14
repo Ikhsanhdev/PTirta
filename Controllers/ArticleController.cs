@@ -1,26 +1,39 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Higertech.Models;
+using System.Threading.Tasks;
+using Higertech.Interfaces;
 
 namespace Higertech.Controllers;
 
 public class ArticleController : Controller
 {
+    
     private readonly ILogger<ArticleController> _logger;
+    private readonly IUnitOfWorkRepository _unitOfWorkRepository;
 
-    public ArticleController(ILogger<ArticleController> logger)
+    public ArticleController( IUnitOfWorkRepository unitOfWorkRepository)
     {
-        _logger = logger;
+        this._unitOfWorkRepository = unitOfWorkRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        
+        var model = await _unitOfWorkRepository.Article.GetListArticleAsync();
+        return View(model);
     }
-
-    public IActionResult Detail()
+    
+    [Route("/article/{slug}")]
+    public async Task<IActionResult> Detail(string slug)
     {
-       return View();
+        var model = await _unitOfWorkRepository.Article.GetArticleBySlugAsync(slug);
+
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View(model);
     }
     
     public IActionResult Privacy()

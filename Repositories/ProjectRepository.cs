@@ -9,6 +9,8 @@ namespace Higertech.Repositories;
 
 public interface IProjectRepository
 {
+     Task<List<Project>> GetListProjectAsync();
+    Task<Project?> GetProjectBySlugAsync(string slug);
     Task<List<Article>> GetAllAsync();
     Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request);
      Task<ProjectVM?> GetProjectByIdAsync(Guid id);
@@ -37,8 +39,8 @@ public class ProjectRepository : IProjectRepository
             {
                 query = @"
                     INSERT INTO 
-                    projects ( title, img_url)
-                    VALUES ( @title, @img_url)
+                    projects ( title, img_url,slug)
+                    VALUES ( @title, @img_url,LOWER(REPLACE(@title, ' ', '-')))
                     RETURNING *;";
             }
             else
@@ -47,7 +49,7 @@ public class ProjectRepository : IProjectRepository
                 article.updated_at = DateTime.Now;
                 query = @"
                         UPDATE projects
-                        SET title = @title, img_url = @img_url, updated_at = @updated_at
+                        SET title = @title, img_url = @img_url, updated_at = @updated_at, slug = LOWER(REPLACE(@title, ' ', '-'))
                         WHERE id = @Id
                         RETURNING *;";
 
@@ -66,9 +68,10 @@ public class ProjectRepository : IProjectRepository
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error saving article: {ex.Message}");
             result.Code = 500;
-            result.Message = $"Terjadi Kesalahan.\nError: {ex}";
-        }
+            result.Message = "Terjadi Kesalahan saat menyimpan data";
+     }
         return result;
     }
 
@@ -214,6 +217,8 @@ public class ProjectRepository : IProjectRepository
                 var whereClause = whereConditions.Count > 0 ? "WHERE" + string.Join(" AND ", whereConditions) : "";
 
                 query += whereClause;
+                
+                query += @" ORDER BY created_at DESC";
 
                 int total = 0;
                 var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
@@ -239,5 +244,60 @@ public class ProjectRepository : IProjectRepository
                 throw;
             }
   }
- 
+
+  public async Task<List<Project>> GetListProjectAsync()
+  {
+    const string query = @"
+            SELECT 
+                id AS ""Id"",
+                title AS ""Title"",
+                img_url AS ""Image"",
+                created_at AS ""CreatedAt"",
+                slug AS ""Slug""
+            FROM projects
+            WHERE deleted_at IS NULL
+            ORDER BY created_at DESC;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var article = await connection.QueryAsync<Project>(query);
+                return article.ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching project: {ex.Message}");
+            return null;
+        }
+  }
+
+  public async Task<Project?> GetProjectBySlugAsync(string slug)
+  {
+    const string query = @"
+            SELECT 
+                id AS ""Id"",
+                title AS ""Title"",
+                img_url AS ""Image"",
+                created_at AS ""CreatedAt""
+            FROM projects
+            WHERE slug = @Slug
+            AND deleted_at IS NULL;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                Project? model = await connection.QuerySingleOrDefaultAsync<Project>(query, new { Slug = slug });
+                return model;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching article: {ex.Message}");
+            return null;
+        }
+  }
 }

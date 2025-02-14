@@ -22,10 +22,16 @@ public class MainController : Controller
         return View();
     }
 
-     public IActionResult Article()
+    public IActionResult PageNotFound()
+    {
+        return View("~/Views/404/PageNotFound.cshtml");
+    }
+
+    public IActionResult Article()
     {
         return View();
     }
+
     
     public async Task<IActionResult> Index()
     {

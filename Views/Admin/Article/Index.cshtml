@@ -35,6 +35,7 @@
               <th>Judul</th>
               <th>Author</th>
               <th>Deksripsi</th>
+              <th>Kategory</th>
               <th>Terakhir Update</th>
               <th>Actions</th>
             </tr>
@@ -141,7 +142,7 @@
                 @* params.status = getValueById('status-data'); *@
                 @* params.filter_date = getValueById('monthpicker'); *@
                 @* params.search_value = getValueById('search-data'); *@
-                      }
+                        }
           },
           columns: [
             {
@@ -153,12 +154,17 @@
               }
             },
             { data: 'author' },
+            { data: 'category' },
             {
               data: 'description',
               render: function (data, type, row) {
                 if (!data) return "";
-                let words = data.split(" ").slice(0, 4).join(" ");
-                return words + (data.split(" ").length > 4 ? "..." : "");
+
+                let div = $("<div>").html(data);
+                let plainText = div.text();
+
+                let words = plainText.split(" ").slice(0, 4).join(" ");
+                return words + (plainText.split(" ").length > 4 ? "..." : "");
               }
             },
             {
@@ -182,7 +188,7 @@
               orderable: false,
               render: function (data, type, row) {
                 return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
-                                  <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
+                                    <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
               },
             },
           ],

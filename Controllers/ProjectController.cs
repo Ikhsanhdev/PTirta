@@ -1,21 +1,25 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Higertech.Models;
+using Higertech.Interfaces;
 
 namespace Higertech.Controllers;
 
 public class ProjectController : Controller
 {
     private readonly ILogger<ProjectController> _logger;
+    private readonly IUnitOfWorkRepository _unitOfWorkRepository;
 
-    public ProjectController(ILogger<ProjectController> logger)
+    public ProjectController( IUnitOfWorkRepository unitOfWorkRepository)
     {
-        _logger = logger;
+        this._unitOfWorkRepository = unitOfWorkRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+
+        var model = await _unitOfWorkRepository.Project.GetListProjectAsync();
+        return View(model);
     }
 
     public IActionResult Detail()

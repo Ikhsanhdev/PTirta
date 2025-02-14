@@ -65,13 +65,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// app.UseStatusCodePagesWithReExecute("/Main/PageNotFound");
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Main}/{action=Index}/{id?}"); // <-- Update in AspnetCoreMvcStarter

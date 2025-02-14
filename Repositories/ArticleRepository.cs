@@ -9,11 +9,14 @@ namespace Higertech.Repositories;
 
 public interface IArticleRepository
 {
+
     Task<User?> GetByIdAsync(Guid id);
+    Task<List<Article>> GetListArticleAsync();
+    Task<Article?> GetArticleBySlugAsync(string slug);
     Task<List<Article>> GetAllAsync();
     Task<(IReadOnlyList<dynamic>, int)> GetDataArticle(JqueryDataTableRequest request);
     Task<User?> GetByTitleAsync(string username);
-    Task<ArticleVM?> GetArticleByIdAsync(Guid id);
+    Task<ArticleVM> GetArticleByIdAsync(Guid id);
     Task<AjaxResponse> SaveAsync(ArticleVM article);
     Task<Article?> UpdateArticleAsync(Article article);
     Task<bool> DeleteArticleAsync(Guid id);
@@ -95,8 +98,8 @@ public class ArticleRepository : IArticleRepository
             {
                 query = @"
                     INSERT INTO 
-                    articles ( title, description, author, img_url)
-                    VALUES ( @title, @description, @author, @img_url)
+                    articles ( title, description, author, img_url, category, slug)
+                    VALUES ( @title, @description, @author, @img_url, @category , LOWER(REPLACE(@title, ' ', '-')))
                     RETURNING *;";
             }
             else
@@ -105,7 +108,7 @@ public class ArticleRepository : IArticleRepository
                 article.updated_at = DateTime.Now;
                 query = @"
                         UPDATE articles
-                        SET title = @title, description = @description, author = @author, img_url = @img_url, updated_at = @updated_at
+                        SET title = @title, description = @description, author = @author, img_url = @img_url, updated_at = @updated_at, category = @category , slug = LOWER(REPLACE(@title, ' ', '-'))
                         WHERE id = @Id
                         RETURNING *;";
 
@@ -124,8 +127,9 @@ public class ArticleRepository : IArticleRepository
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error saving article: {ex.Message}");
             result.Code = 500;
-            result.Message = $"Terjadi Kesalahan.\nError: {ex}";
+            result.Message = "Terjadi Kesalahan saat menyimpan data";
         }
         return result;
     }
@@ -177,7 +181,7 @@ public class ArticleRepository : IArticleRepository
     }
 
 
-    public async Task<ArticleVM?> GetArticleByIdAsync(Guid id)
+    public async Task<ArticleVM> GetArticleByIdAsync(Guid id)
     {
         const string query = @"
             SELECT * FROM articles WHERE id = @Id;";
@@ -187,7 +191,7 @@ public class ArticleRepository : IArticleRepository
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                ArticleVM? article = await connection.QuerySingleOrDefaultAsync<ArticleVM>(query, new { Id = id });
+                var article = await connection.QuerySingleOrDefaultAsync<ArticleVM>(query, new { Id = id });
                 return article;
             }
         }
@@ -198,12 +202,12 @@ public class ArticleRepository : IArticleRepository
         }
     }
 
-  public async Task<List<Article>> GetAllAsync()
-  {
-     try
-            {
-                using var connection = new NpgsqlConnection(_connectionString);
-                var query = @$"
+    public async Task<List<Article>> GetAllAsync()
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = @$"
                         SELECT
                             id AS ""Id"",
                             title AS ""Title"",
@@ -217,87 +221,151 @@ public class ArticleRepository : IArticleRepository
                         ORDER BY created_at DESC 
                         ;";
 
-                var result = await connection.QueryAsync<Article>(query);
-                return result.ToList();
-            }
-            catch (NpgsqlException ex)
-            {
-                Log.Error(ex, "PostgreSQL Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
-                throw;
-            }
-  }
+            var result = await connection.QueryAsync<Article>(query);
+            return result.ToList();
+        }
+        catch (NpgsqlException ex)
+        {
+            Log.Error(ex, "PostgreSQL Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
+            throw;
+        }
+    }
 
-  public async Task<(IReadOnlyList<dynamic>, int)> GetDataArticle(JqueryDataTableRequest request)
-  {
-    try
-            {
-                using var connection = new NpgsqlConnection(_connectionString);
-                List<dynamic> result = new List<dynamic>();
+    public async Task<(IReadOnlyList<dynamic>, int)> GetDataArticle(JqueryDataTableRequest request)
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            List<dynamic> result = new List<dynamic>();
 
-                var query = $@"SELECT 
+            var query = $@"SELECT 
                     *
                     FROM 
                     articles 
                     ";
 
-                var parameters = new DynamicParameters();
-                var whereConditions = new List<string>();
+            var parameters = new DynamicParameters();
+            var whereConditions = new List<string>();
 
-                if (!string.IsNullOrEmpty(request.SearchValue))
+            if (!string.IsNullOrEmpty(request.SearchValue))
+            {
+                if (request.SearchValue.Contains('\''))
                 {
-                    if (request.SearchValue.Contains('\''))
-                    {
-                        request.SearchValue = request.SearchValue.Replace("'", "''");
-                    }
+                    request.SearchValue = request.SearchValue.Replace("'", "''");
+                }
 
 
-                    whereConditions.Add(@"
+                whereConditions.Add(@"
                     (LOWER(title) LIKE @SearchValue OR
                     LOWER(author) LIKE @SearchValue OR
-                    LOWER(description) LIKE @SearchValue)");  
-                    parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
-                }
-                
-                // if (!string.IsNullOrEmpty(request.Status))
-                // {
-                //     whereConditions.Add(@"
-                //     status = @Status");
-                //     parameters.Add("@Status", request.Status);
-                // }
-                
-                whereConditions.Add(@" deleted_at IS NULL");
+                    LOWER(description) LIKE @SearchValue)");
+                parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
+            }
 
-                var whereClause = whereConditions.Count > 0 ? "WHERE" + string.Join(" AND ", whereConditions) : "";
+            // if (!string.IsNullOrEmpty(request.Status))
+            // {
+            //     whereConditions.Add(@"
+            //     status = @Status");
+            //     parameters.Add("@Status", request.Status);
+            // }
 
-                query += whereClause;
+            whereConditions.Add(@" deleted_at IS NULL");
 
-                int total = 0;
-                var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
-                total = connection.ExecuteScalar<int>(sql_count, parameters);
+            var whereClause = whereConditions.Count > 0 ? "WHERE" + string.Join(" AND ", whereConditions) : "";
 
-                query += @" 
+            query += whereClause;
+
+            query += @" ORDER BY created_at DESC";
+            
+            int total = 0;
+            var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
+            total = connection.ExecuteScalar<int>(sql_count, parameters);
+
+            query += @" 
                 OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;";
-                parameters.Add("@Skip", request.Skip);
-                parameters.Add("@PageSize", request.PageSize);
+            parameters.Add("@Skip", request.Skip);
+            parameters.Add("@PageSize", request.PageSize);
 
-                result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
+            result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
 
-                return (result, total);
-            }
-            catch (Npgsql.NpgsqlException ex)
+            return (result, total);
+        }
+        catch (Npgsql.NpgsqlException ex)
+        {
+            Log.Error(ex, "Sql Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
+            throw;
+        }
+        catch (System.Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
+            throw;
+        }
+    }
+
+    public async Task<List<Article>> GetListArticleAsync()
+    {
+        const string query = @"
+            SELECT 
+                id AS ""Id"",
+                title AS ""Title"",
+                description AS ""Description"",
+                author AS ""Author"",
+                category AS ""Category"",
+                img_url AS ""Image"",
+                created_at AS ""CreatedAt"",
+                slug AS ""Slug""
+            FROM articles
+            WHERE deleted_at IS NULL 
+            ORDER BY created_at DESC;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                Log.Error(ex, "Sql Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
-                throw;
+                var article = await connection.QueryAsync<Article>(query);
+                return article.ToList();
             }
-            catch (System.Exception ex)
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching article: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<Article?> GetArticleBySlugAsync(string slug)
+    {
+        const string query = @"
+            SELECT 
+                id AS ""Id"",
+                title AS ""Title"",
+                description AS ""Description"",
+                author AS ""Author"",
+                category AS ""Category"",
+                img_url AS ""Image"",
+                created_at AS ""CreatedAt""
+            FROM articles
+            WHERE slug = @Slug
+            AND deleted_at IS NULL;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
-                throw;
+                await connection.OpenAsync();
+                Article? model = await connection.QuerySingleOrDefaultAsync<Article>(query, new { Slug = slug });
+                return model;
             }
-  }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching article: {ex.Message}");
+            return null;
+        }
+    }
 }

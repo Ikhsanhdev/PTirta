@@ -5,6 +5,7 @@ using Higertech.ViewModels;
 using Higertech.Interfaces;
 using Higertech.Models.Datatables;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace Higertech.Controllers;
 
@@ -12,18 +13,21 @@ public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly IUnitOfWorkService _unitOfWorkService;
 
-    public AdminController(IUnitOfWorkRepository unitOfWorkRepository)
+    
+
+    public AdminController(IUnitOfWorkRepository unitOfWorkRepository, IUnitOfWorkService unitOfWorkService)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
+        this._unitOfWorkService = unitOfWorkService;
     }
-
 
     public IActionResult Index()
     {
         return View();
     }
-   
+
 
     #region  <=================================== Article ========================================>
 
@@ -44,18 +48,24 @@ public class AdminController : Controller
     [HttpGet("article/edit/{id}")]
     public IActionResult EditArticle(Guid id)
     {
-        ArticleVM model = new ArticleVM();
 
-        model = _unitOfWorkRepository.Article.GetArticleByIdAsync(id).Result;
-
+        var model = _unitOfWorkRepository.Article.GetArticleByIdAsync(id).Result;
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
         return View("~/Views/Admin/Article/CreateEdit.cshtml", model);
     }
 
     [HttpPost]
     [Route("/Admin/Article")]
-    public async Task<IActionResult> SaveArticle(ArticleVM model)
+    public async Task<IActionResult> SaveArticle(ArticleVM model,IFormFile file)
     {
         AjaxResponse response = new();
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "articles");
+        }
         response = await _unitOfWorkRepository.Article.SaveAsync(model);
         return Json(response);
     }
@@ -129,24 +139,34 @@ public class AdminController : Controller
     public IActionResult CreateEditProject()
     {
         ProjectVM model = new ProjectVM();
-        return View("~/Views/Admin/Project/CreateEdit.cshtml",model);
+        
+        return View("~/Views/Admin/Project/CreateEdit.cshtml", model);
     }
 
     [HttpGet("project/edit/{id}")]
     public IActionResult EditProject(Guid id)
     {
-        ProjectVM model = new ProjectVM();
 
-        model = _unitOfWorkRepository.Project.GetProjectByIdAsync(id).Result;
+        var model = _unitOfWorkRepository.Project.GetProjectByIdAsync(id).Result;
 
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
         return View("~/Views/Admin/Project/CreateEdit.cshtml", model);
     }
 
     [HttpPost]
     [Route("/Admin/Project")]
-    public async Task<IActionResult> SaveProject(ProjectVM model)
+    public async Task<IActionResult> SaveProject(ProjectVM model,IFormFile file)
     {
         AjaxResponse response = new();
+
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "projects");
+        }
+
         response = await _unitOfWorkRepository.Project.SaveAsync(model);
         return Json(response);
     }
