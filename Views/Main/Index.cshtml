@@ -368,7 +368,7 @@
     <div class="container section-title" data-aos="fade-up">
         <h2>Klien Kami</h2>
         <p>Kami telah bekerja sama dan telah menjadi solusi dari berbagai kebutuhan pelanggan kami di berbagai industri</p>
-    </div><!-- End Section Title -->
+    </div>
 
     <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="swiper init-swiper">
@@ -377,14 +377,11 @@
                     "loop": true,
                     "speed": 600,
                     "autoplay": {
-                        "delay": 5000
+                        "delay": 5000,
+                        "reverseDirection": true
                     },
                     "slidesPerView": "auto",
-                    "pagination": {
-                        "el": ".swiper-pagination",
-                        "type": "bullets",
-                        "clickable": true
-                    },
+                    "direction": "horizontal",
                     "breakpoints": {
                         "320": {
                             "slidesPerView": 1,
@@ -475,7 +472,35 @@
                         <img src="assets/img/klien/klien-11.jpg" alt="Klien 11" style="width: 450px; height: auto; margin: 10px;">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="swiper init-swiper">
+            <script type="application/json" class="swiper-config">
+                {
+                    "loop": true,
+                    "speed": 600,
+                    "autoplay": {
+                        "delay": 5000,
+                        "reverseDirection": false
+                    },
+                    "slidesPerView": "auto",
+                    "direction": "horizontal",
+                    "breakpoints": {
+                        "320": {
+                            "slidesPerView": 1,
+                            "spaceBetween": 40
+                        },
+                        "1200": {
+                            "slidesPerView": 2,
+                            "spaceBetween": 20
+                        }
+                    }
+                }
+            </script>
 
+            <div class="swiper-wrapper">
                 <!-- Klien Logo 12 -->
                 <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
                     <div class="klien-item">
@@ -553,7 +578,6 @@
                     </div>
                 </div>
             </div>
-            <div class="swiper-pagination"></div>
         </div>
     </div>
 </section><!-- /Testimonials Section -->
