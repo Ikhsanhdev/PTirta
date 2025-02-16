@@ -5,13 +5,14 @@
     ViewData["Title"] = "Dashboard - Analytics";
 }
 @section VendorStyles {
-    <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+    @* <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" /> *@
     <style>
         .image-preview {
             max-width: 200px;
             max-height: 200px;
             margin-top: 10px;
         }
+
         .preview-container {
             margin-top: 10px;
         }
@@ -37,28 +38,43 @@
 
                     <div>
                         <label for="productNama" class="form-label">Nama Produk</label>
-                        <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk" placeholder="Masukkan nama produk">
+                        <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk"
+                            placeholder="Masukkan nama produk">
                     </div>
 
                     <div class="mt-3">
                         <label for="productDeskripsi" class="form-label">Deskripsi Produk</label>
-                        <input type="text" asp-for="deskripsi" class="form-control" id="deskripsi" placeholder="Masukkan keterangan">
+                        <input type="text" asp-for="deskripsi" class="form-control" id="deskripsi"
+                            placeholder="Masukkan keterangan">
                     </div>
 
                     <div class="mt-3">
                         <label for="productKategori" class="form-label">Kategori</label>
-                        <input type="text" asp-for="kategori" class="form-control" id="kategori" placeholder="Masukkan kategori produk">
+                        <input type="text" asp-for="kategori" class="form-control" id="kategori"
+                            placeholder="Masukkan kategori produk">
                     </div>
 
-                    <div class="mt-3">
-                        <label for="productGambar" class="form-label">Gambar Produk</label>
-                        <input type="file" class="form-control" id="gambar" accept="image/*" onchange="previewImage(event)">
-                        <div class="preview-container" id="imagePreview">
-                            @if (!string.IsNullOrEmpty(Model.gambar_url))
-                            {
-                                <img src="@Model.gambar_url" alt="Preview" class="image-preview" id="preview">
-                            }
+                    <div id="previewImg"></div>
+                    @* <div class="mt-3">
+                        <label for="articleImage" class="form-label">URL Gambar</label>
+                        <input type="text" asp-for="img_url" class="form-control" id="img_url" placeholder="Masukkan URL Gambar" />
+                        <div id="articleImageHelp" class="form-text">Masukkan URL gambar untuk project.</div>
+                    </div> *@
+                    <input type="hidden" asp-for="gambar_url" class="form-control" id="gambar_url"
+                        placeholder="Masukkan URL Gambar" />
+                    @if (Model.gambar_url != null)
+                    {
+                        <div class="mt-3">
+                            <label for="articleImage" class="form-label">Gambar Saat Ini</label><br />
+                            <img src="@Url.Content(Model.gambar_url)" class="img-fluid" style="height: 20vh; width: 20vh;"
+                                alt="Gambar Product" />
                         </div>
+                    }
+
+                    <div class="mt-3">
+                        <input type="file" class="form-control" id="file_img" name="file_img"
+                            placeholder="Masukkan URL Gambar" />
+                        <div id="articleImageHelp" class="form-text">Masukkan URL gambar untuk Produk.</div>
                     </div>
                     <div class="mt-3 float-end">
                         <button type="submit" class="btn btn-primary">Save</button>
@@ -79,32 +95,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewContainer = document.getElementById('imagePreview');
-                    const existingPreview = document.getElementById('preview');
-                    
-                    if (existingPreview) {
-                        existingPreview.src = e.target.result;
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = 'Preview';
-                        img.id = 'preview';
-                        img.className = 'image-preview';
-                        previewContainer.appendChild(img);
-                    }
-
-                    // Set gambar_url dengan path default
-                    const fileName = file.name;
-                    document.getElementById('gambar_url').value = '/assets/img/product/' + fileName;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
 
         window.createEditForm = (form, evt) => {
             evt.preventDefault();
@@ -126,15 +116,8 @@
                 formData.append("nama_produk", document.getElementById("nama_produk").value);
                 formData.append("deskripsi", document.getElementById("deskripsi").value);
                 formData.append("kategori", document.getElementById("kategori").value);
-                
-                const fileInput = document.getElementById("gambar");
-                if (fileInput.files.length > 0) {
-                    formData.append("gambar", fileInput.files[0]);
-                    // Append gambar_url with default path
-                    formData.append("gambar_url", '/assets/img/product/' + fileInput.files[0].name);
-                } else {
-                    // If no new file is selected, use existing gambar_url
-                    formData.append("gambar_url", document.getElementById("gambar_url").value);
+                if ($("#file_img")[0].files.length > 0) {
+                    formData.append("file", $("#file_img")[0].files[0]);
                 }
 
                 console.log("FormData:", Object.fromEntries(formData.entries()));

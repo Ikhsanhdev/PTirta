@@ -6,7 +6,7 @@
 }
 
 @section Styles {
-@* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
+    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
     <style>
         .hero .dynamic-text {
             color: white;
@@ -35,27 +35,36 @@
     <div class="container">
         <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
             <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-                @foreach(var item in Model)
+                @if (Model.Count > 0)
                 {
 
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-remodeling">
-                    <div class="portfolio-content h-100">
-                        <img src="@Url.Content(item.Image)" class="img-fluid w-100 project-image" alt="">
-                        <div class="portfolio-info">
-                            <h4>Project</h4>
-                            <p>@item.Title</p>
-                            <a href="@Url.Content(item.Image)" title="@item.Title"
-                                data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="/" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-                }
-                
+                    @foreach (var item in Model)
+                    {
 
+                        <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-remodeling">
+                            <div class="portfolio-content h-100">
+                                <img src="@Url.Content(item.Image)" class="img-fluid w-100 project-image" alt="">
+                                <div class="portfolio-info">
+                                    <h4>Project</h4>
+                                    <p>@item.Title</p>
+                                    <a href="@Url.Content(item.Image)" title="@item.Title" data-gallery="portfolio-gallery-app"
+                                        class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                                    <a href="/" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                                </div>
+                            </div>
+                        </div>
                 
+                        <!-- End Portfolio Item -->
+                    }
+
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <p>No Project available.</p>
+                    </div>
+                }
+
             </div><!-- End Portfolio Container -->
         </div>
     </div>

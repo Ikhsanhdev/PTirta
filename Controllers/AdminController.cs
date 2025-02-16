@@ -6,16 +6,20 @@ using Higertech.Interfaces;
 using Higertech.Models.Datatables;
 using Serilog;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Higertech.Controllers;
 
+// [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)
+[Authorize]
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IUnitOfWorkService _unitOfWorkService;
 
-    
+
 
     public AdminController(IUnitOfWorkRepository unitOfWorkRepository, IUnitOfWorkService unitOfWorkService)
     {
@@ -59,7 +63,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [Route("/Admin/Article")]
-    public async Task<IActionResult> SaveArticle(ArticleVM model,IFormFile file)
+    public async Task<IActionResult> SaveArticle(ArticleVM model, IFormFile file)
     {
         AjaxResponse response = new();
         if (file != null)
@@ -139,7 +143,7 @@ public class AdminController : Controller
     public IActionResult CreateEditProject()
     {
         ProjectVM model = new ProjectVM();
-        
+
         return View("~/Views/Admin/Project/CreateEdit.cshtml", model);
     }
 
@@ -158,7 +162,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [Route("/Admin/Project")]
-    public async Task<IActionResult> SaveProject(ProjectVM model,IFormFile file)
+    public async Task<IActionResult> SaveProject(ProjectVM model, IFormFile file)
     {
         AjaxResponse response = new();
 
@@ -278,14 +282,19 @@ public class AdminController : Controller
     public IActionResult CreateEditProduct()
     {
         ProductVM model = new ProductVM();
-        return View("~/Views/Admin/Product/CreateEdit.cshtml",model);
+        return View("~/Views/Admin/Product/CreateEdit.cshtml", model);
     }
 
     [HttpPost]
     [Route("/Admin/Product")]
-    public async Task<IActionResult> SaveProduct(ProductVM model)
+    public async Task<IActionResult> SaveProduct(ProductVM model,IFormFile file)
     {
         AjaxResponse response = new();
+        
+        if (file != null)
+        {
+            model.gambar_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "products");
+        }
         response = await _unitOfWorkRepository.Product.SaveAsync(model);
         return Json(response);
     }

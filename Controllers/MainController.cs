@@ -15,10 +15,11 @@ public class MainController : Controller
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IProjectRepository _projectRepository;
 
-    public MainController(IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository)
+    public MainController(ILogger<MainController> logger, IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
         this._projectRepository = projectRepository;
+        this._logger = logger;
     }
 
     public IActionResult Privacy()
