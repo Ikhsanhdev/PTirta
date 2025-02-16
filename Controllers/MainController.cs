@@ -54,6 +54,8 @@ public class MainController : Controller
             {
                 Posters = mains.Where(m => m.Category == "poster").ToList(),
                 Tombol = mains.Where(m => m.Category == "tombol").ToList(),
+                Kegiatan = mains.Where(m => m.Category == "kegiatan").ToList(),
+                Layanan = mains.Where(m => m.Category == "layanan").ToList(),
                 Projects = projects.OrderByDescending(p => p.UpdatedAt).Take(6).ToList()
             };
 

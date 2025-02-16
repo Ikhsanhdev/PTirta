@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home";
 }
 
-@model List<Higertech.Models.Main>
+@model Higertech.Models.MainViewModel
 
 @section Styles {
     @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
@@ -57,44 +57,38 @@
     </style>
 }
 
+
 <!-- Hero Section -->
 <section id="hero" class="hero section dark-background">
     <div class="info d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-lg-6 text-center">
-                    <h2 id="dynamicTitle" class="dynamic-text">Telemetry Specialist - Solusi Peralatan Telemetry</h2>
-                    <p id="dynamicDescription" class="dynamic-text">Higertech menyediakan berbagai macam produk teknologi yang melakukan pengukuran jarak jauh dan data yang akurat untuk Duga Air, Curah Hujan, Klimatologi dan Kualitas Air sebagai solusi untuk kebutuhan anda.</p>
-                    <a href="#constructions" class="btn-get-started">Get Started</a>
+                    <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Telemetry Specialist")</h2>
+                    <p id="dynamicDescription" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Description ?? "Welcome to Higertech")</p>
+                    @if (Model.Tombol.Any())
+                    {
+                        <a href="#constructions" class="btn-get-started">@Model.Tombol.First().Title</a>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
     <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-item" data-description="Pengukuran duga air yang sangat akurat dan terpercaya, menggunakan teknologi terbaru untuk memantau ketinggian air secara real-time." data-title="Teknologi Pengukuran Duga Air Terpercaya dan Akurat">
-            <img src="assets/img/hero-carousel/pasang1.jpg" alt="">
-        </div>
-
-        <div class="carousel-item active" data-description="Sistem monitoring curah hujan berteknologi tinggi yang mampu memberikan data yang akurat dan real-time untuk kebutuhan analisis cuaca." data-title="Sistem Monitoring Curah Hujan Canggih dengan Akurasi Tinggi">
-            <img src="assets/img/hero-carousel/pasang2.jpg" alt="">
-        </div>
-
-        <div class="carousel-item" data-description="Memanfaatkan teknologi modern dalam bidang klimatologi untuk analisis pola cuaca dan prediksi yang lebih akurat dan terpercaya." data-title="Teknologi Klimatologi Modern untuk Prediksi Cuaca Akurat">
-            <img src="assets/img/hero-carousel/pasang3.jpg" alt="">
-        </div>
-
-        <div class="carousel-item" data-description="Analisis kualitas air menggunakan perangkat dan metode yang telah teruji untuk memastikan hasil pengukuran yang akurat dan dapat diandalkan." data-title="Analisis Kualitas Air yang Akurat dan Dapat Diandalkan">
-            <img src="assets/img/hero-carousel/pasang4.jpg" alt="">
-        </div>
-
-        <div class="carousel-item" data-description="Solusi telemetri yang terintegrasi untuk pengelolaan data secara efisien dan pemantauan kondisi lingkungan yang lebih mudah dan cepat." data-title="Solusi Telemetri Terintegrasi untuk Pemantauan Lingkungan">
-            <img src="assets/img/hero-carousel/pasang5.jpg" alt="">
-        </div>
-
-        <div class="carousel-item" data-description="Teknologi pengukuran jarak jauh yang handal dan efisien, dirancang untuk memberikan informasi yang cepat dan tepat dalam berbagai kondisi." data-title="Teknologi Pengukuran Jarak Jauh untuk Monitoring Real-Time">
-            <img src="assets/img/hero-carousel/pasang6.jpg" alt="">
-        </div>
+        @if (Model.Posters.Any())
+        {
+            @for (int i = 0; i < Model.Posters.Count; i++)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")" 
+                        data-title="@Model.Posters[i].Title"
+                        data-description="@Model.Posters[i].Description">
+                    <img src="@Url.Content(Model.Posters[i].Img_Url ?? "")" 
+                            alt="@Model.Posters[i].Title"
+                            onerror="this.src='\uploads/main/default-placeholder.jpg'">
+                </div>
+            }
+        }
 
         <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
             <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
@@ -106,47 +100,6 @@
     </div>
 </section><!-- /Hero Section -->
 
-@* <!-- Hero Section -->
-<section id="hero" class="hero section dark-background">
-    <div class="info d-flex align-items-center">
-        <div class="container">
-            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
-                <div class="col-lg-6 text-center">
-                    <h2 id="dynamicTitle" class="dynamic-text">@(Model.FirstOrDefault()?.Title ?? "Telemetry Specialist")</h2>
-                    <p id="dynamicDescription" class="dynamic-text">@(Model.FirstOrDefault()?.Description ?? "Welcome to Higertech")</p>
-                    <a href="#constructions" class="btn-get-started">Get Started</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-inner">
-            @if (Model != null && Model.Any())
-            {
-                @for (int i = 0; i < Model.Count; i++)
-                {
-                    <div class="carousel-item @(i == 0 ? "active" : "")" 
-                         data-title="@Model[i].Title"
-                         data-description="@Model[i].Description">
-                        <img src="@Url.Content(Model[i].Img_Url ?? "")" 
-                             alt="@Model[i].Title"
-                             onerror="this.src='/assets/img/default-placeholder.jpg'">
-                    </div>
-                }
-            }
-        </div>
-
-        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-        </a>
-
-        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-        </a>
-    </div>
-</section><!-- /Hero Section --> *@
-
 <!-- Constructions Section -->
 <section id="constructions" class="constructions section">
     <!-- Section Title -->
@@ -157,69 +110,26 @@
 
     <div class="container">
         <div class="row gy-4">
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="card-item">
-                    <div class="row">
-                        <div class="col-xl-5">
-                            <div class="card-bg"><img src="assets/img/kerja1.jpg" alt=""></div>
-                        </div>
-                        <div class="col-xl-7 d-flex align-items-center">
-                            <div class="card-body">
-                                <h4 class="card-title">Pemasangan dan Pemeliharaan Alat Telemetry</h4>
-                                <p>Proses pemasangan alat ketinggian air dengan sistem yang dilengkapi perangkat sensor untuk memastikan pemantauan berjalan optimal.</p>
+            @foreach (var item in Model.Kegiatan)
+            {
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Kegiatan.IndexOf(item) + 1))">
+                    <div class="card-item">
+                        <div class="row">
+                            <div class="col-xl-5">
+                                <div class="card-bg">
+                                    <img src="@item.Img_Url" alt="@item.Title">
+                                </div>
+                            </div>
+                            <div class="col-xl-7 d-flex align-items-center">
+                                <div class="card-body">
+                                    <h4 class="card-title">@item.Title</h4><hr>
+                                    <p>@item.Description</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div><!-- End Card Item -->
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="card-item">
-                    <div class="row">
-                        <div class="col-xl-5">
-                            <div class="card-bg"><img src="assets/img/kerja2.jpg" alt=""></div>
-                        </div>
-                        <div class="col-xl-7 d-flex align-items-center">
-                            <div class="card-body">
-                                <h4 class="card-title">Pengukuran Debit Sungai dengan Teknologi Modern</h4>
-                                <p>Pengukuran debit air dilakukan secara akurat untuk mendukung pengelolaan sumber daya air dan antisipasi banjir dengan lebih baik.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- End Card Item -->
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="card-item">
-                    <div class="row">
-                        <div class="col-xl-5">
-                            <div class="card-bg"><img src="assets/img/kerja3.jpg" alt=""></div>
-                        </div>
-                        <div class="col-xl-7 d-flex align-items-center">
-                            <div class="card-body">
-                                <h4 class="card-title">Pemantauan dan Kalibrasi Perangkat Pengukuran Air</h4>
-                                <p>Perawatan dan kalibrasi berkala terhadap perangkat pengukuran dilakukan untuk menjaga akurasi dan keandalan data yang diperoleh.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- End Card Item -->
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="card-item">
-                    <div class="row">
-                        <div class="col-xl-5">
-                            <div class="card-bg"><img src="assets/img/kerja4.jpg" alt=""></div>
-                        </div>
-                        <div class="col-xl-7 d-flex align-items-center">
-                            <div class="card-body">
-                                <h4 class="card-title">Pengawasan Alat Telemetry dan Pemantauan Terintegrasi</h4>
-                                <p>Sistem terintegrasi memungkinkan pemantauan kondisi alat.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- End Card Item -->
+            }
         </div>
     </div>
 </section><!-- /Constructions Section -->
@@ -234,130 +144,43 @@
 
     <div class="container">
         <div class="row gy-4 justify-content-center">
-            <!-- Service Item 1 -->
-            <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item position-relative">
-                    <div class="icon">
-                        <img src="assets/img/iconn1.png" width="100" height="100" alt="Grafik Komprehensif Icon" >
+            @foreach (var item in Model.Layanan)
+            {
+                <!-- Service Item 1 -->
+                <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Layanan.IndexOf(item) + 1))">
+                    <div class="service-item position-relative">
+                        <div class="icon">
+                            <img src="@item.Img_Url" width="100" height="100" alt="@item.Title" >
+                        </div>
+                        <h3>@item.Title</h3>
+                        <p align="justify">@item.Description</p>
                     </div>
-                    <h3>Grafik Komprehensif</h3>
-                    <p align="justify">Analisa data dalam bentuk grafik dapat membantu dan memudahkan anda dalam memonitor dan melihat data secara komprehensif.</p>
-                </div>
-            </div><!-- End Service Item -->
-
-            <!-- Service Item 2 -->
-            <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-item position-relative">
-                    <div class="icon">
-                        <img src="assets/img/iconn2.png"  width="100" height="100" alt="API Gateway Icon">
-                    </div>
-                    <h3>API Gateway</h3>
-                    <p align="justify">Data hasil pengukuran dapat diakses melalui API (Application Programming Interface) yang dapat diintegrasikan dengan platform atau perangkat lain.</p>
-                </div>
-            </div><!-- End Service Item -->
-
-            <!-- Service Item 3 -->
-            <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-item position-relative">
-                    <div class="icon">
-                        <img src="assets/img/iconn3.png"  width="100" height="100" alt="Monitoring Data Icon">
-                    </div>
-                    <h3>Monitoring Data</h3>
-                    <p align="justify">Higertech dapat memudahkan pengguna dalam memonitor status level tinggi muka air, debit dan intensitas curah hujan.</p>
-                </div>
-            </div><!-- End Service Item -->
-
-            <!-- Service Item 4 -->
-            <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="service-item position-relative">
-                    <div class="icon">
-                        <img src="assets/img/iconn4.png"  width="100" height="100" alt="Layanan & Konsultasi Icon">
-                    </div>
-                    <h3>Layanan & Konsultasi</h3>
-                    <p align="justify">Tim handal kami siap memberikan solusi dan layanan berkualitas tinggi dengan response yang cepat dan efisien.</p>
-                </div>
-            </div><!-- End Service Item -->
+                </div><!-- End Service Item -->
+            }
         </div>
     </div>
 </section><!-- /Services Section -->
 
 <!-- Projects Section -->
 <section id="projects" class="projects section">
-    <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
         <h2>Proyek</h2>
         <p>Proyek Terbaru Kami</p>
-    </div><!-- End Section Title -->
+    </div>
 
     <div class="container">
-        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
+        <div class="row gy-4">
+            @foreach (var project in Model.Projects)
+            {
+                <div class="col-lg-4 col-md-6 portfolio-item">
                     <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-5.jpg" class="img-fluid" alt="">
+                        <img src="@project.Image" class="img-fluid" alt="Project Image">
                         <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-5.jpg" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                            <a href="@project.Image" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
                         </div>
                     </div>
-                </div><!-- End Portfolio Item -->
-
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
-                    <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-7.jpg" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-7.jpg" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
-                    <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-3.jpg" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-3.jpg" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
-                    <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-8.jpg" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-8.jpg" data-gallery="portfolio-gallery-book" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
-                    <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-9.jpg" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-9.jpg" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-project">
-                    <div class="portfolio-content h-100">
-                        <img src="assets/img/projects/project-1.jpg" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <p>Lorem ipsum, dolor sit amet consectetur</p>
-                            <a href="assets/img/projects/project-1.jpg" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div>
-                </div><!-- End Portfolio Item -->
-            </div><!-- End Portfolio Container -->
+                </div>
+            }
         </div>
     </div>
 </section><!-- /Projects Section -->
@@ -597,11 +420,9 @@
                 const title = nextSlide.getAttribute('data-title') || defaultTitle;
                 const description = nextSlide.getAttribute('data-description') || defaultDescription;
 
-                // Fade out current text
                 dynamicTitle.style.opacity = 0;
                 dynamicDescription.style.opacity = 0;
 
-                // Update and fade in new text after transition
                 setTimeout(() => {
                     dynamicTitle.textContent = title;
                     dynamicDescription.textContent = description;
