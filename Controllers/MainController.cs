@@ -13,9 +13,10 @@ public class MainController : Controller
     private readonly ILogger<MainController> _logger;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
 
-    public MainController(IUnitOfWorkRepository unitOfWorkRepository)
+    public MainController(ILogger<MainController> logger,IUnitOfWorkRepository unitOfWorkRepository)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
+        this._logger = logger;
     }
     public IActionResult Privacy()
     {
@@ -37,28 +38,11 @@ public class MainController : Controller
     {
         try
         {
-            var mains = await _unitOfWorkRepository.Main.GetAllAsync();
-            
-            if (mains == null || !mains.Any())
-            {
-                _logger.LogWarning("No carousel data found");
-                return View(new List<Main>());
-            }
-
-            // Validate image URLs
-            foreach (var item in mains)
-            {
-                if (string.IsNullOrEmpty(item.Img_Url))
-                {
-                    _logger.LogWarning("Missing image URL for carousel item with title: {Title}", item.Title);
-                }
-            }
-
-            return View(mains);
+            return View();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading carousel data: {Message}", ex.Message);
+            // _logger.LogError(ex, "Error loading carousel data: {Message}", ex.Message);
             Log.Error(ex, "Error loading carousel data: {Message}", ex.Message);
             return View(new List<Main>());
         }
