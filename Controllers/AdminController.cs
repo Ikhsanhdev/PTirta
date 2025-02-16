@@ -321,5 +321,116 @@ public class AdminController : Controller
         return Json(response);
     }
     #endregion
+    #region <=================================== Home ========================================>
+    public IActionResult Main()
+    {
+        return View("~/Views/Admin/Main/Index.cshtml");
+    }
+
+    public async Task<IActionResult> GetMainData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Main.GetDataMain(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    }
+
+    [HttpGet("main/create")]
+    public IActionResult CreateEditMain(Guid id)
+    {
+        MainVM model = new MainVM();
+
+        return View("~/Views/Admin/Main/CreateEdit.cshtml", model);
+    }
+    
+    [HttpPost]
+    [Route("/Admin/Main")]
+    public async Task<IActionResult> SaveMain([FromForm] MainVM model, IFormFile file)
+    {
+        try 
+        {
+            if (file != null)
+            {
+                model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "main");
+            }
+            
+            var response = await _unitOfWorkRepository.Main.SaveAsync(model);
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error saving main data: {@ExceptionDetails}", 
+                new { ex.Message, ex.StackTrace });
+            return Json(new AjaxResponse 
+            { 
+                Code = 500, 
+                Message = "Terjadi kesalahan saat menyimpan data" 
+            });
+        }
+    }
+
+    [HttpGet("main/edit/{id}")]
+    public IActionResult EditMain(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Main.GetMainByIdAsync(id).Result;
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Main/CreateEdit.cshtml", model);
+    }
+
+    [HttpDelete]
+    [Route("/main/delete/{id}")]
+    public async Task<IActionResult> DeleteMain(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Main.DeleteMainAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+    #endregion
 }
 

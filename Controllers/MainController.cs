@@ -5,6 +5,7 @@ using Higertech.ViewModels;
 using Higertech.Interfaces;
 using Higertech.Models.Datatables;
 using Serilog;
+using Higertech.Repositories;
 
 namespace Higertech.Controllers;
 
@@ -12,11 +13,14 @@ public class MainController : Controller
 {
     private readonly ILogger<MainController> _logger;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public MainController(IUnitOfWorkRepository unitOfWorkRepository)
+    public MainController(IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
+        this._projectRepository = projectRepository;
     }
+
     public IActionResult Privacy()
     {
         return View();
@@ -32,71 +36,32 @@ public class MainController : Controller
         return View();
     }
 
-    
     public async Task<IActionResult> Index()
     {
         try
         {
             var mains = await _unitOfWorkRepository.Main.GetAllAsync();
-            
+            var projects = await _projectRepository.GetListProjectAsync();
+
             if (mains == null || !mains.Any())
             {
-                _logger.LogWarning("No carousel data found");
-                return View(new List<Main>());
+                _logger.LogWarning("No data found");
+                return View(new MainViewModel());
             }
 
-            // Validate image URLs
-            foreach (var item in mains)
+            var viewModel = new MainViewModel
             {
-                if (string.IsNullOrEmpty(item.Img_Url))
-                {
-                    _logger.LogWarning("Missing image URL for carousel item with title: {Title}", item.Title);
-                }
-            }
+                Posters = mains.Where(m => m.Category == "poster").ToList(),
+                Tombol = mains.Where(m => m.Category == "tombol").ToList(),
+                Projects = projects.OrderByDescending(p => p.UpdatedAt).Take(6).ToList()
+            };
 
-            return View(mains);
+            return View(viewModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading carousel data: {Message}", ex.Message);
-            Log.Error(ex, "Error loading carousel data: {Message}", ex.Message);
-            return View(new List<Main>());
+            Log.Error(ex, "Error loading data: {Message}", ex.Message);
+            return View(new MainViewModel());
         }
     }
-
-    // [HttpPost]
-    // public async Task<IActionResult> GetMainData()
-    // {
-    //     try
-    //     {
-    //         var modelRequest = new JqueryDataTableRequest
-    //         {
-    //             Draw = Request.Form["draw"].FirstOrDefault() ?? "",
-    //             Start = Request.Form["start"].FirstOrDefault() ?? "",
-    //             Length = Request.Form["length"].FirstOrDefault() ?? "25",
-    //             SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
-    //             SortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault() ?? "",
-    //             SearchValue = Request.Form["search[value]"].FirstOrDefault() ?? "",
-    //             Status = Request.Form["status"].FirstOrDefault() ?? ""
-    //         };
-
-    //         modelRequest.PageSize = modelRequest.Length == "-1" ? int.MaxValue : Convert.ToInt32(modelRequest.Length);
-    //         modelRequest.Skip = Convert.ToInt32(modelRequest.Start);
-
-    //         var (mains, recordsTotal) = await _unitOfWorkRepository.Main.GetDataMain(modelRequest);
-            
-    //         return Json(new { 
-    //             draw = modelRequest.Draw, 
-    //             recordsFiltered = recordsTotal, 
-    //             recordsTotal = recordsTotal, 
-    //             data = mains 
-    //         });
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         _logger.LogError(ex, "Error getting data table data: {Message}", ex.Message);
-    //         Log.Error(ex, "Error getting data table data: {Message}", ex.Message);
-    //         return StatusCode(500, new { error = "Internal server error" });
-    //     }
-    // }
 }
