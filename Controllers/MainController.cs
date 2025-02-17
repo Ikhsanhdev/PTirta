@@ -77,7 +77,7 @@ public class MainController : Controller
 
     private async Task<dynamic> GetDataApi(string endPoint){
         
-        string apiUrl = $"http://localhost:5244/{endPoint}"; 
+        string apiUrl = $"http://localhost:5000/{endPoint}"; 
         string username = "m0n1tor_st4tion";
         string password = "H1gertech.1dua3";
 
