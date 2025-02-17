@@ -1,0 +1,200 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Web Monitoring";
+    ViewData["HideFooter"] = true;
+}
+
+@model IEnumerable<Api>
+    
+@section styles {
+    <style>
+        #maps {
+            height: 100vh;
+            width: 100%;
+            position: absolute;
+        }
+    </style>
+}
+
+<div id="maps"></div>
+
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4jqcen5Xqrgck4V73aL6VepyKp2_wK1U&callback=initMap" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        function initMap() {
+            var initialLocation = { lat: -1.558, lng: 118.707 };
+            var map = new google.maps.Map(document.getElementById('maps'), {
+                zoom: 5,
+                center: initialLocation,
+                gestureHandling: 'greedy',
+                mapTypeId: google.maps.MapTypeId.HYBRID,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.LEFT_CENTER
+                }
+            });
+
+            const customMapTypeControl = new CustomMapTypeControl(map);
+            GetDataStation(map);
+
+            // Add legend
+            var legendDiv = document.createElement('div');
+            legendDiv.innerHTML = `
+                <div style="background-color: white; padding: 10px;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/img/duga.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                        <div style="font-weight: bold;">Pos Duga Air (PDA/AWLR)</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/img/curah.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                        <div style="font-weight: bold;">Pos Curah Hujan (PCH/ARR)</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/img/awlr.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                        <div style="font-weight: bold;">Pos PDA & PCH</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/img/klimatologi.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                        <div style="font-weight: bold;">Pos Klimatologi (AWS)</div>
+                    </div>
+                </div>
+            `;
+            map.controls[google.maps.ControlPosition.LEFT_CENTER].push(legendDiv);
+        }
+
+        let currentInfoWindow = null;
+
+        async function GetDataStation(map) {
+            try {
+                const response = await fetch('/Main/GetStationAll');
+                if (response.ok) {
+                    const listStation = await response.json();
+                    var datas = JSON.parse(listStation);
+                    let stations = datas.data;
+
+                    stations.forEach(station => {
+                        if (!station.latitude || !station.longitude) {
+                            console.warn(`Station ${station.slug} is missing latitude or longitude`);
+                            return;
+                        }
+
+                        var position = { lat: station.latitude, lng: station.longitude };
+                        
+                        var iconUrl = '';
+                        switch (station.stationType) {
+                            case 'ARR':
+                                iconUrl = '/assets/img/curah.png';
+                                break;
+                            case 'AWLR':
+                                iconUrl = '/assets/img/duga.png';
+                                break;
+                            case 'AWS':
+                                iconUrl = '/assets/img/klimatologi.png';
+                                break;
+                            case 'AWLR_ARR':
+                                iconUrl = '/assets/img/awlr.png';
+                                break;
+                            default:
+                                iconUrl = '/assets/img/default.png';
+                                break;
+                        }
+
+                        var marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            icon: {
+                                url: iconUrl,
+                                scaledSize: new google.maps.Size(30, 35),
+                            },
+                            title: station.slug,
+                        });
+
+                        var infoWindow = new google.maps.InfoWindow({
+                            content: createDetailPanel(station),
+                        });
+
+                        marker.addListener('click', function() {
+                            if (currentInfoWindow) {
+                                currentInfoWindow.close();
+                            }
+                            infoWindow.open(map, marker);
+                            currentInfoWindow = infoWindow;
+                        });
+                    });
+                } else {
+                    console.error(`Error: ${response.status} - ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error: ', error);
+            }
+        }
+
+        function CustomMapTypeControl(map) {
+            const controlDiv = document.createElement('div');
+            controlDiv.style.padding = '10px';
+
+            const controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.borderRadius = '2px';
+            controlUI.style.boxShadow = '0 1px 4px -1px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.marginBottom = '22px';
+            controlUI.style.marginTop = '750px';
+            controlUI.style.textAlign = 'center';
+            controlUI.style.height = '40px';
+            controlUI.style.width = '250px';
+            controlDiv.appendChild(controlUI);
+
+            const mapButton = document.createElement('div');
+            mapButton.style.float = 'left';
+            mapButton.style.height = '100%';
+            mapButton.style.width = '50%';
+            mapButton.style.padding = '11px 0';
+            mapButton.style.borderRight = '1px solid #e6e6e6';
+            mapButton.innerHTML = 'Map';
+            mapButton.style.fontSize = '16px';
+            mapButton.style.color = '#999';
+            controlUI.appendChild(mapButton);
+
+            const satelliteButton = document.createElement('div');
+            satelliteButton.style.float = 'left';
+            satelliteButton.style.height = '100%';
+            satelliteButton.style.width = '50%';
+            satelliteButton.style.padding = '11px 0';
+            satelliteButton.innerHTML = 'Satellite';
+            satelliteButton.style.fontSize = '16px';
+            satelliteButton.style.color = '#000';
+            controlUI.appendChild(satelliteButton);
+
+            function updateButtons(mapTypeId) {
+                mapButton.style.color = mapTypeId === 'roadmap' ? '#000' : '#999';
+                satelliteButton.style.color = mapTypeId === 'satellite' ? '#000' : '#999';
+            }
+
+            mapButton.addEventListener('click', () => {
+                map.setMapTypeId('roadmap');
+                updateButtons('roadmap');
+            });
+
+            satelliteButton.addEventListener('click', () => {
+                map.setMapTypeId('satellite');
+                updateButtons('satellite');
+            });
+
+            return controlDiv;
+        }
+
+        // Add this function for creating detail panels
+        function createDetailPanel(station) {
+            return `
+                <div style="padding: 10px;">
+                    <h3 style="margin: 0 0 10px 0;">${station.slug}</h3>
+                    <p><strong>Type:</strong> ${station.stationType}</p>
+                    <p><strong>Location:</strong> ${station.latitude}, ${station.longitude}</p>
+                </div>
+            `;
+        }
+    </script>
+}

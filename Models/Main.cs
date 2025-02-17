@@ -26,6 +26,7 @@ namespace Higertech.Models
         public List<Main> Kegiatan { get; set; } = new();
         public List<Main> Layanan { get; set; } = new();
         public List<Project> Projects { get; set; } = new();
+        public List<Main> Klien { get; set; } = new();
     }
 }
 

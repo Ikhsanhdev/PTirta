@@ -119,6 +119,7 @@
                 formData.append("nama_produk", document.getElementById("nama_produk").value);
                 formData.append("deskripsi", document.getElementById("deskripsi").value);
                 formData.append("kategori", document.getElementById("kategori").value);
+                formData.append("gambar_url", document.getElementById("gambar_url").value);
                 if ($("#file_img")[0].files.length > 0) {
                     formData.append("file", $("#file_img")[0].files[0]);
                 }
