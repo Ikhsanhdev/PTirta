@@ -59,6 +59,16 @@
                         <div id="categoryContentHelp" class="form-text">Pilih kategori home.</div>
                     </div>
 
+                     <div class="mt-3">
+                        <label for="hide" class="form-label">Status Tampilan</label>
+                        <select class="form-control" id="hide" name="hide">
+                            <option value="">-- Pilih Status --</option>
+                            <option value="on">on</option>
+                            <option value="off">off</option>
+                        </select>
+                        <div id="hideHelp" class="form-text">Pilih status tampilan home.</div>
+                    </div>
+
                     <input type="hidden" asp-for="img_url" class="form-control" id="img_url" placeholder="Masukkan URL Gambar" />
                     @if (Model.img_url != null)
                     {

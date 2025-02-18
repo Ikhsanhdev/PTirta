@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Article";
+    ViewData["HideFooter"] = true;
 }
     <!-- Page Title -->
     <div class="page-title dark-background" style="background-image: url(assets/img/page-title-bg.jpg);">
@@ -11,7 +12,7 @@
         <h1>Blog Details</h1>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="index.html">Home</a></li>
+            <li><a sp-area="" asp-controller="Article" asp-action="Index">Home</a></li>
             <li class="current">Blog Details</li>
           </ol>
         </nav>

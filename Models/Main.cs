@@ -12,6 +12,7 @@ namespace Higertech.Models
         public string Description { get; set; } = string.Empty;
         public string Img_Url { get; set; } = string.Empty;
         public string Category { get; set; }
+        public string Hide { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }

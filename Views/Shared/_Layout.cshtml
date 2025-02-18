@@ -74,11 +74,11 @@
                             <li><a href="">Dropdown 4</a></li>
                         </ul>
                     </li> *@
-                    <li><a href="#footer">Contact</a></li>
+                    @* <li><a href="https://api.whatsapp.com/send/?phone=628112332182&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">Contact</a></li> *@
                     @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
-                        <li><a href="/Auth/Login">LOGIN</a></li>
+                        <li><a href="/Auth/Login">Login</a></li>
                     } else {
-                        <li><button type="button" class="btn btn-warning" onClick="window.location.href='/Admin'"><i class="fa-solid fa-right-to-bracket"></i> ADMIN</button></li>
+                        <li><button type="button" class="btn btn-warning" onClick="window.location.href='/Admin'"><i class="fa-solid fa-right-to-bracket"></i>ADMIN</button></li>
                     }
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

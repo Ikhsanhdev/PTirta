@@ -440,6 +440,14 @@ public class AdminController : Controller
 
         return Json(response);
     }
+
+    [HttpPost]
+    [Route("/main/toggle-hide/{id}")]
+    public async Task<IActionResult> ToggleHideMain(Guid id)
+    {
+        var response = await _unitOfWorkRepository.Main.ToggleHideAsync(id);
+        return Json(response);
+    }
     #endregion
 }
 

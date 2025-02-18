@@ -3,8 +3,6 @@
     ViewData["Title"] = "Web Monitoring";
     ViewData["HideFooter"] = true;
 }
-
-@model IEnumerable<Api>
     
 @section styles {
     <style>
@@ -20,118 +18,201 @@
 
 @section scripts {
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4jqcen5Xqrgck4V73aL6VepyKp2_wK1U&callback=initMap" async defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
-        function initMap() {
+        function createDetailPanel(reading) {
+            var photo = '/images/favicon.png';
+            console.log('reading:', reading); // Log reading untuk debugging
+
+            // Default status OFFLINE
+            var statusOffline = '<small class="mdi mdi-checkbox-blank-circle text-danger"></small> OFFLINE';
+
+            // Mendapatkan tanggal hari ini tanpa waktu
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);  // Set jam, menit, detik, dan milidetik ke nol
+
+            // Fungsi untuk memeriksa status berdasarkan readingAt
+            function isReadingToday(readingDate) {
+            if (!readingDate) return false; // Jika readingDate null atau tidak ada
+            var readingAtDate = new Date(readingDate);
+            readingAtDate.setHours(0, 0, 0, 0);  // Set jam, menit, detik, dan milidetik ke nol
+            return readingAtDate.getTime() === today.getTime();
+            }
+
+            // Cek status dari setiap jenis pembacaan berdasarkan tanggal readingAt
+            if (reading.arrLastReading && isReadingToday(reading.arrLastReading.readingAt)) {
+            statusOffline = '<small class="mdi mdi-checkbox-blank-circle text-success"></small> ONLINE';
+            console.log('Status from ARR is online');
+            } else if (reading.awlrLastReading && isReadingToday(reading.awlrLastReading.readingAt)) {
+            statusOffline = '<small class="mdi mdi-checkbox-blank-circle text-success"></small> ONLINE';
+            console.log('Status from AWLR is online');
+            } else if (reading.awsLastReading && isReadingToday(reading.awsLastReading.readingAt)) {
+            statusOffline = '<small class="mdi mdi-checkbox-blank-circle text-success"></small> ONLINE';
+            console.log('Status from AWS is online');
+            } else if (reading.awlrArrLastReading && isReadingToday(reading.awlrArrLastReading.readingAt)) {
+            statusOffline = '<small class="mdi mdi-checkbox-blank-circle text-success"></small> ONLINE';
+            console.log('Status from AWLR ARR is online');
+            } else {
+            console.log('All statuses are offline');
+            }
+
+            var panelContent = '<table class="table mb-2 font-12"><tbody>';
+            panelContent += '<tr>';
+            panelContent += `<td class="px-0 py-2" colspan="3">
+                <div class="d-flex align-items-start">
+                    <img class="me-2 rounded-3" src="/assets/img/pupr.jpg" width="45" height="45" alt="${reading.deviceId}">
+                    <div class="w-100">
+                        <h5 class="mt-0 mb-1 fw-semibold font-12">${reading.name}</h5>
+                        ${statusOffline}
+                    </div>
+                </div>
+            </td>`;
+
+            panelContent += '</tr>';
+
+            panelContent += '<tr>';
+            panelContent += `<td class="py-1 px-0">Tipe POS</td>`;
+            panelContent += `<td class="py-1 px-2">:</td>`;
+            panelContent += `<td class="py-1 px-0">${reading.stationType}</td>`;
+            panelContent += '</tr>';
+            
+            panelContent += '<tr>';
+            panelContent += `<td class="py-1 px-0">Longitude</td>`;
+            panelContent += `<td class="py-1 px-2">:</td>`;
+            panelContent += `<td class="py-1 px-0">${reading.longitude}</td>`;
+            panelContent += '</tr>';
+
+            panelContent += '<tr>';
+            panelContent += `<td class="py-1 px-0">Latitude</td>`;
+            panelContent += `<td class="py-1 px-2">:</td>`;
+            panelContent += `<td class="py-1 px-0">${reading.latitude}</td>`;
+            panelContent += '</tr>';
+
+            @* panelContent += '</tbody></table>';
+            panelContent += `<div class="text-end"><a href="https://${reading.subDomain}.higertech.com/Station/Detail/${reading.slug}" target="_blank">Lihat Detail <i class="mdi mdi-arrow-right"></i></a></div>`; *@
+
+            return panelContent;
+            }
+
+            function initMap() {
             var initialLocation = { lat: -1.558, lng: 118.707 };
             var map = new google.maps.Map(document.getElementById('maps'), {
                 zoom: 5,
                 center: initialLocation,
-                gestureHandling: 'greedy',
+                gestureHandling: 'greedy', // Mengizinkan zoom menggunakan scroll
                 mapTypeId: google.maps.MapTypeId.HYBRID,
                 mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.LEFT_CENTER
-                }
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.LEFT_CENTER // Pindahkan ke bawah kiri
+            }
+
             });
 
             const customMapTypeControl = new CustomMapTypeControl(map);
+            // Panggil fungsi untuk mendapatkan data stasiun dan menambahkan marker
             GetDataStation(map);
 
-            // Add legend
+            // Tambahkan legend di sini
             var legendDiv = document.createElement('div');
             legendDiv.innerHTML = `
                 <div style="background-color: white; padding: 10px;">
-                    <div style="display: flex; align-items: center;">
-                        <img src="/assets/img/duga.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
-                        <div style="font-weight: bold;">Pos Duga Air (PDA/AWLR)</div>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <img src="/assets/img/curah.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
-                        <div style="font-weight: bold;">Pos Curah Hujan (PCH/ARR)</div>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <img src="/assets/img/awlr.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
-                        <div style="font-weight: bold;">Pos PDA & PCH</div>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <img src="/assets/img/klimatologi.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
-                        <div style="font-weight: bold;">Pos Klimatologi (AWS)</div>
-                    </div>
+                <div style="display: flex; align-items: center;">
+                    <img src="/assets/img/duga.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                    <div style="font-weight: bold;">Pos Duga Air (PDA/AWLR)</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <img src="/assets/img/curah.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                    <div style="font-weight: bold;">Pos Curah Hujan (PCH/ARR)</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <img src="/assets/img/awlr.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                    <div style="font-weight: bold;">Pos PDA & PCH</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <img src="/assets/img/klimatologi.png" style="width: 20px; height: 25px; margin-right: 5px; border-radius: 50%;">
+                    <div style="font-weight: bold;">Pos Klimatologi (AWS)</div>
+                </div>
                 </div>
             `;
             map.controls[google.maps.ControlPosition.LEFT_CENTER].push(legendDiv);
-        }
+            }
 
-        let currentInfoWindow = null;
+            let currentInfoWindow = null;
 
-        async function GetDataStation(map) {
+            async function GetDataStation(map) {
             try {
                 const response = await fetch('/Main/GetStationAll');
                 if (response.ok) {
-                    const listStation = await response.json();
-                    var datas = JSON.parse(listStation);
-                    let stations = datas.data;
+                const listStation = await response.json();
+                var datas = JSON.parse(listStation);
+                let stations = datas.data;
 
-                    stations.forEach(station => {
-                        if (!station.latitude || !station.longitude) {
-                            console.warn(`Station ${station.slug} is missing latitude or longitude`);
-                            return;
-                        }
+                console.log('List of Stations:', stations); // Log untuk memeriksa isi data
 
-                        var position = { lat: station.latitude, lng: station.longitude };
-                        
-                        var iconUrl = '';
-                        switch (station.stationType) {
-                            case 'ARR':
-                                iconUrl = '/assets/img/curah.png';
-                                break;
-                            case 'AWLR':
-                                iconUrl = '/assets/img/duga.png';
-                                break;
-                            case 'AWS':
-                                iconUrl = '/assets/img/klimatologi.png';
-                                break;
-                            case 'AWLR_ARR':
-                                iconUrl = '/assets/img/awlr.png';
-                                break;
-                            default:
-                                iconUrl = '/assets/img/default.png';
-                                break;
-                        }
+                // Loop melalui data stasiun untuk menambahkan marker ke peta
+                stations.forEach(station => {
+                    // Pastikan latitude dan longitude ada
+                    if (!station.latitude || !station.longitude) {
+                    console.warn(`Station ${station.slug} is missing latitude or longitude`);
+                    return; // Skip marker creation
+                    }
 
-                        var marker = new google.maps.Marker({
-                            position: position,
-                            map: map,
-                            icon: {
-                                url: iconUrl,
-                                scaledSize: new google.maps.Size(30, 35),
-                            },
-                            title: station.slug,
-                        });
+                    var position = { lat: station.latitude, lng: station.longitude };
+                    
+                    // Marker sesuai gambar
+                    var iconUrl = '';
+                    switch (station.stationType) {
+                    case 'ARR':
+                        iconUrl = '/assets/img/curah.png'; // Ganti dengan URL ikon PCH/ARR
+                        break;
+                    case 'AWLR':
+                        iconUrl = '/assets/img/duga.png'; // Ganti dengan URL ikon PDA/AWLR
+                        break;
+                    case 'AWS':
+                        iconUrl = '/assets/img/klimatologi.png'; // Ganti dengan URL ikon AWS
+                        break;
+                    case 'AWLR_ARR':
+                        iconUrl = '/assets/img/awlr.png'; // Ganti dengan URL ikon PDA & PCH
+                        break;
+                    default:
+                        iconUrl = '/assets/img/default.png'; // Ikon default jika tipe tidak dikenali
+                        break;
+                    }
+                    
+                    console.log('Icon URL:', iconUrl); // Log untuk memeriksa URL ikon
 
-                        var infoWindow = new google.maps.InfoWindow({
-                            content: createDetailPanel(station),
-                        });
-
-                        marker.addListener('click', function() {
-                            if (currentInfoWindow) {
-                                currentInfoWindow.close();
-                            }
-                            infoWindow.open(map, marker);
-                            currentInfoWindow = infoWindow;
-                        });
+                    var marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    icon: {
+                        url: iconUrl,
+                        scaledSize: new google.maps.Size(30, 35),
+                    },
+                    title: station.slug, // Memberi nama pada marker
                     });
+
+                    // Buat infoWindow menggunakan createDetailPanel
+                    var infoWindow = new google.maps.InfoWindow({
+                    content: createDetailPanel(station),
+                    });
+
+                    marker.addListener('click', function() {
+                    // Tutup InfoWindow sebelumnya jika ada 
+                    if (currentInfoWindow) {
+                        currentInfoWindow.close();
+                    }
+                    infoWindow.open(map, marker);
+                    currentInfoWindow = infoWindow;
+                    });
+                });
                 } else {
-                    console.error(`Error: ${response.status} - ${response.statusText}`);
+                console.error(`Error: ${response.status} - ${response.statusText}`);
                 }
             } catch (error) {
                 console.error('Error: ', error);
             }
-        }
+            }
 
-        function CustomMapTypeControl(map) {
+            function CustomMapTypeControl(map) {
             const controlDiv = document.createElement('div');
             controlDiv.style.padding = '10px';
 
@@ -184,17 +265,6 @@
             });
 
             return controlDiv;
-        }
-
-        // Add this function for creating detail panels
-        function createDetailPanel(station) {
-            return `
-                <div style="padding: 10px;">
-                    <h3 style="margin: 0 0 10px 0;">${station.slug}</h3>
-                    <p><strong>Type:</strong> ${station.stationType}</p>
-                    <p><strong>Location:</strong> ${station.latitude}, ${station.longitude}</p>
-                </div>
-            `;
-        }
+            }
     </script>
 }

@@ -15,6 +15,7 @@ public interface IMainRepository
     Task<AjaxResponse> SaveAsync(MainVM main);
     Task<Main?> UpdateMainAsync(Main main);
     Task<bool> DeleteMainAsync(Guid id);
+    Task<AjaxResponse> ToggleHideAsync(Guid id);
 }
 
 public class MainRepository : IMainRepository
@@ -37,10 +38,12 @@ public class MainRepository : IMainRepository
                     description AS ""Description"",
                     img_url AS ""Img_Url"",
                     category AS ""Category"",
+                     hide AS ""Hide"",
                     created_at AS ""CreatedAt"",
                     updated_at AS ""UpdatedAt""
                 FROM home
                 WHERE deleted_at IS NULL
+                AND hide = 'on'  -- Only show items where hide is 'on'
                 ORDER BY created_at DESC;";
 
             var result = await connection.QueryAsync<Main>(query);
@@ -141,9 +144,9 @@ public class MainRepository : IMainRepository
                 main.created_at = DateTime.UtcNow;
                 query = @"
                     INSERT INTO home 
-                    (id, title, img_url, category, description, created_at)
+                    (id, title, img_url, category, description, hide, created_at)
                     VALUES 
-                    (@id, @title, @img_url, @category, @description, @created_at)
+                    (@id, @title, @img_url, @category, @description, @hide,@created_at)
                     RETURNING *;";
             }
             else
@@ -155,6 +158,7 @@ public class MainRepository : IMainRepository
                         img_url = @img_url, 
                         category = @category, 
                         description = @description,
+                        hide = @hide,
                         updated_at = @updated_at
                     WHERE id = @id AND deleted_at IS NULL
                     RETURNING *;";
@@ -197,6 +201,7 @@ public class MainRepository : IMainRepository
                 description = @description, 
                 img_url = @img_url, 
                 category = @category,
+                hide = @hide,
                 updated_at = @UpdatedAt
             WHERE id = @Id
             RETURNING *;";
@@ -237,5 +242,62 @@ public class MainRepository : IMainRepository
             Console.WriteLine($"Error deleting home: {ex.Message}");
             return false;
         }
+    }
+
+    public async Task<AjaxResponse> ToggleHideAsync(Guid id)
+    {
+        AjaxResponse result = new();
+        const string getCurrentState = "SELECT hide FROM home WHERE id = @Id AND deleted_at IS NULL;";
+        const string updateQuery = @"
+            UPDATE home 
+            SET hide = @NewState,
+                updated_at = @UpdatedAt
+            WHERE id = @Id AND deleted_at IS NULL
+            RETURNING *;";
+
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                
+                // Get current state
+                var currentState = await connection.QuerySingleOrDefaultAsync<string>(getCurrentState, new { Id = id });
+                if (currentState == null)
+                {
+                    result.Code = 404;
+                    result.Message = "Data tidak ditemukan";
+                    return result;
+                }
+
+                // Toggle state
+                var newState = currentState == "on" ? "off" : "on";
+                
+                var data = await connection.QuerySingleOrDefaultAsync(updateQuery, new { 
+                    Id = id, 
+                    NewState = newState,
+                    UpdatedAt = DateTime.UtcNow
+                });
+
+                if (data != null)
+                {
+                    result.Code = 200;
+                    result.Message = $"Status berhasil diubah menjadi {newState}";
+                }
+                else
+                {
+                    result.Code = 500;
+                    result.Message = "Gagal mengubah status";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Code = 500;
+            result.Message = $"Terjadi Kesalahan.\nError: {ex.Message}";
+            Log.Error(ex, "Error in ToggleHideAsync: {@ExceptionDetails}", 
+                new { Id = id, Error = ex.Message });
+        }
+        return result;
     }
 }
