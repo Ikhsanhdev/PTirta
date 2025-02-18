@@ -65,7 +65,7 @@
                     <li><a sp-area="" asp-controller="Product" asp-action="Index">Product</a></li>
                     <li><a sp-area="" asp-controller="Project" asp-action="Index">Project</a></li>
                     <li><a sp-area="" asp-controller="Article" asp-action="Index">Article</a></li>
-                    <li><a asp-area="" asp-controller="Main" asp-action="MapGoogle">Web Monitoring</a></li>
+                    <li><a asp-area="" asp-controller="Main" asp-action="MapGoogle">Peta</a></li>
                     @* <li class="dropdown"><a href=""><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
                             <li><a href="">Dropdown 1</a></li>
@@ -78,7 +78,7 @@
                     @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
                         <li><a href="/Auth/Login">Login</a></li>
                     } else {
-                        <li><button type="button" class="btn btn-warning" onClick="window.location.href='/Admin'"><i class="fa-solid fa-right-to-bracket"></i>ADMIN</button></li>
+                        <li><button type="button" class="admin btn border border-dark rounded" style="hover" onClick="window.location.href='/Admin'"><a class="">ADMIN</a></button></li>
                     }
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

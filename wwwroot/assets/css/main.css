@@ -2885,3 +2885,16 @@ section,
   aspect-ratio: 9 / 9;
   object-fit: cover;
 }
+.admin:hover {
+  background-color: #9c9c9c;
+}
+
+iframe {
+  aspect-ratio: 16 / 9;
+  width: 100% !important;
+}
+
+.yt-container {
+  display: flex;
+  justify-content: center;
+}
