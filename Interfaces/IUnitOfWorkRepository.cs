@@ -9,5 +9,6 @@ namespace Higertech.Interfaces
     IArticleRepository Article { get; }
     IProjectRepository Project { get; }
     IMainRepository Main { get; }
+    IActivitiesRepository Activities { get; }
   }
 }

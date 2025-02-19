@@ -232,8 +232,111 @@ public class AdminController : Controller
             Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
             throw;
         }
+    } 
+    #endregion
+    
+#region  <=================================== Activity ========================================>
+    public IActionResult Activities()
+    {
+        return View("~/Views/Admin/Activity/Index.cshtml");
+    }
+
+    [HttpGet("activity/create")]
+    public IActionResult CreateEditActivities()
+    {
+        ActivityVM model = new ActivityVM();
+
+        return View("~/Views/Admin/Activity/CreateEdit.cshtml", model);
+    }
+
+    [HttpGet("activity/edit/{id}")]
+    public IActionResult EditActivity(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Activities.GetActivityByIdAsync(id).Result;
+
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Activity/CreateEdit.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Activity")]
+    public async Task<IActionResult> SaveActivity(ActivityVM model, IFormFile file)
+    {
+        AjaxResponse response = new();
+
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "activities");
+        }
+
+        response = await _unitOfWorkRepository.Activities.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpDelete]
+    [Route("/activity/delete/{id}")]
+    public async Task<IActionResult> DeleteActivity(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Activities.DeleteAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetActiviyData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Activities.GetDataActivity(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
     }
     #endregion
+
     #region  <=================================== Product ========================================>
     public IActionResult Product()
     {

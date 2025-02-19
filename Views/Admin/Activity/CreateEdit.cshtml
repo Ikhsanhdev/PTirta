@@ -1,4 +1,4 @@
-@model Higertech.ViewModels.ArticleVM
+@model Higertech.ViewModels.ActivityVM
 
 @{
   Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
@@ -16,7 +16,7 @@
 
 
 @* ************** Content ************** *@
-<form id="form-article" data-parsley-validate class="tablelist-form parsley-validation" method="POST" novalidate
+<form id="form-activity" data-parsley-validate class="tablelist-form parsley-validation" method="POST" novalidate
   autocomplete="off" onsubmit="createEditForm(this,event)" enctype="multipart/form-data">
   <div class="row">
     <div class="col-xxl-12 mb-6 order-0">
@@ -32,34 +32,35 @@
         <div class="card-body">
           <div>
             <input type="hidden" asp-for="id" class="form-control" id="id">
-            <label for="articleTitle" class="form-label">Judul Artikel</label>
-            <input type="text" asp-for="title" class="form-control" id="title" placeholder="Masukkan judul artikel">
-            <div id="articleTitleHelp" class="form-text">Tulis judul yang menarik untuk artikel Anda.</div>
+            <label for="activityTitle" class="form-label">Judul Aktifitas</label>
+            <input type="text" asp-for="title" class="form-control" id="title" placeholder="Masukkan judul aktifitas">
+            <div id="activityTitleHelp" class="form-text">Tulis judul yang menarik untuk aktifitas Anda.</div>
           </div>
-          @* 
+      
           <div class="mt-3">
-            <label for="articleContent" class="form-label">Deskripsi Artikel</label>
-            <div id="articleContentHelp" class="form-text">Isi lengkap artikel akan ditampilkan di sini.</div>
-          </div> *@
+            <label for="activityTitle" class="form-label">Deskripsi Aktifitas</label>
+            <input type="text" asp-for="description" class="form-control" id="description"
+              placeholder="Masukkan Keterangan">
+            <div id="activityTitleHelp" class="form-text">Tulis dekripsi yang menarik untuk aktifitas.</div>
+          </div>
 
-          <input type="hidden" asp-for="description" class="form-control" id="description"
-            placeholder="Masukkan Keterangan">
-
-          <div class="mt-3">
-            <label for="articleContent" class="form-label">Deskripsi Artikel</label>
+          @* <div class="mt-3">
+            <label for="activityContent" class="form-label">Deskripsi Artikel</label>
             <div id="editor">
             </div>
-            <div id="articleContentHelp" class="form-text">Isi lengkap artikel akan ditampilkan di sini.</div>
+            <div id="activityContentHelp" class="form-text">Isi lengkap artikel akan ditampilkan di sini.</div>
+          </div> *@
+
+          @* Klien *@
+          <div class="mt-3">
+            <label for="categorycleContent" class="form-label">Nama Klien</label>
+            <input type="text" asp-for="client_name" class="form-control" id="client_name"
+              placeholder="Masukkan Nama Klien">
+            <div id="categoryContentHelp" class="form-text">Isi Nama Klien</div>
           </div>
 
-          @* Category *@
-          <div class="mt-3">
-            <label for="categorycleContent" class="form-label">Kategory Artikel</label>
-            <input type="text" asp-for="category" class="form-control" id="category" placeholder="Masukkan Kategory">
-            <div id="categoryContentHelp" class="form-text">Isi kategory artikel</div>
-          </div>
           @* <div class="mt-3">
-            <label for="articleCategory" class="form-label">Kategori</label>
+            <label for="activityCategory" class="form-label">Kategori</label>
             <select asp-for="category_id" class="form-select" id="category_id">
               <option value="">Pilih Kategori</option>
               @foreach (var item in Model.Categories)
@@ -67,19 +68,20 @@
                 <option value="@item.id">@item.name</option>
               }
             </select>
-            <div id="articleCategoryHelp" class="form-text">Pilih kategori artikel.</div>
+            <div id="activityCategoryHelp" class="form-text">Pilih kategori artikel.</div>
           </div> *@
-@* 
+
           <div class="mt-3">
-            <label for="articleAuthor" class="form-label">Penulis</label>
-            <input type="text" asp-for="author" class="form-control" id="author" placeholder="Masukkan Nama Penulis">
-            <div id="articleAuthorHelp" class="form-text">Masukkan nama penulis artikel.</div>
-          </div> *@
+            <label for="activityAuthor" class="form-label">Tanggal Aktifitas</label>
+            <input type="date" asp-for="date_activity" class="form-control" id="date_activity"
+              placeholder="Masukkan Tanggal Aktifitas">
+            <div id="activityAuthorHelp" class="form-text">Masukkan Tanggal Aktifitas.</div>
+          </div>
           <input type="hidden" asp-for="img_url" class="form-control" id="img_url" placeholder="Masukkan URL Gambar" />
           @if (Model.img_url != null)
           {
             <div class="mt-3">
-              <label for="articleImage" class="form-label">Gambar Saat Ini</label><br />
+              <label for="activityImage" class="form-label">Gambar Saat Ini</label><br />
               <img src="@Url.Content(Model.img_url)" class="img-fluid" style="height: 20vh; width: 20vh;"
                 alt="Gambar Project" />
             </div>
@@ -87,7 +89,7 @@
           <div class="mt-3">
             <input type="file" class="form-control" id="img_project" name="img_project"
               placeholder="Masukkan URL Gambar" />
-            <div id="articleImageHelp" class="form-text">Masukkan URL gambar untuk project.</div>
+            <div id="activityImageHelp" class="form-text">Masukkan URL gambar untuk project.</div>
           </div>
 
           <div class="mt-3 float-end">
@@ -118,7 +120,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-
+    @* 
     const quill = new Quill('#editor', {
       theme: 'snow'
     });
@@ -135,8 +137,9 @@
     quill.on('text-change', function () {
       deskripsiTersimpan = quill.root.innerHTML;
       document.getElementById("description").value = deskripsiTersimpan;
-    });
+    }); *@
 
+      document.getElementById('date_activity').valueAsDate = new Date();
 
     window.createEditForm = (form, evt) => {
       evt.preventDefault();
@@ -156,16 +159,16 @@
         let formData = new FormData();
         formData.append("id", document.getElementById("id").value);
         formData.append("title", document.getElementById("title").value);
-        formData.append("description", deskripsiTersimpan);
-        formData.append("category", document.getElementById("category").value);
-        @* formData.append("author", document.getElementById("author").value); *@
+        formData.append("description", document.getElementById("description").value);
+        formData.append("client_name", document.getElementById("client_name").value);
+        formData.append("date_activity", document.getElementById("date_activity").value);
         formData.append("img_url", document.getElementById("img_url").value);
-         if ($("#img_project")[0].files.length > 0) {
+        if ($("#img_project")[0].files.length > 0) {
           formData.append("file", $("#img_project")[0].files[0]);
         }
         console.log("FormData:", Object.fromEntries(formData.entries()));
 
-        postData("/Admin/Article", formData)
+        postData("/Admin/Activity", formData)
           .then((res) => {
             let result = res.data;
             if (result.code == 200) {

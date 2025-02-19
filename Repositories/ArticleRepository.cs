@@ -96,6 +96,7 @@ public class ArticleRepository : IArticleRepository
 
             if (article.id == Guid.Empty)
             {
+                article.author = "Admin";
                 query = @"
                     INSERT INTO 
                     articles ( title, description, author, img_url, category, slug)
