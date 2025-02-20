@@ -2885,6 +2885,20 @@ section,
   aspect-ratio: 9 / 9;
   object-fit: cover;
 }
+
+.activity-image {
+  max-width: 100%;
+  aspect-ratio: 9 / 9;
+  object-fit: cover;
+}
+
+.banner-image {
+  width: 1280px;
+  height: 500px;
+  object-fit: cover; /* Memastikan gambar tetap proporsional tanpa distorsi */
+  display: block;
+  max-width: 100%; 
+}
 .admin:hover {
   background-color: #9c9c9c;
 }
@@ -2906,4 +2920,23 @@ iframe {
 
 .background-default{
   background-color: var(--nav-hover-color);
+}
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 4 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .col-xl-5, .col-xl-7 {
+      width: 100%;
+  }
+  
+  .card-bg {
+      min-height: 200px;
+  }
 }

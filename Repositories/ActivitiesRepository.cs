@@ -194,9 +194,9 @@ public class ActivitiesRepository : IActivitiesRepository
                 description AS ""Description"",
                 img_url AS ""Image"",
                 client_name AS ""ClientName"",
-                date_project AS ""DateProject"",
                 created_at AS ""CreatedAt"",
-                date_activity AS ""DateActivity""
+                date_activity AS ""DateActivity"",
+                date_project AS ""DateProject""
             FROM activities
             WHERE deleted_at IS NULL
             ORDER BY created_at DESC;";
