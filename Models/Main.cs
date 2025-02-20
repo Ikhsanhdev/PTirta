@@ -21,7 +21,7 @@ namespace Higertech.Models
     public class MainViewModel
     {
         public List<Main> Mains { get; set; } = new List<Main>();
-        public List<Article> Articles { get; set; } = new List<Article>();
+        public List<Article> Articles { get; set; } = new();
         public List<Main> Posters { get; set; } = new();
         public List<Main> Tombol { get; set; } = new();
         public List<Main> Kegiatan { get; set; } = new();

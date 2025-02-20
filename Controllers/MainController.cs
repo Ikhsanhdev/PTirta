@@ -16,12 +16,15 @@ public class MainController : Controller
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly IActivitiesRepository _activitiesRepository;
+    private readonly IArticleRepository _articleRepository;
 
-    public MainController(ILogger<MainController> logger, IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository, IActivitiesRepository activitiesRepository)
+    public MainController(ILogger<MainController> logger, IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository, 
+    IActivitiesRepository activitiesRepository, IArticleRepository articleRepository)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
         this._projectRepository = projectRepository;
         this._activitiesRepository = activitiesRepository;
+        this._articleRepository = articleRepository;
         this._logger = logger;
     }
 
@@ -52,6 +55,7 @@ public class MainController : Controller
             var mains = await _unitOfWorkRepository.Main.GetAllAsync();
             var projects = await _projectRepository.GetListProjectAsync();
             var activity = await _activitiesRepository.GetListActivityAsync();
+            var article = await _articleRepository.GetListArticleAsync();
 
             if (mains == null || !mains.Any())
             {
@@ -74,7 +78,17 @@ public class MainController : Controller
                     Image = m.Image,
                     ClientName = m.ClientName,
                     DateActivity = m.DateActivity
-                }).Take(4).OrderByDescending(m => m.DateActivity).ToList()
+                }).Take(4).OrderByDescending(m => m.DateActivity).ToList(),
+                Articles = article.Select(m => new Article
+                {
+                    Title = m.Title,
+                    Description = m.Description,
+                    Image = m.Image,
+                    Category = m.Category,
+                    Author = m.Author,
+                    Slug = m.Slug,
+                    CreatedAt =m.CreatedAt
+                }).Take(6).OrderByDescending(m => m.CreatedAt).ToList()
             };
 
             return View(viewModel);
