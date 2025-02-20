@@ -281,7 +281,7 @@ public class ArticleRepository : IArticleRepository
 
             query += whereClause;
 
-            query += @" ORDER BY created_at DESC";
+            query += @" ORDER BY updated_at DESC";
             
             int total = 0;
             var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";

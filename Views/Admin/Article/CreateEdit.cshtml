@@ -158,7 +158,7 @@
         formData.append("title", document.getElementById("title").value);
         formData.append("description", deskripsiTersimpan);
         formData.append("category", document.getElementById("category").value);
-        @* formData.append("author", document.getElementById("author").value); *@
+        formData.append("author", 'Admin');
         formData.append("img_url", document.getElementById("img_url").value);
          if ($("#img_project")[0].files.length > 0) {
           formData.append("file", $("#img_project")[0].files[0]);

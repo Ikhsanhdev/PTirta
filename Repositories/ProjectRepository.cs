@@ -9,11 +9,11 @@ namespace Higertech.Repositories;
 
 public interface IProjectRepository
 {
-     Task<List<Project>> GetListProjectAsync();
+    Task<List<Project>> GetListProjectAsync();
     Task<Project?> GetProjectBySlugAsync(string slug);
     Task<List<Article>> GetAllAsync();
     Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request);
-     Task<ProjectVM?> GetProjectByIdAsync(Guid id);
+    Task<ProjectVM?> GetProjectByIdAsync(Guid id);
     Task<AjaxResponse> SaveAsync(ProjectVM article);
     Task<Article?> UpdateArticleAsync(Article article);
     Task<bool> DeleteAsync(Guid id);
@@ -71,7 +71,7 @@ public class ProjectRepository : IProjectRepository
             Console.WriteLine($"Error saving article: {ex.Message}");
             result.Code = 500;
             result.Message = "Terjadi Kesalahan saat menyimpan data";
-     }
+        }
         return result;
     }
 
@@ -143,12 +143,12 @@ public class ProjectRepository : IProjectRepository
         }
     }
 
-  public async Task<List<Article>> GetAllAsync()
-  {
-     try
-            {
-                using var connection = new NpgsqlConnection(_connectionString);
-                var query = @$"
+    public async Task<List<Article>> GetAllAsync()
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = @$"
                         SELECT
                             id AS ""Id"",
                             title AS ""Title"",
@@ -161,93 +161,93 @@ public class ProjectRepository : IProjectRepository
                         ORDER BY created_at DESC 
                         ;";
 
-                var result = await connection.QueryAsync<Article>(query);
-                return result.ToList();
-            }
-            catch (NpgsqlException ex)
-            {
-                Log.Error(ex, "PostgreSQL Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
-                throw;
-            }
-  }
+            var result = await connection.QueryAsync<Article>(query);
+            return result.ToList();
+        }
+        catch (NpgsqlException ex)
+        {
+            Log.Error(ex, "PostgreSQL Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace });
+            throw;
+        }
+    }
 
-  public async Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request)
-  {
-    try
-            {
-                using var connection = new NpgsqlConnection(_connectionString);
-                List<dynamic> result = new List<dynamic>();
+    public async Task<(IReadOnlyList<dynamic>, int)> GetDataProject(JqueryDataTableRequest request)
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            List<dynamic> result = new List<dynamic>();
 
-                var query = $@"SELECT 
+            var query = $@"SELECT 
                     *
                     FROM 
                     projects 
                     ";
 
-                var parameters = new DynamicParameters();
-                var whereConditions = new List<string>();
+            var parameters = new DynamicParameters();
+            var whereConditions = new List<string>();
 
-                if (!string.IsNullOrEmpty(request.SearchValue))
+            if (!string.IsNullOrEmpty(request.SearchValue))
+            {
+                if (request.SearchValue.Contains('\''))
                 {
-                    if (request.SearchValue.Contains('\''))
-                    {
-                        request.SearchValue = request.SearchValue.Replace("'", "''");
-                    }
-
-
-                    whereConditions.Add(@"
-                    (LOWER(title) LIKE @SearchValue)");  
-                    parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
+                    request.SearchValue = request.SearchValue.Replace("'", "''");
                 }
-                
-                // if (!string.IsNullOrEmpty(request.Status))
-                // {
-                //     whereConditions.Add(@"
-                //     status = @Status");
-                //     parameters.Add("@Status", request.Status);
-                // }
-                
-                whereConditions.Add(@" deleted_at IS NULL");
 
-                var whereClause = whereConditions.Count > 0 ? "WHERE" + string.Join(" AND ", whereConditions) : "";
 
-                query += whereClause;
-                
-                query += @" ORDER BY created_at DESC";
+                whereConditions.Add(@"
+                    (LOWER(title) LIKE @SearchValue)");
+                parameters.Add("@SearchValue", "%" + request.SearchValue.ToLower() + "%");
+            }
 
-                int total = 0;
-                var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
-                total = connection.ExecuteScalar<int>(sql_count, parameters);
+            // if (!string.IsNullOrEmpty(request.Status))
+            // {
+            //     whereConditions.Add(@"
+            //     status = @Status");
+            //     parameters.Add("@Status", request.Status);
+            // }
 
-                query += @" 
+            whereConditions.Add(@" deleted_at IS NULL");
+
+            var whereClause = whereConditions.Count > 0 ? "WHERE" + string.Join(" AND ", whereConditions) : "";
+
+            query += whereClause;
+
+            query += @" ORDER BY updated_at DESC";
+
+            int total = 0;
+            var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
+            total = connection.ExecuteScalar<int>(sql_count, parameters);
+
+            query += @" 
                 OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;";
-                parameters.Add("@Skip", request.Skip);
-                parameters.Add("@PageSize", request.PageSize);
+            parameters.Add("@Skip", request.Skip);
+            parameters.Add("@PageSize", request.PageSize);
 
-                result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
+            result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
 
-                return (result, total);
-            }
-            catch (Npgsql.NpgsqlException ex)
-            {
-                Log.Error(ex, "Sql Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
-                throw;
-            }
-            catch (System.Exception ex)
-            {
-                Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
-                throw;
-            }
-  }
+            return (result, total);
+        }
+        catch (Npgsql.NpgsqlException ex)
+        {
+            Log.Error(ex, "Sql Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
+            throw;
+        }
+        catch (System.Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, Desc = "Error while get data to table petak" });
+            throw;
+        }
+    }
 
-  public async Task<List<Project>> GetListProjectAsync()
-  {
-    const string query = @"
+    public async Task<List<Project>> GetListProjectAsync()
+    {
+        const string query = @"
             SELECT 
                 id AS ""Id"",
                 title AS ""Title"",
@@ -271,11 +271,11 @@ public class ProjectRepository : IProjectRepository
             Console.WriteLine($"Error fetching project: {ex.Message}");
             return null;
         }
-  }
+    }
 
-  public async Task<Project?> GetProjectBySlugAsync(string slug)
-  {
-    const string query = @"
+    public async Task<Project?> GetProjectBySlugAsync(string slug)
+    {
+        const string query = @"
             SELECT 
                 id AS ""Id"",
                 title AS ""Title"",
@@ -299,5 +299,5 @@ public class ProjectRepository : IProjectRepository
             Console.WriteLine($"Error fetching article: {ex.Message}");
             return null;
         }
-  }
+    }
 }
