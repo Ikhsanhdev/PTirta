@@ -59,6 +59,12 @@
             <div id="categoryContentHelp" class="form-text">Isi Nama Klien</div>
           </div>
 
+ <div class="mt-3">
+            <label for="categorycleContent" class="form-label">Nama Klien</label>
+            <input type="text" asp-for="date_project" class="form-control" id="date_project"
+              placeholder="Masukkan Nama Klien">
+            <div id="categoryContentHelp" class="form-text">Isi Nama Klien</div>
+          </div>
           @* <div class="mt-3">
             <label for="activityCategory" class="form-label">Kategori</label>
             <select asp-for="category_id" class="form-select" id="category_id">
@@ -161,6 +167,7 @@
         formData.append("title", document.getElementById("title").value);
         formData.append("description", document.getElementById("description").value);
         formData.append("client_name", document.getElementById("client_name").value);
+        formData.append("date_project", document.getElementById("date_project").value);
         formData.append("date_activity", document.getElementById("date_activity").value);
         formData.append("img_url", document.getElementById("img_url").value);
         if ($("#img_project")[0].files.length > 0) {

@@ -11,6 +11,7 @@ public partial class ActivityModel
     public string? Description { get; set; }
     public string? Image { get; set; }
     public string? ClientName { get; set; }
+    public string? DateProject { get; set; }
     public DateTime DateActivity { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
