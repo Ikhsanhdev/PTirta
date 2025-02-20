@@ -194,6 +194,7 @@ public class ActivitiesRepository : IActivitiesRepository
                 description AS ""Description"",
                 img_url AS ""Image"",
                 client_name AS ""ClientName"",
+                date_project AS ""DateProject"",
                 created_at AS ""CreatedAt"",
                 date_activity AS ""DateActivity""
             FROM activities

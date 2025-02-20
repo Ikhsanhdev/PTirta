@@ -77,8 +77,9 @@ public class MainController : Controller
                     Description = m.Description,
                     Image = m.Image,
                     ClientName = m.ClientName,
+                    DateProject = m.DateProject,
                     DateActivity = m.DateActivity
-                }).Take(4).OrderByDescending(m => m.DateActivity).ToList(),
+                }).Take(4).OrderByDescending(m => m.DateProject).ToList(),
                 Articles = article.Select(m => new Article
                 {
                     Title = m.Title,
