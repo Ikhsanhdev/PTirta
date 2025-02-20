@@ -54,6 +54,37 @@
         .portfolio-item:hover .portfolio-info {
             bottom: 10px; /* Sedikit naik ke atas saat hover */
         }
+
+        .card-item {
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease-in-out;
+            min-height: 300px; /* Minimum height for consistency */
+        }
+
+        .card-bg {
+            min-height: 300px;
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .description {
+            overflow: visible;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 1200px) {
+            .col-xl-5, .col-xl-7 {
+                width: 100%;
+            }
+            
+            .card-bg {
+                min-height: 200px;
+            }
+        }
     </style>
 }
 
@@ -102,28 +133,36 @@
 
 <!-- Constructions Section -->
 <section id="constructions" class="constructions section">
-    <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
         <h2>Kegiatan</h2>
         <p>Berbagai kegiatan kami lakukan untuk memastikan pengelolaan dan monitoring yang berkualitas serta berkelanjutan</p>
-    </div><!-- End Section Title -->
+    </div>
 
     <div class="container">
         <div class="row gy-4">
-            @foreach (var item in Model.Kegiatan)
+            @foreach (var item in Model.Activity)
             {
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Kegiatan.IndexOf(item) + 1))">
-                    <div class="card-item">
-                        <div class="row">
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Activity.IndexOf(item) + 1))">
+                    <div class="card-item h-100">
+                        <div class="row h-100">
                             <div class="col-xl-5">
-                                <div class="card-bg">
-                                    <img src="@item.Img_Url" alt="@item.Title">
+                                <div class="card-bg position-relative h-100">
+                                    <img src="@item.Image" 
+                                         alt="@item.Title" 
+                                         class="w-100 h-100 object-fit-cover position-absolute top-0 start-0">
                                 </div>
                             </div>
-                            <div class="col-xl-7 d-flex align-items-center">
-                                <div class="card-body">
-                                    <h4 class="card-title">@item.Title</h4><hr>
-                                    <p>@item.Description</p>
+                            <div class="col-xl-7">
+                                <div class="card-body d-flex flex-column h-100">
+                                    <h4 class="card-title">@item.Title</h4>
+                                    <hr>
+                                    <div class="flex-grow-1">
+                                        <p class="description">@item.Description</p><br>
+                                    </div>
+                                    <div class="mt-auto">
+                                        <p class="mb-1"><strong>@item.ClientName</strong></p>
+                                        <p class="mb-0"><strong>@item.DateActivity.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID"))</strong></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

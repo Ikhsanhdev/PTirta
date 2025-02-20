@@ -15,11 +15,13 @@ public class MainController : Controller
     private readonly ILogger<MainController> _logger;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IProjectRepository _projectRepository;
+    private readonly IActivitiesRepository _activitiesRepository;
 
-    public MainController(ILogger<MainController> logger, IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository)
+    public MainController(ILogger<MainController> logger, IUnitOfWorkRepository unitOfWorkRepository, IProjectRepository projectRepository, IActivitiesRepository activitiesRepository)
     {
         this._unitOfWorkRepository = unitOfWorkRepository;
         this._projectRepository = projectRepository;
+        this._activitiesRepository = activitiesRepository;
         this._logger = logger;
     }
 
@@ -49,6 +51,7 @@ public class MainController : Controller
         {
             var mains = await _unitOfWorkRepository.Main.GetAllAsync();
             var projects = await _projectRepository.GetListProjectAsync();
+            var activity = await _activitiesRepository.GetListActivityAsync();
 
             if (mains == null || !mains.Any())
             {
@@ -63,7 +66,15 @@ public class MainController : Controller
                 Kegiatan = mains.Where(m => m.Category == "kegiatan").ToList(),
                 Layanan = mains.Where(m => m.Category == "layanan").ToList(),
                 Projects = projects.OrderByDescending(p => p.UpdatedAt).Take(6).ToList(),
-                Klien = mains.Where(m => m.Category == "klien").ToList()
+                Klien = mains.Where(m => m.Category == "klien").ToList(),
+                Activity = activity.Select(m => new ActivityModel
+                {
+                    Title = m.Title,
+                    Description = m.Description,
+                    Image = m.Image,
+                    ClientName = m.ClientName,
+                    DateActivity = m.DateActivity
+                }).Take(4).OrderByDescending(m => m.DateActivity).ToList()
             };
 
             return View(viewModel);

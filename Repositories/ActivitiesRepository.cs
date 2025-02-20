@@ -191,6 +191,7 @@ public class ActivitiesRepository : IActivitiesRepository
             SELECT 
                 id AS ""Id"",
                 title AS ""Title"",
+                description AS ""Description"",
                 img_url AS ""Image"",
                 client_name AS ""ClientName"",
                 created_at AS ""CreatedAt"",
