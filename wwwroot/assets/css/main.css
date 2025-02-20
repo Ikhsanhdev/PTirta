@@ -2922,6 +2922,10 @@ iframe {
   background-color: var(--nav-hover-color);
 }
 
+.btn-main{
+  color: white;
+  background-color:  var(--accent-color);
+}
 .description {
   display: -webkit-box;
   -webkit-line-clamp: 3; /* Limit to 4 lines */
