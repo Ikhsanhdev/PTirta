@@ -38,8 +38,15 @@
 
                     <div>
                         <label for="productNama" class="form-label">Nama Produk</label>
-                        <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk"
-                            placeholder="Masukkan nama produk">
+                        <input type="text" 
+                            asp-for="nama_produk" 
+                            class="form-control" 
+                            id="nama_produk"
+                            placeholder="Masukkan nama produk"
+                            required
+                            data-parsley-required="true"
+                            data-parsley-required-message="Nama produk harus diisi"
+                            data-parsley-trigger="change">
                     </div>
 
                     <div class="mt-3">
@@ -105,44 +112,61 @@
             console.log("Save Data");
             var btnSubmit = $(form).find("button[type=submit]");
             var id = document.getElementById("id").value;
-            if (id != null && id != "") {
-                console.log("Edit Data");
-            } else {
-                console.log("Create Data");
-            }
+            var productName = document.getElementById("nama_produk").value;
 
-            $(form).parsley().validate();
-            if ($(form).parsley().isValid()) {
-                beforeLoadingButton(btnSubmit);
-                let formData = new FormData();
-                formData.append("id", document.getElementById("id").value);
-                formData.append("nama_produk", document.getElementById("nama_produk").value);
-                formData.append("deskripsi", document.getElementById("deskripsi").value);
-                formData.append("kategori", document.getElementById("kategori").value);
-                formData.append("gambar_url", document.getElementById("gambar_url").value);
-                if ($("#file_img")[0].files.length > 0) {
-                    formData.append("file", $("#file_img")[0].files[0]);
+            // First check if the product name is duplicate
+            axios.get(`/Admin/Product/CheckDuplicateName`, {
+                params: {
+                    productName: productName,
+                    id: id || null
+                }
+            })
+            .then(response => {
+                if (response.data.isDuplicate) {
+                    showMessage("error", "Validasi Gagal!", "Nama produk sudah digunakan. Silakan gunakan nama lain.");
+                    afterLoadingButton(btnSubmit);
+                    return;
                 }
 
-                console.log("FormData:", Object.fromEntries(formData.entries()));
+                // Continue with form submission if name is not duplicate
+                $(form).parsley().validate();
+                if ($(form).parsley().isValid()) {
+                    beforeLoadingButton(btnSubmit);
+                    let formData = new FormData();
+                    formData.append("id", id);
+                    formData.append("nama_produk", productName);
+                    formData.append("deskripsi", document.getElementById("deskripsi").value);
+                    formData.append("kategori", document.getElementById("kategori").value);
+                    formData.append("gambar_url", document.getElementById("gambar_url").value);
+                    if ($("#file_img")[0].files.length > 0) {
+                        formData.append("file", $("#file_img")[0].files[0]);
+                    }
 
-                postData("/Admin/Product", formData)
-                    .then((res) => {
-                        let result = res.data;
-                        if (result.code == 200) {
-                            showMessage("success", "Sukses!", result.message).then(() => {
-                                window.location.href = "/Admin/Product";
-                            });
-                        } else {
-                            showMessage("error", "Gagal!", result.message);
-                        }
-                        afterLoadingButton(btnSubmit);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        afterLoadingButton(btnSubmit);
-                    });
-            }
+                    console.log("FormData:", Object.fromEntries(formData.entries()));
+
+                    postData("/Admin/Product", formData)
+                        .then((res) => {
+                            let result = res.data;
+                            if (result.code == 200) {
+                                showMessage("success", "Sukses!", result.message).then(() => {
+                                    window.location.href = "/Admin/Product";
+                                });
+                            } else {
+                                showMessage("error", "Gagal!", result.message);
+                            }
+                            afterLoadingButton(btnSubmit);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            afterLoadingButton(btnSubmit);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error("Error checking product name:", error);
+                showMessage("error", "Error!", "Terjadi kesalahan saat memeriksa nama produk.");
+                afterLoadingButton(btnSubmit);
+            });
         };
     </script>
 }

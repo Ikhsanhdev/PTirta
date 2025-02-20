@@ -15,6 +15,7 @@ public interface IProductRepository
     Task<AjaxResponse> SaveAsync(ProductVM product);
     Task<Product?> UpdateProductAsync(Product product);
     Task<bool> DeleteProductAsync(Guid id);
+    Task<bool> IsProductNameExistsAsync(string productName, Guid? excludeId = null);
 }
 
 public class ProductRepository : IProductRepository
@@ -41,8 +42,7 @@ public class ProductRepository : IProductRepository
                         updated_at AS ""UpdatedAt""
                     FROM products
                     WHERE deleted_at IS NULL
-                    ORDER BY created_at DESC 
-                    LIMIT 10;";
+                    ORDER BY created_at DESC;";
 
             var result = await connection.QueryAsync<Product>(query);
             return result.ToList();
@@ -127,11 +127,68 @@ public class ProductRepository : IProductRepository
         }
     }
 
+    // public async Task<AjaxResponse> SaveAsync(ProductVM product)
+    // {
+    //     AjaxResponse result = new();
+    //     try
+    //     {
+    //         string query;
+    //         string status = "Tambah";
+
+    //         if (product.id == Guid.Empty)
+    //         {
+    //             product.created_at = DateTime.Now;
+    //             query = @"
+    //                 INSERT INTO products 
+    //                 (nama_produk, gambar_url, kategori, deskripsi, created_at)
+    //                 VALUES 
+    //                 (@nama_produk, @gambar_url, @kategori, @deskripsi, @created_at)
+    //                 RETURNING *;";
+    //         }
+    //         else
+    //         {
+    //             status = "Memperbarui";
+    //             product.updated_at = DateTime.Now;
+    //             query = @"
+    //                 UPDATE products
+    //                 SET nama_produk = @nama_produk, 
+    //                     gambar_url = @gambar_url, 
+    //                     kategori = @kategori, 
+    //                     deskripsi = @deskripsi,
+    //                     updated_at = @updated_at
+    //                 WHERE id = @Id
+    //                 RETURNING *;";
+    //         }
+
+    //         using (var connection = new NpgsqlConnection(_connectionString))
+    //         {
+    //             var data = await connection.ExecuteAsync(query, product);
+    //             result.Code = 200;
+    //             result.Message = $"{status} data berhasil";
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         result.Code = 500;
+    //         result.Message = $"Terjadi Kesalahan.\nError: {ex}";
+    //     }
+    //     return result;
+    // }
+
     public async Task<AjaxResponse> SaveAsync(ProductVM product)
     {
         AjaxResponse result = new();
         try
         {
+            // Check for duplicate name first
+            var isDuplicate = await IsProductNameExistsAsync(product.nama_produk, product.id);
+            if (isDuplicate)
+            {
+                result.Code = 400;
+                result.Message = "Nama produk sudah digunakan. Silakan gunakan nama lain.";
+                return result;
+            }
+
             string query;
             string status = "Tambah";
 
@@ -222,6 +279,36 @@ public class ProductRepository : IProductRepository
         {
             Console.WriteLine($"Error deleting product: {ex.Message}");
             return false;
+        }
+    }
+
+    public async Task<bool> IsProductNameExistsAsync(string productName, Guid? excludeId = null)
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = @"
+                SELECT COUNT(*)
+                FROM products 
+                WHERE LOWER(nama_produk) = LOWER(@productName) 
+                AND deleted_at IS NULL";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@productName", productName);
+
+            if (excludeId.HasValue)
+            {
+                query += " AND id != @excludeId";
+                parameters.Add("@excludeId", excludeId.Value);
+            }
+
+            var count = await connection.ExecuteScalarAsync<int>(query, parameters);
+            return count > 0;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error checking product name existence: {Message}", ex.Message);
+            throw;
         }
     }
 }
