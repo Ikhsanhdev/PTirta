@@ -17,13 +17,54 @@
 <div class="row">
   <div class="col-xxl-12 mb-6 order-0">
     <!-- Basic Bootstrap Table -->
-    <div class="card">
-      <div class="card-header">
-        <div class="float-start">
-          <h5>Table Activity</h5>
+    <div class="mb-4">
+      <div class="p-3 ">
+        <div class="float-start m-auto">
+          <h4 class="card-title font-weight-bold">Activities</h4>
         </div>
         <div class="float-end">
+
           <a sp-area="" asp-controller="Admin" asp-action="CreateEditActivities" class="btn btn-primary">Create</a>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="float-start">
+            <div class="d-flex flex-wrap align-items-center">
+              <label for="length-data" class="me-2">Show</label>
+              <div class="me-2">
+                <select class="form-select form-select-sm rounded-pill my-1 my-lg-0" id="length-data">
+                  <option selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="-1">All</option>
+                </select>
+              </div>
+              @* <label for="length-data" class="me-3">Entries</label> *@
+            </div>
+          </div>
+          <div class="float-end">
+
+            <div class="d-flex flex-wrap align-items-center ">
+              <div class="search-bar form-inline me-3">
+                <div class="position-relative">
+                  <input type="text" class="form-control" placeholder="Search..." id="search-data">
+                  <span class="mdi mdi-magnify"></span>
+                </div>
+              </div>
+              @* <div class="text-lg-end">
+                                    <button type="button" class="btn btn-blue rounded-pill" data-id=""
+                                    onclick="createEditPetak(this, event)">
+                                    <i class="fe-plus me-1"></i> Tambah Petak
+                                    </button>
+                                    </div> *@
+            </div>
+          </div>
         </div>
       </div>
 
@@ -110,17 +151,17 @@
         //     })
         //   ]
         // });
-        // $('#length-data').on('change', function () {
-        //dataTableArticle.ajax.reload();
-        //});
+        $('#length-data').on('change', function () {
+          dataTableArticle.ajax.reload();
+        });
 
         // $('#status-data').on('change', function () {
         //  dataTableArticle.ajax.reload();
         //  });
 
-        // $('#search-data').on('change', function () {
-        //   dataTableArticle.ajax.reload(); 
-        //   });
+        $('#search-data').on('change', function () {
+          dataTableArticle.ajax.reload();
+        });
 
         // $("#monthpicker").on('change', function () {
         //   dataTableArticle.ajax.reload();
@@ -138,11 +179,11 @@
             type: "POST",
             dataType: "JSON",
             data: function (params) {
-              @* params.length = getValueById('length-data'); *@
-                @* params.status = getValueById('status-data'); *@
+              params.length = getValueById('length-data');
+              @* params.status = getValueById('status-data'); *@
                 @* params.filter_date = getValueById('monthpicker'); *@
-                @* params.search_value = getValueById('search-data'); *@
-                        }
+                params.search_value = getValueById('search-data');
+            }
           },
           columns: [
             {
@@ -165,7 +206,7 @@
                 let words = plainText.split(" ").slice(0, 4).join(" ");
                 return words + (plainText.split(" ").length > 4 ? "..." : "");
               }
-            },{
+            }, {
               data: 'date_activity', render: function (data, type, row) {
                 const date = new Date(data);
 
@@ -202,14 +243,14 @@
               orderable: false,
               render: function (data, type, row) {
                 return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
-                                    <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
+                                      <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
               },
             },
           ],
           language: {
             paginate: {
-              previous: "<i class='mdi mdi-chevron-left'>",
-              next: "<i class='mdi mdi-chevron-right'>",
+              previous: "<i class='fa-solid fa-chevron-left background-default'>",
+              next: "<i class='fa-solid fa-chevron-right'>",
             },
           },
           drawCallback: function () {

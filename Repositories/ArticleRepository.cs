@@ -285,13 +285,14 @@ public class ArticleRepository : IArticleRepository
             
             int total = 0;
             var sql_count = $"SELECT COUNT(*) FROM ({query}) as total";
-            total = connection.ExecuteScalar<int>(sql_count, parameters);
 
             query += @" 
                 OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;";
             parameters.Add("@Skip", request.Skip);
             parameters.Add("@PageSize", request.PageSize);
 
+            total = connection.ExecuteScalar<int>(sql_count, parameters);
+            
             result = (await connection.QueryAsync<dynamic>(query, parameters)).ToList();
 
             return (result, total);

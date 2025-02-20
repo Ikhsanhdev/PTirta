@@ -17,19 +17,60 @@
 <div class="row">
   <div class="col-xxl-12 mb-6 order-0">
     <!-- Basic Bootstrap Table -->
-    <div class="card">
-      <div class="card-header">
-        <div class="float-start">
-          <h5>Table Home</h5>
+
+    <div class="mb-4">
+      <div class="p-3 ">
+        <div class="float-start m-auto">
+          <h4 class="card-title font-weight-bold">Homies</h4>
         </div>
         <div class="float-end">
           <a sp-area="" asp-controller="Admin" asp-action="CreateEditMain" class="btn btn-primary">Create</a>
         </div>
       </div>
+    </div>
+    <br>
+    <br>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="float-start">
+            <div class="d-flex flex-wrap align-items-center">
+              <label for="length-data" class="me-2">Show</label>
+              <div class="me-2">
+                <select class="form-select form-select-sm rounded-pill my-1 my-lg-0" id="length-data">
+                  <option selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="-1">All</option>
+                </select>
+              </div>
+              @* <label for="length-data" class="me-3">Entries</label> *@
+            </div>
+          </div>
+          <div class="float-end">
+
+            <div class="d-flex flex-wrap align-items-center ">
+              <div class="search-bar form-inline me-3">
+                <div class="position-relative">
+                  <input type="text" class="form-control" placeholder="Search..." id="search-data">
+                  <span class="mdi mdi-magnify"></span>
+                </div>
+              </div>
+              @* <div class="text-lg-end">
+                                    <button type="button" class="btn btn-blue rounded-pill" data-id=""
+                                    onclick="createEditPetak(this, event)">
+                                    <i class="fe-plus me-1"></i> Tambah Petak
+                                    </button>
+                                    </div> *@
+            </div>
+          </div>
+        </div>
+
+      </div>
 
       <div class="table-responsive text-nowrap px-10">
-        <table class="table table-sm table-centered table-bordered table-hover mb-0 table-custom w-100"
-          id="table-main">
+        <table class="table table-sm table-centered table-bordered table-hover mb-0 table-custom w-100" id="table-main">
           <thead class="table-primary">
             <tr>
               <th>Judul</th>
@@ -85,100 +126,122 @@
 
   <script>
     var dataTableMain;
-        var dataMain = (function () {
-            var initDataTableDetail = function () {
-                dataTableMain = $("#table-main").DataTable({
-                    processing: true,
-                    serverSide: true,
-                    dom: "tipr",
-                    order: [[1, "asc"]],
-                    ajax: {
-                        url: "/Admin/GetMainData",
-                        type: "POST",
-                        dataType: "JSON"
-                    },
-                    columns: [
-                        {
-                            data: 'title',
-                            render: function (data, type, row) {
-                                if (!data) return "";
-                                let words = data.split(" ").slice(0, 4).join(" ");
-                                return words + (data.split(" ").length > 4 ? "..." : "");
-                            }
-                        },
-                        {
-                            data: 'description',
-                            render: function (data, type, row) {
-                                if (!data) return "";
-                                let words = data.split(" ").slice(0, 4).join(" ");
-                                return words + (data.split(" ").length > 4 ? "..." : "");
-                            }
-                        },
-                        { data: 'category'},
-                        {
-                            data: 'created_at',
-                            render: function (data, type, row) {
-                                if (!data) return "";
-                                const date = new Date(data);
-                                const options = {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric',
-                                    timeZone: 'Asia/Jakarta'
-                                };
-                                return date.toLocaleDateString('en-GB', options);
-                            }
-                        },
-                        {
-                            className: "text-nowrap text-center no-export",
-                            orderable: false,
-                            render: function (data, type, row) {
-                                const eyeIcon = row.hide === 'on' ? 'fa-eye' : 'fa-eye-slash';
-                                const btnClass = row.hide === 'on' ? 'btn-info' : 'btn-secondary';
-                                
-                                return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
-                                        <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>
-                                        <button onclick="toggleVisibility(this, event);" data-id="${row.id}" type="button" class="btn btn-sm ${btnClass} btn-icon fa-solid ${eyeIcon}"></button>`;
-                            },
-                        },
-                    ],
-                    drawCallback: function () {
-                        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                    },
-                });
-            };
-
-            return {
-                init: function () {
-                    initDataTableDetail();
-                },
-            };
-        })();
-
-        jQuery(document).ready(function () {
-            dataMain.init();
+    var dataMain = (function () {
+      var initInput = function () {
+        $('#length-data').on('change', function () {
+          dataTableMain.ajax.reload();
         });
 
-        window.delData = (input, evt) => {
-            if (evt) evt.preventDefault();
+        $('#search-data').on('change', function () {
+          dataTableMain.ajax.reload();
+        });
+        }
+      var initDataTableDetail = function () {
+        dataTableMain = $("#table-main").DataTable({
+          processing: true,
+          serverSide: true,
+          dom: "tipr",
+          order: [[1, "asc"]],
+          ajax: {
+            url: "/Admin/GetMainData",
+            type: "POST",
+            dataType: "JSON",
+             data: function (params) {
+              params.length = getValueById('length-data');
+              @* params.status = getValueById('status-data'); *@
+                @* params.filter_date = getValueById('monthpicker'); *@
+                params.search_value = getValueById('search-data');
+            }
+          },
+          columns: [
+            {
+              data: 'title',
+              render: function (data, type, row) {
+                if (!data) return "";
+                let words = data.split(" ").slice(0, 4).join(" ");
+                return words + (data.split(" ").length > 4 ? "..." : "");
+              }
+            },
+            {
+              data: 'description',
+              render: function (data, type, row) {
+                if (!data) return "";
+                let words = data.split(" ").slice(0, 4).join(" ");
+                return words + (data.split(" ").length > 4 ? "..." : "");
+              }
+            },
+            { data: 'category' },
+            {
+              data: 'created_at',
+              render: function (data, type, row) {
+                if (!data) return "";
+                const date = new Date(data);
+                const options = {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  timeZone: 'Asia/Jakarta'
+                };
+                return date.toLocaleDateString('en-GB', options);
+              }
+            },
+            {
+              className: "text-nowrap text-center no-export",
+              orderable: false,
+              render: function (data, type, row) {
+                const eyeIcon = row.hide === 'on' ? 'fa-eye' : 'fa-eye-slash';
+                const btnClass = row.hide === 'on' ? 'btn-info' : 'btn-secondary';
 
-            var id = $(input).data("id");
+                return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
+                                          <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>
+                                          <button onclick="toggleVisibility(this, event);" data-id="${row.id}" type="button" class="btn btn-sm ${btnClass} btn-icon fa-solid ${eyeIcon}"></button>`;
+              },
+            },
+          ],
+          language: {
+            paginate: {
+              previous: "<i class='fa-solid fa-chevron-left background-default'>",
+              next: "<i class='fa-solid fa-chevron-right'>",
+            },
+          },
+          drawCallback: function () {
+            $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+          },
+        });
+      };
 
-            Swal.fire({
-                title: "Hapus Data",
-                text: "Anda yakin untuk menghapus Produk tersebut ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Ya, Hapus",
-                cancelButtonText: "Batal",
-                showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    return deleteData("/main/delete/" + id)
-                        .then((response) => {
-                            if (response.status !== 200) {
-                                throw new Error(response.statusText);
+      return {
+        init: function () {
+          initInput();
+          initDataTableDetail();
+        },
+      };
+    })();
+
+    jQuery(document).ready(function () {
+      dataMain.init();
+    });
+
+    window.delData = (input, evt) => {
+      if (evt) evt.preventDefault();
+
+      var id = $(input).data("id");
+
+      Swal.fire({
+        title: "Hapus Data",
+        text: "Anda yakin untuk menghapus Produk tersebut ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Hapus",
+        cancelButtonText: "Batal",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return deleteData("/main/delete/" + id)
+            .then((response) => {
+              if (response.status !== 200) {
+                throw new Error(response.statusText);
               }
               return response;
             })
@@ -190,12 +253,12 @@
       }).then((result) => {
         console.log(result);
         if (result.isConfirmed) {
-            if (result.value.data.code == 200) {
-                showMessage("success", "Sukses!", result.value.data.message);
-                dataTableMain.ajax.reload(); // Sebelumnya dataTableArticle
-            } else {
-                showMessage("error", "Failed", result.value.data.message);
-            }
+          if (result.value.data.code == 200) {
+            showMessage("success", "Sukses!", result.value.data.message);
+            dataTableMain.ajax.reload(); // Sebelumnya dataTableArticle
+          } else {
+            showMessage("error", "Failed", result.value.data.message);
+          }
         }
       });
     };
@@ -204,41 +267,41 @@
       if (evt) evt.preventDefault();
 
       var id = $(input).data("id");
-      
+
       Swal.fire({
-          title: "Ubah Visibility",
-          text: "Anda yakin untuk mengubah visibility item ini?",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Ya, Ubah",
-          cancelButtonText: "Batal",
-          showLoaderOnConfirm: true,
-          preConfirm: () => {
-              return axios.post(`/main/toggle-hide/${id}`)
-                  .then(response => {
-                      if (response.status !== 200) {
-                          throw new Error(response.statusText);
-                      }
-                      return response;
-                  })
-                  .catch(error => {
-                      Swal.showValidationMessage(`Request failed: ${error}`);
-                  });
-          },
-          allowOutsideClick: () => !Swal.isLoading(),
-      }).then((result) => {
-          if (result.isConfirmed) {
-              if (result.value.data.code == 200) {
-                  showMessage("success", "Sukses!", result.value.data.message);
-                  dataTableMain.ajax.reload();
-              } else {
-                  showMessage("error", "Failed", result.value.data.message);
+        title: "Ubah Visibility",
+        text: "Anda yakin untuk mengubah visibility item ini?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Ubah",
+        cancelButtonText: "Batal",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return axios.post(`/main/toggle-hide/${id}`)
+            .then(response => {
+              if (response.status !== 200) {
+                throw new Error(response.statusText);
               }
+              return response;
+            })
+            .catch(error => {
+              Swal.showValidationMessage(`Request failed: ${error}`);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (result.value.data.code == 200) {
+            showMessage("success", "Sukses!", result.value.data.message);
+            dataTableMain.ajax.reload();
+          } else {
+            showMessage("error", "Failed", result.value.data.message);
           }
+        }
       });
-  };
+    };
 
     window.editData = (input, evt) => {
       evt.preventDefault();

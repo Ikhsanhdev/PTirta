@@ -199,7 +199,7 @@ public class ProductRepository : IProductRepository
                     INSERT INTO products 
                     (nama_produk, gambar_url, kategori, deskripsi, created_at)
                     VALUES 
-                    (@nama_produk, @gambar_url, @kategori, @deskripsi, @created_at)
+                    (UPPER(@nama_produk), @gambar_url, @kategori, @deskripsi, @created_at)
                     RETURNING *;";
             }
             else
@@ -208,7 +208,7 @@ public class ProductRepository : IProductRepository
                 product.updated_at = DateTime.Now;
                 query = @"
                     UPDATE products
-                    SET nama_produk = @nama_produk, 
+                    SET nama_produk = UPPER(@nama_produk), 
                         gambar_url = @gambar_url, 
                         kategori = @kategori, 
                         deskripsi = @deskripsi,
