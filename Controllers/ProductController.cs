@@ -84,4 +84,19 @@ public class ProductController : Controller
             return StatusCode(500, "Internal server error");
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> CheckDuplicateName(string productName, Guid? id = null)
+    {
+        try
+        {
+            var exists = await _unitOfWorkRepository.Product.IsProductNameExistsAsync(productName, id);
+            return Json(new { isDuplicate = exists });
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error checking duplicate product name: {Message}", ex.Message);
+            return StatusCode(500, "Internal server error");
+        }
+    }
 }
