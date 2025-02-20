@@ -148,6 +148,7 @@
                 formData.append("title", document.getElementById("title").value);
                 formData.append("description", descriptionTersimpan);
                 formData.append("category", document.getElementById("category").value);
+                formData.append("hide", document.getElementById("hide").value);
                 formData.append("img_url", document.getElementById("img_url").value);
                 if ($("#img_home")[0].files.length > 0) {
                 formData.append("file", $("#img_home")[0].files[0]);
