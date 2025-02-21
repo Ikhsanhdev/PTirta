@@ -24,7 +24,6 @@ namespace Higertech.Models
         public List<Article> Articles { get; set; } = new();
         public List<Main> Posters { get; set; } = new();
         public List<Main> Tombol { get; set; } = new();
-        public List<Main> Kegiatan { get; set; } = new();
         public List<Main> Layanan { get; set; } = new();
         public List<Project> Projects { get; set; } = new();
         public List<Main> Klien { get; set; } = new();
