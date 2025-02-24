@@ -50,54 +50,55 @@ public class MainController : Controller
 
     public async Task<IActionResult> Index()
     {
-        try
-        {
-            var mains = await _unitOfWorkRepository.Main.GetAllAsync();
-            var projects = await _projectRepository.GetListProjectAsync();
-            var activity = await _activitiesRepository.GetListActivityAsync();
-            var article = await _articleRepository.GetListArticleAsync();
+        return View(new MainViewModel());
+        // try
+        // {
+        //     var mains = await _unitOfWorkRepository.Main.GetAllAsync();
+        //     var projects = await _projectRepository.GetListProjectAsync();
+        //     var activity = await _activitiesRepository.GetListActivityAsync();
+        //     var article = await _articleRepository.GetListArticleAsync();
 
-            if (mains == null || !mains.Any())
-            {
-                _logger.LogWarning("No data found");
-                return View(new MainViewModel());
-            }
+        //     if (mains == null || !mains.Any())
+        //     {
+        //         _logger.LogWarning("No data found");
+        //         return View(new MainViewModel());
+        //     }
 
-            var viewModel = new MainViewModel
-            {
-                Posters = mains.Where(m => m.Category == "poster").ToList(),
-                Tombol = mains.Where(m => m.Category == "tombol").ToList(),
-                Layanan = mains.Where(m => m.Category == "layanan").ToList(),
-                // Projects = projects.OrderByDescending(p => p.UpdatedAt).Take(6).ToList(),
-                Klien = mains.Where(m => m.Category == "klien").ToList(),
-                Activity = activity.Select(m => new ActivityModel
-                {
-                    Title = m.Title,
-                    Description = m.Description,
-                    Image = m.Image,
-                    ClientName = m.ClientName,
-                    DateProject = m.DateProject,
-                    DateActivity = m.DateActivity
-                }).Take(4).OrderByDescending(m => m.DateProject).ToList(),
-                Articles = article.Select(m => new Article
-                {
-                    Title = m.Title,
-                    Description = m.Description,
-                    Image = m.Image,
-                    Category = m.Category,
-                    Author = m.Author,
-                    Slug = m.Slug,
-                    CreatedAt =m.CreatedAt
-                }).Take(6).OrderByDescending(m => m.CreatedAt).ToList()
-            };
+        //     var viewModel = new MainViewModel
+        //     {
+        //         Posters = mains.Where(m => m.Category == "poster").ToList(),
+        //         Tombol = mains.Where(m => m.Category == "tombol").ToList(),
+        //         Layanan = mains.Where(m => m.Category == "layanan").ToList(),
+        //         // Projects = projects.OrderByDescending(p => p.UpdatedAt).Take(6).ToList(),
+        //         Klien = mains.Where(m => m.Category == "klien").ToList(),
+        //         Activity = activity.Select(m => new ActivityModel
+        //         {
+        //             Title = m.Title,
+        //             Description = m.Description,
+        //             Image = m.Image,
+        //             ClientName = m.ClientName,
+        //             DateProject = m.DateProject,
+        //             DateActivity = m.DateActivity
+        //         }).Take(4).OrderByDescending(m => m.DateProject).ToList(),
+        //         Articles = article.Select(m => new Article
+        //         {
+        //             Title = m.Title,
+        //             Description = m.Description,
+        //             Image = m.Image,
+        //             Category = m.Category,
+        //             Author = m.Author,
+        //             Slug = m.Slug,
+        //             CreatedAt =m.CreatedAt
+        //         }).Take(6).OrderByDescending(m => m.CreatedAt).ToList()
+        //     };
 
-            return View(viewModel);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error loading data: {Message}", ex.Message);
-            return View(new MainViewModel());
-        }
+        //     return View(viewModel);
+        // }
+        // catch (Exception ex)
+        // {
+        //     Log.Error(ex, "Error loading data: {Message}", ex.Message);
+        //     return View(new MainViewModel());
+        // }
     }
 
     private async Task<dynamic> GetDataApi(string endPoint){

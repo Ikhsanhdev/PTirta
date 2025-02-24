@@ -138,15 +138,29 @@
     <div class="info d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
-                <div class="col-lg-6 text-center">
-                    <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Telemetry Specialist")</h2>
-                    <p id="dynamicDescription" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Description ?? "Welcome to Higertech")</p>
+                <div class="col-lg-10 text-center">
+                    <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Spesialis Sumber Daya Air")</h2>
+                    <p id="dynamicDescription" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan")</p>
                     @if (Model.Tombol.Any())
                     {
                         <a href="#constructions" class="btn-get-started">@Model.Tombol.First().Title</a>
                     }
+                    <div class="row">
+                        <div class="col-lg-6">
+                     <a href="#get-started" class="btn-get-started">
+                        <i class="bi bi-telephone-fill"></i>
+                        Phone</a>
+                        </div>
+                        <div class="col-lg-6">
+                     <a href="#get-started" class="btn-get-started">
+                        <i class="bi bi-whatsapp"></i>
+                        Whatsap</a>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+        
         </div>
     </div>
 
@@ -173,306 +187,405 @@
             <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
         </a>
     </div>
+    
 </section><!-- /Hero Section -->
 
-<!-- Constructions Section -->
-<section id="constructions" class="constructions section">
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Aktifitas Proyek</h2>
-        <p>Berbagai proyek kami untuk memastikan pengelolaan dan monitoring yang berkualitas serta berkelanjutan</p>
+<div class="banner m-auto"  style="background-color: var(--accent-color);">
+    <div class="container py-3">
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-5 float-start">
+                <h3 class="text-content">We Are Trusted by Many Client</h3>
+            </div>
+            <div class="col-lg-5 d-flex justify-content-end">
+                <a class="btn btn-order-now"> order now
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>  
     </div>
+</div>
+<section class="section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>PT Tirta Rekayasa Konsultan</h2>
+        <h4 class="mt-4">Penjelasan PT Tirta Rekayasa Konsultan</h4>
+        <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+    </div>
+    <div class="container" data-aos="fade-up" data-aos-delay="200">
+        <h5>Kami Menerima Jasa</h5>
+        <ul>
+            <li>Lorem ipsum</li>
+            <li>Lorem ipsum</li>
+            <li>lorem ipsuma</li>
+            <li>Lorem ipsum</li>
+            <li>Lorem ipsum</li>
+        </ul>
+        <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
 
-    <div class="container">
-        <div class="row gy-4">
-            @foreach (var item in Model.Activity)
-            {
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Activity.IndexOf(item) + 1))">
-                    <div class="card-item h-100">
-                        <div class="row h-100">
-                            <div class="col-xl-5">
-                                <div class="card-bg position-relative h-100">
-                                    <img src="@item.Image" 
-                                         alt="@item.Title" 
-                                         class="w-100 h-100 object-fit-cover position-absolute top-0 start-0">
-                                </div>
-                            </div>
-                            <div class="col-xl-7">
-                                <div class="card-body d-flex flex-column h-100">
-                                    <h4 class="card-title">@item.Title</h4>
-                                    <hr>
-                                    <div class="flex-grow-1">
-                                        <p class="description">@item.Description</p><br>
-                                    </div>
-                                    <div class="mt-auto">
-                                        <p class="mb-1"><strong>@item.ClientName</strong></p>
-                                        <p class="mb-0"><strong>@item.DateProject</strong></p>
-                                        @* <p class="mb-0"><strong>@item.DateActivity.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID"))</strong></p> *@
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    </div>
+</section>
+
+<section>
+    <div class="container" data-aos="fade-up">
+        <div class="row justify-content-md-center" data-aos="fade-up" data-aos-delay="200">
+            <!-- Kolom Kiri -->
+            <div class="col-lg-4 text-md-end text-center">
+                <div>
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <h3>Visi</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                 </div>
-            }
+                <div>
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <h3>Visi</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                </div>
+            </div>
+            <!-- Kolom Tengah -->
+            <div class="col-lg-4 text-center">
+                <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid center-img">
+            </div>
+            <!-- Kolom Kanan -->
+            <div class="col-lg-4 text-md-start text-center">
+                <div>
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <h3>Visi</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                </div>
+                <div>
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <h3>Visi</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit..Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                </div>
+            </div>
         </div>
     </div>
-</section><!-- /Constructions Section -->
+</section>
 
-<!-- Services Section -->
-<section id="services" class="services section light-background">
-    <!-- Section Title -->
+<section>
+    <div class="container">
+        <div class="row" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-lg-4 text-center">
+                <i class="bi bi-gem icon-identifer" style="color: black;"></i>
+                <h3>Title Content</h3>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="bi bi-globe icon-identifer" style="color: black;"></i>
+                <h3>Title Content</h3>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div><div class="col-lg-4 text-center">
+                <i class="bi bi-tag icon-identifer" style="color: black;"></i>
+                <h3>Title Content</h3>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Layanan Kami</h2>
-        <p>Solusi terbaik dari Higertech untuk mendukung kebutuhan industri Anda</p>
+        <h2>Apa Itu PT Tirta Rekayasa Konsultan</h2>
+        <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+    </div>
+    <div class="container">
+         <h4>Apa Itu PT Tirta Rekayasa Konsultan</h4>
+        <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+        <h4>Tujuan</h4>
+         <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+   <h4>Proses</h4>
+    <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+   <h4>Manfaat</h4>
+    <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+        <h4>Mengapa</h4>
+    <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+    <h4>Kesimpulan</h4>
+    <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+        Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Service</h2>
+        </div>
+        <div class="container">
+        <div class="row gy-3">
+    @for(int i = 0; i < 6; i++)
+    {
+        <div class="col-md-4" data-aos="fade-up">
+                        <div class="card border-0 shadow">
+                            <!-- Tambahkan onclick di elemen <a> -->
+                            <img src="/assets/img/higertech-default.png" class="card-img-top" alt="...">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Nama Product</h5>
+                                <p class="text-muted mb-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita deleniti nisi fugiat</p>
+                                @* <button class="btn btn-main w-100">
+                                    Detail
+                                </button> *@
+                </div>
+            </div>
+        </div>
+    }
+        </div>
+        </div>
+    
+</section>
+
+<!-- Gallery Section -->
+<section id="projects" class="projects section">
+    <!-- Section Title -->
+    <div class="container section-title pt-2" data-aos="fade-up">
+        <h2>Gallery</h2>
+        <p>All Contribution Our Project</p>
     </div><!-- End Section Title -->
 
     <div class="container">
-        <div class="row gy-4 justify-content-center">
-            @foreach (var item in Model.Layanan)
-            {
-                <!-- Service Item 1 -->
-                <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="@(100 * (Model.Layanan.IndexOf(item) + 1))">
-                    <div class="service-item position-relative">
-                        <div>
-                            <img src="@item.Img_Url" width="100" height="100" alt="@item.Title" >
-                        </div>
-                        <h3>@item.Title</h3>
-                        <p align="justify">@item.Description</p>
-                    </div>
-                </div><!-- End Service Item -->
-            }
-        </div>
-    </div>
-</section><!-- /Services Section -->
-
-<!-- Projects Section -->
-<section id="projects" class="projects section">
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Artikel</h2>
-        <p>Informasi terbaru inovasi dan teknologi terbaik</p>
-    </div>
-
-    <div class="container">
-        <div class="row gy-4">
-            @* @foreach (var project in Model.Projects)
-            {
-                <div class="col-lg-4 col-md-6 portfolio-item">
-                    <div class="portfolio-content h-100">
-                        <img src="@project.Image" class="img-fluid" alt="Project Image">
-                        <div class="portfolio-info">
-                            <a href="@project.Image" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                        </div>
-                    </div>
-                </div>
-            } *@
-
-            @if (Model.Articles.Count > 0)
-            {
-                @foreach (var artikel in Model.Articles)
-                {
-                    <div class="col-xl-4 col-md-6">
-                        <div class="post-item position-relative h-100" data-aos="fade-up" data-aos-delay="100">
-                            <div class="post-img position-relative overflow-hidden ">
-                                <img src="@Url.Content(artikel.Image)" class="img-fluid  w-100 article-image" alt="">
-                                <span class="post-date">@artikel.CreatedAt.ToString("MMMM dd", new System.Globalization.CultureInfo("id-ID"))</span>
+        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+            
+                @for(int i = 0; i < 12; i++) {
+                        <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-remodeling" data-aos="fade-up">
+                            <div class="portfolio-content h-100">
+                                 <div class="post-img position-relative overflow-hidden ">
+                                <img src="/assets/img/higertech-default.png" class="img-fluid  w-100 gallery-image" alt="">
                             </div>
-
-                            <div class="post-content d-flex flex-column">
-                                <h3 class="post-title">@artikel.Title</h3>
-                                <div class="meta d-flex align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-person"></i> <span class="ps-2">@artikel.Author</span>
-                                    </div>
-                                    <span class="px-3 text-black-50">/</span>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-folder2"></i> <span class="ps-2">@artikel.Category</span>
-                                    </div>
+                                <div class="portfolio-info">
+                                    <h4>Gallery</h4>
+                                    <p>Gallery</p>
+                                    <a href="/assets/img/higertech-default.png" title="Gallery" data-gallery="portfolio-gallery-app"
+                                        class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                                    <a href="/" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
                                 </div>
-
-                                <hr>
-                                <a href="/article/@artikel.Slug" class="readmore stretched-link"><span>Read More</span><i
-                                        class="bi bi-arrow-right"></i></a>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- End post item -->
-
+                        <!-- End Portfolio Item -->
                 }
-            }
-            else
-            {
-                <div class="col-12 text-center">
-                    <p>No article available.</p>
-                </div>
-            }
+            </div><!-- End Portfolio Container -->
         </div>
     </div>
 </section><!-- /Projects Section -->
 
-<!-- Testimonials Section -->
-<section id="testimonials" class="testimonials section">
-    <!-- Section Title -->
+<!-- Future Work  --->
+<section class="section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Klien Kami</h2>
-        <p>Kami telah bekerja sama dan telah menjadi solusi dari berbagai kebutuhan pelanggan kami di berbagai industri</p>
+        <h2>FUTURE WORK</h2>
     </div>
-
-    <!-- First Swiper (Klien 1-11) -->
     <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-                {
-                    "loop": true,
-                    "speed": 600,
-                    "autoplay": {
-                        "delay": 5000,
-                        "reverseDirection": true
-                    },
-                    "slidesPerView": "auto",
-                    "direction": "horizontal",
-                    "breakpoints": {
-                        "320": {
-                            "slidesPerView": 1,
-                            "spaceBetween": 40
-                        },
-                        "1200": {
-                            "slidesPerView": 2,
-                            "spaceBetween": 20
-                        }
-                    }
-                }
-            </script>
+        @for(int i = 0; i < 2; i++)
+        {
+        <div>
+            <div class="row align-items-center mt-2 text-center text-lg-start" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-6 justify-content-center order-lg-1">
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
+                </div>
+                <div class="col-lg-6 work-decs order-lg-2 order-1">
+                    <h1>Future Work</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos...</p>
+                </div>
+            </div>
+        </div>
 
-            <div class="swiper-wrapper">
-                @foreach (var klien in Model.Klien.Where(k => int.Parse(k.Title.Replace("klien-", "")) <= 11))
+        <div>
+            <div class="row align-items-center mt-2 text-center text-lg-start"  data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-6 work-decs order-lg-1 order-2">
+                    <h1>Future Work</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos...</p>
+                </div>
+                <div class="col-lg-6 justify-content-center order-lg-2">
+                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
+                </div>
+            </div>
+        </div>
+
+        }
+    </div>
+</section>
+
+<section class="section rating">
+    <div class="container">
+        <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-3 text-center ">
+                <h1>95%</h1>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+            <div class="col-lg-3 text-center">
+                 <h1>93%</h1>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+            <div class="col-lg-3 text-center">
+                 <h1>91%</h1>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+             <div class="col-lg-3 text-center">
+                  <h1>95%</h1>
+                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-12 col-md-4 order-1 order-md-2 text-center">
+                <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
+            </div>
+            <div class="col-12 col-md-8 order-2 order-md-1">
+                <h1>OUTPUT YANG DITERIMA OLEH CLIENT ?</h1>
+                <p>Produk keluaran atau output yang diterima oleh client ketika menggunakan Jasa Penyelidikan Tanah</p>
+                <ul>
+                    <li>lorem ipsum</li>
+                    <li>lorem ipsum</li>
+                    <li>lorem ipsum</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="section">
+   <div class="container section-title" data-aos="fade-up">
+        <h2>FAQ</h2>
+        <p>Beberapa pertanyaan yang sering diajukan oleh client sebelum menggunakan jasa kami</p>
+    </div>
+    <div class="container">
+        <a href="#">
+            <div class="row justify-content-md-center mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="float-start">
+                            <h5>Lorem ipsum ?</h5>
+                            </div>
+                            <div class="float-end">
+                            <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- End Content-->
+        <a href="#">
+            <div class="row justify-content-md-center mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="float-start">
+                            <h5>Lorem ipsum ?</h5>
+                            </div>
+                            <div class="float-end">
+                            <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- End Content-->
+        <a href="#">
+            <div class="row justify-content-md-center mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="float-start">
+                            <h5>Lorem ipsum ?</h5>
+                            </div>
+                            <div class="float-end">
+                            <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- End Content-->
+        <a href="#">
+            <div class="row justify-content-md-center mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="float-start">
+                            <h5>Lorem ipsum ?</h5>
+                            </div>
+                            <div class="float-end">
+                            <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- End Content-->
+        
+        
+    </div>
+</section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>OUR CLIENT</h2>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="swiper init-swiper">
+          <script type="application/json" class="swiper-config">
+            {
+              "loop": true,
+              "speed": 600,
+              "autoplay": {
+                "delay": 5000
+              },
+              "slidesPerView": "auto",
+              "pagination": {
+                "el": ".swiper-pagination",
+                "type": "bullets",
+                "clickable": true
+              },
+              "breakpoints": {
+                "320": {
+                  "slidesPerView": 1,
+                  "spaceBetween": 40
+                },
+                "1200": {
+                  "slidesPerView": 2,
+                  "spaceBetween": 20
+                }
+              }
+            }
+          </script>
+          <div class="swiper-wrapper">
+                @for(int i = 0; i < 6; i++)
                 {
-                    <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
+             <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
                         <div class="klien-item">
-                            <img src="@klien.Img_Url" alt="@klien.Title" style="width: 450px; height: auto; margin: 10px;">
+                            <img src="assets/img/higertech-default.png" alt="" style="width: 250px; height: auto; margin: 10px;">
                         </div>
                     </div>
                 }
-            </div>
+          </div>
+          <div class="swiper-pagination"></div>
         </div>
-    </div>
 
-    <!-- Second Swiper (Klien 12-22) -->
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-                {
-                    "loop": true,
-                    "speed": 600,
-                    "autoplay": {
-                        "delay": 5000,
-                        "reverseDirection": false
-                    },
-                    "slidesPerView": "auto",
-                    "direction": "horizontal",
-                    "breakpoints": {
-                        "320": {
-                            "slidesPerView": 1,
-                            "spaceBetween": 40
-                        },
-                        "1200": {
-                            "slidesPerView": 2,
-                            "spaceBetween": 20
-                        }
-                    }
-                }
-            </script>
+      </div>
 
-            <div class="swiper-wrapper">
-                @foreach (var klien in Model.Klien.Where(k => int.Parse(k.Title.Replace("klien-", "")) > 11))
-                {
-                    <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="klien-item">
-                            <img src="@klien.Img_Url" alt="@klien.Title" style="width: 450px; height: auto; margin: 10px;">
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</section><!-- /Testimonials Section -->
+    </section><!-- /Testimonials Section -->
 
-<!-- Youtube Section  -->
-<section id="youtube" class="section">
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Video Kami</h2>
-        <p>Temukan berbagai video informatif dan dokumentasi proyek kami melalui tayangan YouTube berikut</p>
-    </div>
-
-    <div class="yt-container" data-aos="fade-up" data-aos-delay="100">
-        <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-                {
-                    "loop": true,
-                    "speed": 600,
-                    "autoplay": {
-                        "delay": 5000,
-                        "reverseDirection": false
-                    },
-                    "slidesPerView": "auto",
-                    "direction": "horizontal",
-                    "navigation": {
-                        "nextEl": ".swiper-button-next",
-                        "prevEl": ".swiper-button-prev"
-                    },
-                    "breakpoints": {
-                        "320": {
-                            "slidesPerView": 1,
-                            "spaceBetween": 40
-                        }
-                    }
-                }
-            </script>
-
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/p5YON9LVk8M?si=4WPBCehwCs7KtkMk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/WTCwpLJARAg?si=MOLCTdOF9bB_vzfK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/c2zksxVem-M?si=oWwPCsiGSMWzKe2m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/CGqnXJ1usGA?si=J-Jw3hDvYnA5DV3d" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/9hmjgSV98Hk?si=8ghX45gPLxgnh1Db" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="swiper-slide" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="yt-item">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/CzCAPIjEuC0?si=2FPTzoSJMkiZmBUX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Navigation -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
-    </div>
-</section><!-- /Youtube Section -->
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
