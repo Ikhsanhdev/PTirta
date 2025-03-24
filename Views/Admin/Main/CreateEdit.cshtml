@@ -1,39 +1,40 @@
 @model Higertech.ViewModels.MainVM
 
 @{
-  Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
-  ViewData["Title"] = "Dashboard - Analytics";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+    ViewData["Title"] = "Dashboard - Analytics";
 }
 @section VendorStyles {
-  <!-- Include stylesheet -->
-  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+    <!-- Include stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
 }
 @section VendorScripts {
-  <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
 }
 
 
 @* ************** Content ************** *@
 <form id="form-main" data-parsley-validate class="tablelist-form parsley-validation" method="POST" novalidate
-  autocomplete="off" onsubmit="createEditForm(this,event)" enctype="multipart/form-data">
+    autocomplete="off" onsubmit="createEditForm(this,event)" enctype="multipart/form-data">
     <div class="row">
         <div class="col-xxl-12 mb-6 order-0">
             <div class="card mb-5">
                 @if (Model.id != Guid.Empty)
                 {
-                <h5 class="card-header">Edit Data</h5>
+                    <h5 class="card-header">Edit Data</h5>
                 }
                 else
                 {
-                <h5 class="card-header">Tambah Data</h5>
+                    <h5 class="card-header">Tambah Data</h5>
                 }
                 <div class="card-body">
                     <div>
                         <input type="hidden" asp-for="id" class="form-control" id="id">
                         <label for="mainTitle" class="form-label">Judul</label>
-                        <input type="text" asp-for="title" class="form-control" id="title" placeholder="Masukkan judul home">
+                        <input type="text" asp-for="title" class="form-control" id="title"
+                            placeholder="Masukkan judul home">
                         <div id="mainTitleHelp" class="form-text">Tulis judul yang menarik untuk home Anda.</div>
                     </div>
 
@@ -49,35 +50,66 @@
                     <div class="mt-3">
                         <label for="category" class="form-label">Kategori</label>
                         <select class="form-control" id="category">
+                    @if (Model.category != null)
+                    {
+                        <option value="@Model.category">@Model.category</option>
+                    }
+                    else
+                    {
                             <option value="">-- Pilih Kategori --</option>
-                            <option value="poster">poster</option>
-                            <option value="tombol">tombol</option>
-                            <option value="layanan">layanan</option>
-                            <option value="klien">klien</option>
+                            <option value="poster">POSTER</option>
+                            <option value="tombol">TOMBOL</option>
+                            <option value="layanan">LAYANAN</option>
+                            <option value="klien">KLIEN</option>
+                            <option value="about">TENTANG</option>
+                            <option value="profile">PROFIL</option>
+                            <option value="testimonial">TESTIMONI</option>
+                            <option value="faq">FAQ</option>
+                            <option value="visi">VISI</option>
+                            <option value="misi">MISI</option>
+                    }
                         </select>
                         <div id="categoryContentHelp" class="form-text">Pilih kategori home.</div>
                     </div>
 
-                     <div class="mt-3">
+                    <div class="mt-3">
                         <label for="hide" class="form-label">Status Tampilan</label>
                         <select class="form-control" id="hide" name="hide">
-                            <option value="">-- Pilih Status --</option>
-                            <option value="on">on</option>
-                            <option value="off">off</option>
-                        </select>
+                            @if (Model.hide != null)
+                            {
+                              @if (Model.hide == "on")
+                              {
+                                <option value="on">ON</option>
+                                <option value="off">OFF</option>
+                              }
+                              else
+                              {
+                                <option value="off">OFF</option>
+                                <option value="on">ON</option>
+                              }
+                            }
+                            else
+                            {
+                                <option value="">-- Pilih Status --</option>
+                                <option value="on">ON</option>
+                                <option value="off">OFF</option>
+                            }
                         <div id="hideHelp" class="form-text">Pilih status tampilan home.</div>
                     </div>
 
-                    <input type="hidden" asp-for="img_url" class="form-control" id="img_url" placeholder="Masukkan URL Gambar" />
+                    <input type="hidden" asp-for="img_url" class="form-control" id="img_url"
+                        placeholder="Masukkan URL Gambar" />
                     @if (Model.img_url != null)
                     {
                         <div class="mt-3">
                             <label for="mainImage" class="form-label">Gambar Saat Ini.</label><br />
-                            <img src="@Url.Content(Model.img_url)" class="img-fluid" style="height: 20vh; width: 20vh;" alt="Gambar Project" />
+                            <img src="@Url.Content(Model.img_url)" class="img-fluid" style="height: 20vh; width: 20vh;"
+                                alt="Gambar Project" />
                         </div>
                     }
                     <div class="mt-3">
-                        <input type="file" class="form-control" id="img_home" name="img_home" placeholder="Masukkan URL Gambar" />
+                        <input type="file" class="form-control" id="img_home" name="img_home"
+                            placeholder="Masukkan URL Gambar" />
                         <div id="mainImageHelp" class="form-text">Masukkan gambar untuk home.</div>
                     </div>
 
@@ -94,6 +126,7 @@
 
 @section PageScripts {
     <script src="~/js/dashboards-analytics.js"></script>
+
     <!-- Include the Quill library -->
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <!-- Parsley.js -->
@@ -107,28 +140,30 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
     <script>
         const quill = new Quill('#editor', {
             theme: 'snow'
         });
-        var descriptionTersimpan = "";
+        var deskripsiTersimpan = "";
 
 
         document.addEventListener("DOMContentLoaded", function () {
-            var descriptionTersimpan = document.getElementById("description").value;
-            if (descriptionTersimpan) {
-                quill.root.innerHTML = descriptionTersimpan;
+            var deskripsiTersimpan = document.getElementById("description").value;
+            if (deskripsiTersimpan) {
+                quill.root.innerHTML = deskripsiTersimpan;
             }
         });
 
         quill.on('text-change', function () {
-            descriptionTersimpan = quill.getText().trim();
-            document.getElementById("description").value = descriptionTersimpan;
+            deskripsiTersimpan = quill.root.innerHTML;
+            document.getElementById("description").value = deskripsiTersimpan;
         });
 
 
         window.createEditForm = (form, evt) => {
             evt.preventDefault();
+
 
             console.log("Save Data");
             var btnSubmit = $(form).find("button[type=submit]");
@@ -145,30 +180,30 @@
                 let formData = new FormData();
                 formData.append("id", document.getElementById("id").value);
                 formData.append("title", document.getElementById("title").value);
-                formData.append("description", descriptionTersimpan);
+                formData.append("description", deskripsiTersimpan);
                 formData.append("category", document.getElementById("category").value);
                 formData.append("hide", document.getElementById("hide").value);
                 formData.append("img_url", document.getElementById("img_url").value);
                 if ($("#img_home")[0].files.length > 0) {
-                formData.append("file", $("#img_home")[0].files[0]);
+                    formData.append("file", $("#img_home")[0].files[0]);
                 }
                 console.log("FormData:", Object.fromEntries(formData.entries()));
 
                 postData("/Admin/Main", formData)
-                .then((res) => {
-                    let result = res.data;
-                    if (result.code == 200) {
-                    showMessage("success", "Sukses!", result.message);
-                    dataTablePetak.ajax.reload();
-                    } else {
-                    showMessage("error", "Gagal!", result.message);
-                    }
-                    afterLoadingButton(btnSubmit);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    afterLoadingButton(btnSubmit);
-                });     
+                    .then((res) => {
+                        let result = res.data;
+                        if (result.code == 200) {
+                            showMessage("success", "Sukses!", result.message);
+                            dataTablePetak.ajax.reload();
+                        } else {
+                            showMessage("error", "Gagal!", result.message);
+                        }
+                        afterLoadingButton(btnSubmit);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        afterLoadingButton(btnSubmit);
+                    });
             }
         };
     </script>

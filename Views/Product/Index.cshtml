@@ -290,7 +290,7 @@
                         '/' + product.gambar_url;
                     document.getElementById('modalProductImage').src = imageUrl;
                     document.getElementById('modalProductCategory').textContent = product.kategori;
-                    document.getElementById('modalProductDescription').textContent = product.deskripsi;
+                    document.getElementById('modalProductDescription').innerHTML = product.deskripsi;
                     
                     const modal = new bootstrap.Modal(document.getElementById('productModal'));
                     modal.show();

@@ -6,6 +6,8 @@
 }
 @section VendorStyles {
     @* <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" /> *@
+     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
     <style>
         .image-preview {
             max-width: 200px;
@@ -38,21 +40,19 @@
 
                     <div>
                         <label for="productNama" class="form-label">Nama Produk</label>
-                        <input type="text" 
-                            asp-for="nama_produk" 
-                            class="form-control" 
-                            id="nama_produk"
-                            placeholder="Masukkan nama produk"
-                            required
-                            data-parsley-required="true"
-                            data-parsley-required-message="Nama produk harus diisi"
-                            data-parsley-trigger="change">
+                        <input type="text" asp-for="nama_produk" class="form-control" id="nama_produk"
+                            placeholder="Masukkan nama produk" required data-parsley-required="true"
+                            data-parsley-required-message="Nama produk harus diisi" data-parsley-trigger="change">
                     </div>
 
+                    <input type="hidden" asp-for="deskripsi" class="form-control" id="deskripsi"
+                        placeholder="Masukkan Keterangan">
+
                     <div class="mt-3">
-                        <label for="productDeskripsi" class="form-label">Deskripsi Produk</label>
-                        <input type="text" asp-for="deskripsi" class="form-control" id="deskripsi"
-                            placeholder="Masukkan keterangan">
+                        <label for="articleContent" class="form-label">Deskripsi </label>
+                        <div id="editor">
+                        </div>
+                        <div id="articleContentHelp" class="form-text">Isi lengkap akan ditampilkan di sini.</div>
                     </div>
 
                     <div class="mt-3">
@@ -98,13 +98,37 @@
 
 @section PageScripts {
     <script src="~/js/dashboards-analytics.js"></script>
+    <!-- Include the Quill library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <!-- Parsley.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+    <!-- Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <!-- Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+    <!-- Axios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+    const quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+        var deskripsiTersimpan = "";
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var deskripsiTersimpan = document.getElementById("deskripsi").value;
+            if (deskripsiTersimpan) {
+                quill.root.innerHTML = deskripsiTersimpan;
+            }
+        });
+
+        quill.on('text-change', function () {
+            deskripsiTersimpan = quill.root.innerHTML;
+            document.getElementById("deskripsi").value = deskripsiTersimpan;
+        });
 
         window.createEditForm = (form, evt) => {
             evt.preventDefault();
@@ -121,52 +145,52 @@
                     id: id || null
                 }
             })
-            .then(response => {
-                if (response.data.isDuplicate) {
-                    showMessage("error", "Validasi Gagal!", "Nama produk sudah digunakan. Silakan gunakan nama lain.");
-                    afterLoadingButton(btnSubmit);
-                    return;
-                }
-
-                // Continue with form submission if name is not duplicate
-                $(form).parsley().validate();
-                if ($(form).parsley().isValid()) {
-                    beforeLoadingButton(btnSubmit);
-                    let formData = new FormData();
-                    formData.append("id", id);
-                    formData.append("nama_produk", productName);
-                    formData.append("deskripsi", document.getElementById("deskripsi").value);
-                    formData.append("kategori", document.getElementById("kategori").value);
-                    formData.append("gambar_url", document.getElementById("gambar_url").value);
-                    if ($("#file_img")[0].files.length > 0) {
-                        formData.append("file", $("#file_img")[0].files[0]);
+                .then(response => {
+                    if (response.data.isDuplicate) {
+                        showMessage("error", "Validasi Gagal!", "Nama produk sudah digunakan. Silakan gunakan nama lain.");
+                        afterLoadingButton(btnSubmit);
+                        return;
                     }
 
-                    console.log("FormData:", Object.fromEntries(formData.entries()));
+                    // Continue with form submission if name is not duplicate
+                    $(form).parsley().validate();
+                    if ($(form).parsley().isValid()) {
+                        beforeLoadingButton(btnSubmit);
+                        let formData = new FormData();
+                        formData.append("id", id);
+                        formData.append("nama_produk", productName);
+                        formData.append("deskripsi", deskripsiTersimpan);
+                        formData.append("kategori", document.getElementById("kategori").value);
+                        formData.append("gambar_url", document.getElementById("gambar_url").value);
+                        if ($("#file_img")[0].files.length > 0) {
+                            formData.append("file", $("#file_img")[0].files[0]);
+                        }
 
-                    postData("/Admin/Product", formData)
-                        .then((res) => {
-                            let result = res.data;
-                            if (result.code == 200) {
-                                showMessage("success", "Sukses!", result.message).then(() => {
-                                    window.location.href = "/Admin/Product";
-                                });
-                            } else {
-                                showMessage("error", "Gagal!", result.message);
-                            }
-                            afterLoadingButton(btnSubmit);
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            afterLoadingButton(btnSubmit);
-                        });
-                }
-            })
-            .catch(error => {
-                console.error("Error checking product name:", error);
-                showMessage("error", "Error!", "Terjadi kesalahan saat memeriksa nama produk.");
-                afterLoadingButton(btnSubmit);
-            });
+                        console.log("FormData:", Object.fromEntries(formData.entries()));
+
+                        postData("/Admin/Product", formData)
+                            .then((res) => {
+                                let result = res.data;
+                                if (result.code == 200) {
+                                    showMessage("success", "Sukses!", result.message).then(() => {
+                                        window.location.href = "/Admin/Product";
+                                    });
+                                } else {
+                                    showMessage("error", "Gagal!", result.message);
+                                }
+                                afterLoadingButton(btnSubmit);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                afterLoadingButton(btnSubmit);
+                            });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error checking product name:", error);
+                    showMessage("error", "Error!", "Terjadi kesalahan saat memeriksa nama produk.");
+                    afterLoadingButton(btnSubmit);
+                });
         };
     </script>
 }

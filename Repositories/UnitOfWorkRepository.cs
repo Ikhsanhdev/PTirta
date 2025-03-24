@@ -10,7 +10,10 @@ namespace Higertech.Repositories
       IArticleRepository articleRepository,
       IProjectRepository projectRepository,
       IMainRepository mainRepository,
-      IActivitiesRepository activitiesRepository
+      IActivitiesRepository activitiesRepository,
+      IServiceRepository serviceRepository,
+      IGalleryRepository galleryRepository,
+      IWorkRepository workRepository
     )
     {
       User = userRepository;
@@ -19,6 +22,9 @@ namespace Higertech.Repositories
       Project = projectRepository;
       Main = mainRepository;
       Activities = activitiesRepository;
+      Service = serviceRepository;
+      Gallery = galleryRepository;
+      Work = workRepository;
     }
 
     public IUserRepository User { get; }
@@ -27,5 +33,8 @@ namespace Higertech.Repositories
     public IProjectRepository Project { get; }
     public IMainRepository Main { get; }
     public IActivitiesRepository Activities { get; }
+    public IServiceRepository Service { get; }
+    public IGalleryRepository Gallery { get; }
+    public IWorkRepository Work { get; }
   }
 }

@@ -487,7 +487,7 @@ public class AdminController : Controller
     
     [HttpPost]
     [Route("/Admin/Main")]
-    public async Task<IActionResult> SaveMain([FromForm] MainVM model, IFormFile file)
+    public async Task<IActionResult> SaveMain( MainVM model, IFormFile file)
     {
         try 
         {
@@ -552,5 +552,306 @@ public class AdminController : Controller
         return Json(response);
     }
     #endregion
+    #region  <=================================== Service ========================================>
+
+    public IActionResult Service()
+    {
+        return View("~/Views/Admin/Service/Index.cshtml");
+    }
+
+    [HttpGet("service/create")]
+    public IActionResult CreateEditService(Guid id)
+    {
+        ServiceVM model = new ServiceVM();
+
+        return View("~/Views/Admin/Service/CreateEdit.cshtml", model);
+    }
+
+
+    [HttpGet("service/edit/{id}")]
+    public IActionResult EditService(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Service.GetServiceByIdAsync(id).Result;
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Service/CreateEdit.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Service")]
+    public async Task<IActionResult> SaveService(ServiceVM model, IFormFile file)
+    {
+        AjaxResponse response = new();
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "services");
+        }
+        response = await _unitOfWorkRepository.Service.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpDelete]
+    [Route("/service/delete/{id}")]
+    public async Task<IActionResult> DeleteService(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Service.DeleteServiceAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetServiceData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Service.GetDataService(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    }
+    #endregion
+    #region  <=================================== Galley ========================================>
+
+    public IActionResult Gallery()
+    {
+        return View("~/Views/Admin/Gallery/Index.cshtml");
+    }
+
+    [HttpGet("gallery/create")]
+    public IActionResult CreateEditGallery(Guid id)
+    {
+        GalleryVM model = new GalleryVM();
+
+        return View("~/Views/Admin/Gallery/CreateEdit.cshtml", model);
+    }
+
+
+    [HttpGet("gallery/edit/{id}")]
+    public IActionResult EditGallery(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Gallery.GetGalleryByIdAsync(id).Result;
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Gallery/CreateEdit.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Gallery")]
+    public async Task<IActionResult> SaveGallery(GalleryVM model, IFormFile file)
+    {
+        AjaxResponse response = new();
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "gallerys");
+        }
+        response = await _unitOfWorkRepository.Gallery.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpDelete]
+    [Route("/gallery/delete/{id}")]
+    public async Task<IActionResult> DeleteGallery(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Gallery.DeleteGalleryAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetGalleryData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Gallery.GetDataGallery(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    }
+    #endregion
+    #region  <=================================== Work ========================================>
+
+    public IActionResult Work()
+    {
+        return View("~/Views/Admin/Work/Index.cshtml");
+    }
+
+    [HttpGet("work/create")]
+    public IActionResult CreateEditWork(Guid id)
+    {
+        WorkVM model = new WorkVM();
+
+        return View("~/Views/Admin/Work/CreateEdit.cshtml", model);
+    }
+
+
+    [HttpGet("work/edit/{id}")]
+    public IActionResult EditWork(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Work.GetWorkByIdAsync(id).Result;
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Work/CreateEdit.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Work")]
+    public async Task<IActionResult> SaveWork(WorkVM model, IFormFile file)
+    {
+        AjaxResponse response = new();
+        if (file != null)
+        {
+            model.img_url = await _unitOfWorkService.ImageUploads.UploadImageAsync(file, "works");
+        }
+        response = await _unitOfWorkRepository.Work.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpDelete]
+    [Route("/work/delete/{id}")]
+    public async Task<IActionResult> DeleteWork(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Work.DeleteWorkAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetWorkData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Work.GetDataWork(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    }
+    #endregion
+    
 }
 

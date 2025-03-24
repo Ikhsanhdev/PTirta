@@ -21,6 +21,9 @@ namespace Higertech
       #region ========== [ Register Repositories ] ==========
       services.AddScoped<IUserRepository, UserRepository>();
       services.AddScoped<IArticleRepository, ArticleRepository>();
+      services.AddScoped<IServiceRepository, ServiceRepository>();
+      services.AddScoped<IGalleryRepository, GalleryRepository>();
+      services.AddScoped<IWorkRepository, WorkRepository>();
       services.AddScoped<IProductRepository, ProductRepository>();
       services.AddScoped<IProjectRepository, ProjectRepository>();
       services.AddScoped<IMainRepository, MainRepository>();

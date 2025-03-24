@@ -17,14 +17,13 @@
 <div class="row">
   <div class="col-xxl-12 mb-6 order-0">
     <!-- Basic Bootstrap Table -->
-
     <div class="mb-4">
       <div class="p-3 ">
         <div class="float-start m-auto">
-          <h4 class="card-title font-weight-bold">Homies</h4>
+          <h4 class="card-title font-weight-bold">Gallerys</h4>
         </div>
         <div class="float-end">
-          <a sp-area="" asp-controller="Admin" asp-action="CreateEditMain" class="btn btn-primary">Create</a>
+          <a sp-area="" asp-controller="Admin" asp-action="CreateEditGallery" class="btn btn-primary">Create</a>
         </div>
       </div>
     </div>
@@ -70,12 +69,11 @@
       </div>
 
       <div class="table-responsive text-nowrap px-10">
-        <table class="table table-sm table-centered table-bordered table-hover mb-0 table-custom w-100" id="table-main">
+        <table class="table table-sm table-centered table-bordered table-hover mb-0 table-custom w-100"
+          id="table-gallery">
           <thead class="table-primary">
             <tr>
               <th>Judul</th>
-              <th>Deksripsi</th>
-              <th>Kategory</th>
               <th>Terakhir Update</th>
               <th>Actions</th>
             </tr>
@@ -91,6 +89,7 @@
   </div>
   <!--/ Transactions -->
 </div>
+
 
 @section PageScripts {
   <!-- jQuery (HARUS sebelum DataTables) -->
@@ -124,34 +123,64 @@
 
   <script src="~/js/dashboards-analytics.js"></script>
 
+
   <script>
-    var dataTableMain;
-    var dataMain = (function () {
+
+    var dataTable;
+
+    var dataGallery = (function () {
+
       var initInput = function () {
+
+        // flatpickr("#monthpicker", {
+        //   altInput: true,
+        //   locale: "id", // Set locale to Indonesian
+        //   dateFormat: "Y-M", // Format to display month and year
+        //   defaultDate: new Date(), // Automatically select the current month
+        //   maxDate: new Date(), // Set the maximum selectable date to the current date
+        //   plugins: [
+        //     new monthSelectPlugin({
+        //       altInput: true,
+        //       shorthand: true, // Shortened month names
+        //       dateFormat: "Y-m", // Format to display month and year
+        //       altFormat: "F Y", // Alternate format to display month and year
+        //       theme: "light" // Light theme
+        //     })
+        //   ]
+        // });
         $('#length-data').on('change', function () {
-          dataTableMain.ajax.reload();
+          dataTable.ajax.reload();
         });
 
+        // $('#status-data').on('change', function () {
+        //  dataTable.ajax.reload();
+        //  });
+
         $('#search-data').on('change', function () {
-          dataTableMain.ajax.reload();
+          dataTable.ajax.reload();
         });
-        }
+
+        // $("#monthpicker").on('change', function () {
+        //   dataTable.ajax.reload();
+        // });
+      };
+
       var initDataTableDetail = function () {
-        dataTableMain = $("#table-main").DataTable({
+        dataTable = $("#table-gallery").DataTable({
           processing: true,
           serverSide: true,
           dom: "tipr",
           order: [[1, "asc"]],
           ajax: {
-            url: "/Admin/GetMainData",
+            url: "/Admin/GetGalleryData",
             type: "POST",
             dataType: "JSON",
-             data: function (params) {
+            data: function (params) {
               params.length = getValueById('length-data');
+              params.search_value = getValueById('search-data');
               @* params.status = getValueById('status-data'); *@
                 @* params.filter_date = getValueById('monthpicker'); *@
-                params.search_value = getValueById('search-data');
-            }
+                                          }
           },
           columns: [
             {
@@ -163,42 +192,27 @@
               }
             },
             {
-              data: 'description',
-              render: function (data, type, row) {
-                if (!data) return "";
-
-                let div = $("<div>").html(data);
-                let plainText = div.text();
-
-                let words = plainText.split(" ").slice(0, 4).join(" ");
-                return words + (plainText.split(" ").length > 4 ? "..." : "");
-              }
-            },
-            { data: 'category' },
-            {
-              data: 'created_at',
-              render: function (data, type, row) {
-                if (!data) return "";
+              data: 'updated_at', render: function (data, type, row) {
                 const date = new Date(data);
+
                 const options = {
                   day: '2-digit',
                   month: '2-digit',
                   year: 'numeric',
                   timeZone: 'Asia/Jakarta'
                 };
-                return date.toLocaleDateString('en-GB', options);
+
+                const formattedDate = date.toLocaleDateString('en-GB', options);
+
+                return formattedDate;
               }
             },
             {
               className: "text-nowrap text-center no-export",
               orderable: false,
               render: function (data, type, row) {
-                const eyeIcon = row.hide === 'on' ? 'fa-eye' : 'fa-eye-slash';
-                const btnClass = row.hide === 'on' ? 'btn-info' : 'btn-secondary';
-
                 return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
-                                          <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>
-                                          <button onclick="toggleVisibility(this, event);" data-id="${row.id}" type="button" class="btn btn-sm ${btnClass} btn-icon fa-solid ${eyeIcon}"></button>`;
+                                                      <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
               },
             },
           ],
@@ -212,6 +226,8 @@
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
           },
         });
+
+
       };
 
       return {
@@ -222,9 +238,12 @@
       };
     })();
 
+
     jQuery(document).ready(function () {
-      dataMain.init();
+      dataGallery.init();
+
     });
+
 
     window.delData = (input, evt) => {
       if (evt) evt.preventDefault();
@@ -233,7 +252,7 @@
 
       Swal.fire({
         title: "Hapus Data",
-        text: "Anda yakin untuk menghapus Produk tersebut ?",
+        text: "Anda yakin untuk menghapus data tersebut ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -242,7 +261,7 @@
         cancelButtonText: "Batal",
         showLoaderOnConfirm: true,
         preConfirm: () => {
-          return deleteData("/main/delete/" + id)
+          return deleteData("/gallery/delete/" + id)
             .then((response) => {
               if (response.status !== 200) {
                 throw new Error(response.statusText);
@@ -259,47 +278,7 @@
         if (result.isConfirmed) {
           if (result.value.data.code == 200) {
             showMessage("success", "Sukses!", result.value.data.message);
-            dataTableMain.ajax.reload(); // Sebelumnya dataTableArticle
-          } else {
-            showMessage("error", "Failed", result.value.data.message);
-          }
-        }
-      });
-    };
-
-    window.toggleVisibility = (input, evt) => {
-      if (evt) evt.preventDefault();
-
-      var id = $(input).data("id");
-
-      Swal.fire({
-        title: "Ubah Visibility",
-        text: "Anda yakin untuk mengubah visibility item ini?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, Ubah",
-        cancelButtonText: "Batal",
-        showLoaderOnConfirm: true,
-        preConfirm: () => {
-          return axios.post(`/main/toggle-hide/${id}`)
-            .then(response => {
-              if (response.status !== 200) {
-                throw new Error(response.statusText);
-              }
-              return response;
-            })
-            .catch(error => {
-              Swal.showValidationMessage(`Request failed: ${error}`);
-            });
-        },
-        allowOutsideClick: () => !Swal.isLoading(),
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (result.value.data.code == 200) {
-            showMessage("success", "Sukses!", result.value.data.message);
-            dataTableMain.ajax.reload();
+            dataTable.ajax.reload();
           } else {
             showMessage("error", "Failed", result.value.data.message);
           }
@@ -315,7 +294,8 @@
       beforeLoadingButton($(input));
 
       var id = $(input).data("id");
-      window.location.href = "/main/edit/" + id;
+      window.location.href = "/gallery/edit/" + id;
     };
+
   </script>
 }

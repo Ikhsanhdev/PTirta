@@ -64,8 +64,8 @@
                     <li><a asp-area="" asp-controller="Main" asp-action="Index">Home</a></li>
                     @* <li><a href="#https://e-katalog.lkpp.go.id/katalog/produk/detail/78863377?lang=id&type=general">E-Catalog</a></li> *@
                     <li><a sp-area="" asp-controller="Product" asp-action="Index">Product</a></li>
-                    <li><a sp-area="" asp-controller="Activity" asp-action="Index">Portofolio</a></li>
-                    <li><a sp-area="" asp-controller="Article" asp-action="Index">Article</a></li>
+                    @* <li><a sp-area="" asp-controller="Activity" asp-action="Index">Portofolio</a></li> *@
+                    @* <li><a sp-area="" asp-controller="Article" asp-action="Index">Article</a></li> *@
                     @* <li><a asp-area="" asp-controller="Main" asp-action="MapGoogle">Peta</a></li> *@
                     @* <li class="dropdown"><a href=""><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
@@ -76,11 +76,11 @@
                         </ul>
                     </li> *@
                     @* <li><a href="https://api.whatsapp.com/send/?phone=628112332182&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">Contact</a></li> *@
-                    @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
+                    @* @if (string.IsNullOrEmpty(ClaimIdentity.Username)) {
                         <li><a href="/Auth/Login">Login</a></li>
                     } else {
                         <li><button type="button" class="admin btn border border-dark rounded" style="hover" onClick="window.location.href='/Admin'"><a class="">ADMIN</a></button></li>
-                    }
+                    } *@
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>

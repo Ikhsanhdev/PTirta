@@ -1,0 +1,187 @@
+@model Higertech.ViewModels.WorkVM
+
+@{
+  Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+  ViewData["Title"] = "Dashboard - Analytics";
+}
+@section VendorStyles {
+  <!-- Include stylesheet -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+}
+@section VendorScripts {
+  <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
+}
+
+
+@* ************** Content ************** *@
+<form id="form-article" data-parsley-validate class="tablelist-form parsley-validation" method="POST" novalidate
+  autocomplete="off" onsubmit="createEditForm(this,event)" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-xxl-12 mb-6 order-0">
+      <div class="card mb-5">
+        @if (Model.id != Guid.Empty)
+        {
+          <h5 class="card-header">Edit Data</h5>
+        }
+        else
+        {
+          <h5 class="card-header">Tambah Data</h5>
+        }
+        <div class="card-body">
+          <div>
+            <input type="hidden" asp-for="id" class="form-control" id="id">
+            <label for="articleTitle" class="form-label">Judul </label>
+            <input type="text" asp-for="title" class="form-control" id="title" placeholder="Masukkan judul ">
+            <div id="articleTitleHelp" class="form-text">Tulis judul yang menarik untuk  Anda.</div>
+          </div>
+          @* 
+          <div class="mt-3">
+            <label for="articleContent" class="form-label">Deskripsi </label>
+            <div id="articleContentHelp" class="form-text">Isi lengkap  akan ditampilkan di sini.</div>
+          </div> *@
+
+          <input type="hidden" asp-for="description" class="form-control" id="description"
+            placeholder="Masukkan Keterangan">
+
+          <div class="mt-3">
+            <label for="articleContent" class="form-label">Deskripsi </label>
+            <div id="editor">
+            </div>
+            <div id="articleContentHelp" class="form-text">Isi lengkap  akan ditampilkan di sini.</div>
+          </div>
+
+          @* Category *@
+          <div class="mt-3">
+            <label for="categorycleContent" class="form-label">Kategory </label>
+            <input type="text" asp-for="category" class="form-control" id="category" placeholder="Masukkan Kategory">
+            <div id="categoryContentHelp" class="form-text">Isi kategory </div>
+          </div>
+          @* <div class="mt-3">
+            <label for="articleCategory" class="form-label">Kategori</label>
+            <select asp-for="category_id" class="form-select" id="category_id">
+              <option value="">Pilih Kategori</option>
+              @foreach (var item in Model.Categories)
+              {
+                <option value="@item.id">@item.name</option>
+              }
+            </select>
+            <div id="articleCategoryHelp" class="form-text">Pilih kategori .</div>
+          </div> *@
+@* 
+          <div class="mt-3">
+            <label for="articleAuthor" class="form-label">Penulis</label>
+            <input type="text" asp-for="author" class="form-control" id="author" placeholder="Masukkan Nama Penulis">
+            <div id="articleAuthorHelp" class="form-text">Masukkan nama penulis .</div>
+          </div> *@
+          <input type="hidden" asp-for="img_url" class="form-control" id="img_url" placeholder="Masukkan URL Gambar" />
+          @if (Model.img_url != null)
+          {
+            <div class="mt-3">
+              <label for="articleImage" class="form-label">Gambar Saat Ini</label><br />
+              <img src="@Url.Content(Model.img_url)" class="img-fluid" style="height: 20vh; width: 20vh;"
+                alt="Gambar Project" />
+            </div>
+          }
+          <div class="mt-3">
+            <input type="file" class="form-control" id="img_project" name="img_project"
+              placeholder="Masukkan URL Gambar" />
+            <div id="articleImageHelp" class="form-text">Masukkan URL gambar untuk project.</div>
+          </div>
+
+          <div class="mt-3 float-end">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/Admin/Work"  class="btn btn-secondary">Back</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!--/ Transactions -->
+  </div>
+</form>
+@section PageScripts {
+  <script src="~/js/dashboards-analytics.js"></script>
+
+  <!-- Include the Quill library -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <!-- Parsley.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <!-- Select2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+  <!-- Axios -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+
+    const quill = new Quill('#editor', {
+      theme: 'snow'
+    });
+    var deskripsiTersimpan = "";
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var deskripsiTersimpan = document.getElementById("description").value;
+      if (deskripsiTersimpan) {
+        quill.root.innerHTML = deskripsiTersimpan;
+      }
+    });
+
+    quill.on('text-change', function () {
+      deskripsiTersimpan = quill.root.innerHTML;
+      document.getElementById("description").value = deskripsiTersimpan;
+    });
+
+
+    window.createEditForm = (form, evt) => {
+      evt.preventDefault();
+
+      console.log("Save Data");
+      var btnSubmit = $(form).find("button[type=submit]");
+      var id = document.getElementById("id").value
+      if (id != null && id != "") {
+        console.log("Edit Data");
+      } else {
+        console.log("Create Data");
+      }
+
+      $(form).parsley().validate();
+      if ($(form).parsley().isValid()) {
+        beforeLoadingButton(btnSubmit);
+        let formData = new FormData();
+        formData.append("id", document.getElementById("id").value);
+        formData.append("title", document.getElementById("title").value);
+        formData.append("description", deskripsiTersimpan);
+        formData.append("category", document.getElementById("category").value);
+        formData.append("author", 'Admin');
+        formData.append("img_url", document.getElementById("img_url").value);
+         if ($("#img_project")[0].files.length > 0) {
+          formData.append("file", $("#img_project")[0].files[0]);
+        }
+        console.log("FormData:", Object.fromEntries(formData.entries()));
+
+        postData("/Admin/Work", formData)
+          .then((res) => {
+            let result = res.data;
+            if (result.code == 200) {
+              showMessage("success", "Sukses!", result.message);
+              dataTablePetak.ajax.reload();
+            } else {
+              showMessage("error", "Gagal!", result.message);
+            }
+            afterLoadingButton(btnSubmit);
+          })
+          .catch((err) => {
+            console.log(err);
+            afterLoadingButton(btnSubmit);
+          });
+      }
+    };
+  </script>
+}

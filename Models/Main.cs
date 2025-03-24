@@ -21,13 +21,20 @@ namespace Higertech.Models
     public class MainViewModel
     {
         public List<Main> Mains { get; set; } = new List<Main>();
-        public List<Article> Articles { get; set; } = new();
+        public Main About { get; set; } = new();
+        public Main Profile { get; set; } = new();
+        public Main Testimoni { get; set; } = new();
+        public List<Main> FAQ { get; set; } = new();
+        public List<Main> Vision { get; set; } = new();
+        public List<Main> Mission { get; set; } = new();
+       
         public List<Main> Posters { get; set; } = new();
         public List<Main> Tombol { get; set; } = new();
         public List<Main> Layanan { get; set; } = new();
-        public List<Project> Projects { get; set; } = new();
         public List<Main> Klien { get; set; } = new();
-        public List<ActivityModel> Activity { get; set; } = new();
+        public List<Work> Works { get; set; } = new();
+        public List<Service> Services { get; set; } = new();
+        public List<Gallery> Galleries { get; set; } = new();
     }
 }
 
