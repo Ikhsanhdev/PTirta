@@ -19,6 +19,8 @@
             background-color: rgba(0,0,0,0.6);
         }
         
+    using System.Text.RegularExpressions;
+    using System.Text.RegularExpressions;
         .portfolio-item {
             position: relative;
             overflow: hidden;
@@ -140,7 +142,7 @@
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-lg-10 text-center">
                     <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Spesialis Sumber Daya Air")</h2>
-                    <p id="dynamicDescription" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan")</p>
+                    <p id="dynamicDescription" class="dynamic-text">@Html.Raw(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan"))</p>
                     @if (Model.Tombol.Any())
                     {
                         <a href="#constructions" class="btn-get-started">@Model.Tombol.First().Title</a>
