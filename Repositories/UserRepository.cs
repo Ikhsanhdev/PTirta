@@ -1,8 +1,8 @@
-using Higertech.Models;
+using TirtaRK.Models;
 using Dapper;
 using Npgsql;
 
-namespace Higertech.Repositories;
+namespace TirtaRK.Repositories;
 
 public interface IUserRepository {
     Task<User?> GetByIdAsync(Guid id);

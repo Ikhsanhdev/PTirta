@@ -1,4 +1,4 @@
-namespace Higertech.Helpers;
+namespace TirtaRK.Helpers;
 
 public class ClaimIdentity
 {

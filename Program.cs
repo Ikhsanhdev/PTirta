@@ -1,8 +1,8 @@
-using Higertech;
+using TirtaRK;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Higertech.Data;
-using Higertech.Models;
+using TirtaRK.Data;
+using TirtaRK.Models;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using Dapper;
@@ -25,7 +25,7 @@ builder.Services.AddControllersWithViews();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<HigertechContext>((provider, options) =>
+builder.Services.AddDbContext<TirtaRKContext>((provider, options) =>
 {
   if (connectionString != null)
   {

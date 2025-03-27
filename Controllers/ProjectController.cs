@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Higertech.Models;
-using Higertech.Interfaces;
+using TirtaRK.Models;
+using TirtaRK.Interfaces;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 
 public class ProjectController : Controller
 {

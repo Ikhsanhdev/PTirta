@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Higertech.Models;
+namespace TirtaRK.Models;
 
 // Do not Rename This Name Model because Activiy will distract another package on built in function dotnet
 public partial class ActivityModel

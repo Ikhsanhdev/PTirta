@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Higertech.Models;
+using TirtaRK.Models;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 
 public class DashboardsController : Controller
 {

@@ -1,18 +1,1 @@
-.header {
-    background-color: #ffffff !important; 
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.header a {
-    color: #333 !important; /* Default: hitam */
-    transition: color 0.3s ease-in-out;
-}
-
-.dark-mode .header {
-    background-color: #222 !important; /* Warna navbar saat gelap */
-}
-
-.dark-mode .header a {
-    color: #ffffff !important; /* Warna teks navbar saat gelap */
-}
+/* Custom styles goes here */

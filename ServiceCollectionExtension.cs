@@ -1,8 +1,8 @@
-using Higertech.Interfaces;
-using Higertech.Repositories;
-using Higertech.Services;
+using TirtaRK.Interfaces;
+using TirtaRK.Repositories;
+using TirtaRK.Services;
 
-namespace Higertech
+namespace TirtaRK
 {
   public static class ServiceCollectionteExtension
   {

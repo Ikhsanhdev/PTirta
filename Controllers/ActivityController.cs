@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Higertech.Models;
+using TirtaRK.Models;
 using System.Threading.Tasks;
-using Higertech.Interfaces;
+using TirtaRK.Interfaces;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 
 public class ActivityController : Controller
 {

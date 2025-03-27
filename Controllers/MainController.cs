@@ -1,14 +1,14 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Higertech.Models;
-using Higertech.ViewModels;
-using Higertech.Interfaces;
-using Higertech.Models.Datatables;
+using TirtaRK.Models;
+using TirtaRK.ViewModels;
+using TirtaRK.Interfaces;
+using TirtaRK.Models.Datatables;
 using Serilog;
-using Higertech.Repositories;
+using TirtaRK.Repositories;
 using System.Net.Http.Headers;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 
 public class MainController : Controller
 {
