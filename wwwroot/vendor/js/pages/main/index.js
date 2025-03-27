@@ -19,13 +19,13 @@
 return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/libs/parsleyjs/i18n/en.extra.js":
-/*!*********************************************!*\
-  !*** ./src/libs/parsleyjs/i18n/en.extra.js ***!
-  \*********************************************/
+/***/ "./src/js/pages/main/index.js":
+/*!************************************!*\
+  !*** ./src/js/pages/main/index.js ***!
+  \************************************/
 /***/ (() => {
 
-eval("// Validation errors messages for Parsley\n// Load this after Parsley\n\nParsley.addMessages('en', {\n  dateiso: \"This value should be a valid date (YYYY-MM-DD).\",\n  date: \"It must be a valid date with format %s\",\n  datebeforenow: \"Date must be valid with format %s and be before now\",\n  dateafternow: \"Date must be valid with format %s and be after now\",\n  minwords: \"This value is too short. It should have %s words or more.\",\n  maxwords: \"This value is too long. It should have %s words or fewer.\",\n  words: \"This value length is invalid. It should be between %s and %s words long.\",\n  gt: \"This value should be greater than %s.\",\n  gte: \"This value should be greater or equal to %s.\",\n  lt: \"This value should be less than %s.\",\n  lte: \"This value should be less or equal to %s.\",\n  notequalto: \"This value should be different from %s.\"\n});\n\n//# sourceURL=webpack://Vuexy/./src/libs/parsleyjs/i18n/en.extra.js?");
+eval("\n\n//# sourceURL=webpack://sneat-bootstrap-html-aspnet-core-mvc-admin-template-free/./src/js/pages/main/index.js?");
 
 /***/ })
 
@@ -36,7 +36,7 @@ eval("// Validation errors messages for Parsley\n// Load this after Parsley\n\nP
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./src/libs/parsleyjs/i18n/en.extra.js"]();
+/******/ 	__webpack_modules__["./src/js/pages/main/index.js"]();
 /******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()

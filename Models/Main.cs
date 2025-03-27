@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using System;
 
-namespace Higertech.Models
+namespace TirtaRK.Models
 {
     public class Main
     {

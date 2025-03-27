@@ -1,15 +1,15 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Higertech.Models;
-using Higertech.ViewModels;
-using Higertech.Interfaces;
-using Higertech.Models.Datatables;
+using TirtaRK.Models;
+using TirtaRK.ViewModels;
+using TirtaRK.Interfaces;
+using TirtaRK.Models.Datatables;
 using Serilog;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 
 // [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)
 [Authorize]

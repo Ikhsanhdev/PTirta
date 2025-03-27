@@ -1,11 +1,11 @@
-using Higertech.Models;
-using Higertech.ViewModels;
+using TirtaRK.Models;
+using TirtaRK.ViewModels;
 using Dapper;
 using Npgsql;
 using Serilog;
-using Higertech.Models.Datatables;
+using TirtaRK.Models.Datatables;
 
-namespace Higertech.Repositories;
+namespace TirtaRK.Repositories;
 
 public interface IArticleRepository
 {

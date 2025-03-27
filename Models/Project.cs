@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Higertech.Models;
+namespace TirtaRK.Models;
 
 public partial class Project
 {

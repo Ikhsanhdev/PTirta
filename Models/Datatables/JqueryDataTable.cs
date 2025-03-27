@@ -1,6 +1,6 @@
 using Microsoft.VisualBasic;
 
-namespace Higertech.Models.Datatables
+namespace TirtaRK.Models.Datatables
 {
     public class JqueryDataTableRequest
     {

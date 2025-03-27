@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Higertech.Models;
+using TirtaRK.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Higertech.Data;
+namespace TirtaRK.Data;
 
-public partial class HigertechContext : DbContext
+public partial class TirtaRKContext : DbContext
 {
-    public HigertechContext()
+    public TirtaRKContext()
     {
     }
 
-    public HigertechContext(DbContextOptions<HigertechContext> options)
+    public TirtaRKContext(DbContextOptions<TirtaRKContext> options)
         : base(options)
     {
     }

@@ -1,13 +1,13 @@
 using System.Security.Claims;
-using Higertech.Interfaces;
-using Higertech.Models;
-using Higertech.Models.Auth;
-using Higertech.Models.Customs;
+using TirtaRK.Interfaces;
+using TirtaRK.Models;
+using TirtaRK.Models.Auth;
+using TirtaRK.Models.Customs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
-namespace Higertech.Controllers;
+namespace TirtaRK.Controllers;
 public class AuthController : Controller
 {
   private readonly IUnitOfWorkService _unitOfWorkService;

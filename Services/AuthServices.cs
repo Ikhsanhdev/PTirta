@@ -1,10 +1,10 @@
 
-using Higertech.Interfaces;
-using Higertech.Models;
-using Higertech.Models.Auth;
-using Higertech.Models.Customs;
+using TirtaRK.Interfaces;
+using TirtaRK.Models;
+using TirtaRK.Models.Auth;
+using TirtaRK.Models.Customs;
 
-namespace Higertech.Services
+namespace TirtaRK.Services
 {
   public interface IAuthService
   {

@@ -1,6 +1,6 @@
-using Higertech.Services;
+using TirtaRK.Services;
 
-namespace Higertech.Interfaces
+namespace TirtaRK.Interfaces
 {
   public interface IUnitOfWorkService
   {

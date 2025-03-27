@@ -1,4 +1,4 @@
-namespace Higertech.Models.Customs
+namespace TirtaRK.Models.Customs
 {
   public class ResponseWrapper
   {

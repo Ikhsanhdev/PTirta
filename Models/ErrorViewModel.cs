@@ -1,4 +1,4 @@
-namespace Higertech.Models;
+namespace TirtaRK.Models;
 
 public class ErrorViewModel
 {

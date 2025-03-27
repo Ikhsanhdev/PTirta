@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Higertech.Models;
+using TirtaRK.Models;
 
-namespace Higertech.ViewModels
+namespace TirtaRK.ViewModels
 {
     public class MainVM
     {

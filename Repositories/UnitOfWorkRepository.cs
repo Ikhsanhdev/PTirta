@@ -1,6 +1,6 @@
-using Higertech.Interfaces;
+using TirtaRK.Interfaces;
 
-namespace Higertech.Repositories
+namespace TirtaRK.Repositories
 {
   public class UnitOfWorkRepository : IUnitOfWorkRepository
   {
