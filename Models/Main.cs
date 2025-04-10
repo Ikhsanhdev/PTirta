@@ -27,7 +27,8 @@ namespace TirtaRK.Models
         public List<Main> FAQ { get; set; } = new();
         public List<Main> Vision { get; set; } = new();
         public List<Main> Mission { get; set; } = new();
-       
+        public List<Main> Icons { get; set; } = new();
+        public List<Main> Ratings { get; set; } = new();
         public List<Main> Posters { get; set; } = new();
         public List<Main> Tombol { get; set; } = new();
         public List<Main> Layanan { get; set; } = new();

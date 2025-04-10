@@ -13,7 +13,8 @@ namespace TirtaRK.Repositories
       IActivitiesRepository activitiesRepository,
       IServiceRepository serviceRepository,
       IGalleryRepository galleryRepository,
-      IWorkRepository workRepository
+      IWorkRepository workRepository,
+      IFooterRepository footerRepository
     )
     {
       User = userRepository;
@@ -25,6 +26,7 @@ namespace TirtaRK.Repositories
       Service = serviceRepository;
       Gallery = galleryRepository;
       Work = workRepository;
+      Footer = footerRepository;
     }
 
     public IUserRepository User { get; }
@@ -36,5 +38,6 @@ namespace TirtaRK.Repositories
     public IServiceRepository Service { get; }
     public IGalleryRepository Gallery { get; }
     public IWorkRepository Work { get; }
+    public IFooterRepository Footer { get; } 
   }
 }

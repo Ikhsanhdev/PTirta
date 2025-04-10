@@ -79,12 +79,13 @@ public class MainController : Controller
                 Klien = mains.Where(m => m.Category == "klien").ToList(),
                 Vision = mains.Where(m => m.Category == "visi").OrderByDescending(d => d.CreatedAt).Take(2).ToList(),
                 Mission = mains.Where(m => m.Category == "misi").OrderByDescending(d => d.CreatedAt).Take(2).ToList(),
-                
+                Icons = mains.Where(m => m.Category == "icon").OrderByDescending(d => d.CreatedAt).Take(3).ToList(),
+                Ratings = mains.Where(m => m.Category == "rate").OrderByDescending(d => d.CreatedAt).Take(4).ToList(),
+            
                 Works = works.OrderByDescending(w => w.CreatedAt).Take(4).ToList(),
                 Galleries = gallery.OrderByDescending(g => g.CreatedAt).Take(6).ToList(),
                 Services = services.OrderByDescending(s => s.CreatedAt).Take(6).ToList()
             };
-
             return View(viewModel);
         }
         catch (Exception ex)
@@ -126,6 +127,9 @@ public class MainController : Controller
                 Klien = mains.Where(m => m.Category == "klien").ToList(),
                 Vision = mains.Where(m => m.Category == "visi").OrderByDescending(d => d.CreatedAt).Take(2).ToList(),
                 Mission = mains.Where(m => m.Category == "misi").OrderByDescending(d => d.CreatedAt).Take(2).ToList(),
+                Icons = mains.Where(m => m.Category == "icon").OrderByDescending(d => d.CreatedAt).Take(3).ToList(),
+                Ratings = mains.Where(m => m.Category == "rate").OrderByDescending(d => d.CreatedAt).Take(4).ToList(),
+            
                 
                 Works = works.OrderByDescending(w => w.CreatedAt).Take(4).ToList(),
                 Galleries = gallery.OrderByDescending(g => g.CreatedAt).Take(6).ToList(),
@@ -177,6 +181,17 @@ public class MainController : Controller
         }
     }
 
+      [HttpGet]
+     [Route("/get-footer")]
+    public async Task<IActionResult> GetFooterContact()
+    {
+        var data = await _unitOfWorkRepository.Main.GetFooterAsync();
+        if (data == null)
+        {
+            return NotFound(new { message = "Data not found" });
+        }
+        return Ok(data);
+    }
     public async Task<JsonResult> GetStationAll(){
         string endPoint = $"LastReading/all/";
         var data = await GetDataApi(endPoint);

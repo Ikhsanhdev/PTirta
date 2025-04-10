@@ -1,0 +1,251 @@
+@{
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+    ViewData["Title"] = "Dashboard - Analytics";
+}
+@section VendorStyles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
+}
+
+<div class="row">
+    <div class="col-xxl-12 mb-6 order-0">
+
+        <div class="mb-4">
+            <div class="p-3 ">
+                <div class="float-start m-auto">
+                    <h4 class="card-title font-weight-bold">Footer</h4>
+                </div>
+                <div class="float-end">
+                    <a asp-controller="Admin" asp-action="CreateEditFooter" class="btn btn-primary">Create</a>
+
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="float-start">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <label for="length-data" class="me-2">Show</label>
+                            <div class="me-2">
+                                <select class="form-select form-select-sm rounded-pill my-1 my-lg-0" id="length-data">
+                                    <option selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="-1">All</option>
+                                </select>
+                            </div>
+                            @* <label for="length-data" class="me-3">Entries</label> *@
+                        </div>
+                    </div>
+                    <div class="float-end">
+
+                        <div class="d-flex flex-wrap align-items-center ">
+                            <div class="search-bar form-inline me-3">
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" placeholder="Search..." id="search-data">
+                                    <span class="mdi mdi-magnify"></span>
+                                </div>
+                            </div>
+                            @* <div class="text-lg-end">
+                                    <button type="button" class="btn btn-blue rounded-pill" data-id=""
+                                    onclick="createEditPetak(this, event)">
+                                    <i class="fe-plus me-1"></i> Tambah Petak
+                                    </button>
+                                    </div> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive text-nowrap px-10">
+                <table class="table table-sm table-centered table-bordered table-hover mb-0 table-custom w-100"
+                    id="table-product">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Nama </th>
+                            <th>Isi</th>
+                            <th>Terakhir Update</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/dashboards-analytics.js"></script>
+
+    <script>
+        var dataTableFooter;
+
+        var dataProduct = (function () {
+
+            var initInput = function () {
+                $('#length-data').on('change', function () {
+                    dataTableFooter.ajax.reload();
+                });
+
+                $('#search-data').on('change', function () {
+                    dataTableFooter.ajax.reload();
+                });
+
+            }
+            var initDataTableDetail = function () {
+                dataTableFooter = $("#table-product").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    dom: "tipr",
+                    order: [[1, "asc"]],
+                    ajax: {
+                        url: "/Admin/GetFooterData",
+                        type: "POST",
+                        dataType: "JSON",
+                        data: function (params) {
+                            params.length = getValueById('length-data');
+                            @* params.status = getValueById('status-data'); *@
+                                @* params.filter_date = getValueById('monthpicker'); *@
+                                params.search_value = getValueById('search-data');
+                        }
+                    },
+                    columns: [
+                        {
+                            data: 'name',
+                            render: function (data, type, row) {
+                                if (!data) return "";
+                                let words = data.split(" ").slice(0, 4).join(" ");
+                                return words + (data.split(" ").length > 4 ? "..." : "");
+                            }
+                        },
+                        {
+                            data: 'value',
+                            render: function (data, type, row) {
+                                if (!data) return "";
+                                let words = data.split(" ").slice(0, 4).join(" ");
+                                return words + (data.split(" ").length > 4 ? "..." : "");
+                            }
+                        },
+                        {
+                            data: 'created_at',
+                            render: function (data, type, row) {
+                                if (!data) return "";
+                                const date = new Date(data);
+                                const options = {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    timeZone: 'Asia/Jakarta'
+                                };
+                                return date.toLocaleDateString('en-GB', options);
+                            }
+                        },
+                        {
+                            className: "text-nowrap text-center no-export",
+                            orderable: false,
+                            render: function (data, type, row) {
+                                return `<button onclick="editData(this,event);" data-id="${row.id}" type="button" class="btn btn-sm btn-success btn-icon fa-solid fa-pen"></button>  
+                                                        <button onclick="delData(this, event);" data-id="${row.id}" type="button" class="btn btn-sm btn-danger btn-icon fa-solid fa-trash"></button>`;
+                            },
+                        },
+                    ],
+                    language: {
+                        paginate: {
+                            previous: "<i class='fa-solid fa-chevron-left background-default'>",
+                            next: "<i class='fa-solid fa-chevron-right'>",
+                        },
+                    },
+                    drawCallback: function () {
+                        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+                    },
+                });
+            };
+
+            return {
+                init: function () {
+                    initInput();
+                    initDataTableDetail();
+                },
+            };
+        })();
+
+        jQuery(document).ready(function () {
+            dataProduct.init();
+        });
+
+        window.delData = (input, evt) => {
+            if (evt) evt.preventDefault();
+
+            var id = $(input).data("id");
+
+            Swal.fire({
+                title: "Hapus Data",
+                text: "Anda yakin untuk menghapus Produk tersebut ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Hapus",
+                cancelButtonText: "Batal",
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return deleteData("/footer/delete/" + id)
+                        .then((response) => {
+                            if (response.status !== 200) {
+                                throw new Error(response.statusText);
+                            }
+                            return response;
+                        })
+                        .catch((error) => {
+                            Swal.showValidationMessage(`Request failed: ${error}`);
+                        });
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                console.log(result);
+                if (result.isConfirmed) {
+                    if (result.value.data.code == 200) {
+                        showMessage("success", "Sukses!", result.value.data.message);
+                        dataTableFooter.ajax.reload(); // Sebelumnya dataTableArticle
+                    } else {
+                        showMessage("error", "Failed", result.value.data.message);
+                    }
+                }
+            });
+        };
+
+        window.editData = (input, evt) => {
+            evt.preventDefault();
+
+            var contentBtn = $(input).html();
+
+            beforeLoadingButton($(input));
+
+            var id = $(input).data("id");
+            window.location.href = "/footer/edit/" + id;
+        };
+
+    </script>
+}

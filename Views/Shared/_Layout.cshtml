@@ -98,30 +98,19 @@
             <div class="container footer-top">
                 <div class="row gy-4">
                     <div class="col-lg-4 col-md-6 footer-about">
-                        <a href="index.html" class="logo d-flex align-items-center">
-                            <span class="sitename">PT. Higertech Karya Sinergi</span>
-                        </a>
-                        <div class="footer-contact pt-3">
-                            <p>Jl. Jatihandap No.36, Jatihandap,</p>
-                            <p>Kec.Mandalajati, Kota Bandung,</p>
-                            <p>Jawa Barat 40193</p>
-                            @* <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p> *@
-                            <p class="mt-3"><strong>Email:</strong> <span>higertechkaryasinergi@gmail.com</span></p>
+                            <a class="footer-brand logo">
+                                <img src="@Url.Content("~/assets/img/tirta.png")" alt="Higertech Logo">
+                            </a>
+                            <div class="footer-contact pt-3" style="color: white;">
+                                <p id="footer-address"></p>
+                                <p id="footer-phone"></p>
+                                <p id="footer-email"></p>
+                            </div>
+                            <div id="footer-social-links" class="social-links d-flex mt-4">
+                            </div>
                         </div>
-                        <div class="social-links d-flex mt-4">
-                            <a href="https://api.whatsapp.com/send/?phone=628112332182&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">
-                                <i class="bi bi-whatsapp"></i>
-                            </a>
-                            <a href="https://www.instagram.com/higertech/" target="_blank" rel="noopener noreferrer">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="https://www.youtube.com/@@higertechtelemetry5846" target="_blank" rel="noopener noreferrer">
-                                <i class="bi bi-youtube"></i>
-                            </a>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-2 col-md-3 footer-links">
+                    @* <div class="col-lg-2 col-md-3 footer-links">
                         <h4>Useful Links</h4>
                         <ul>
                             <li><a href="#">Home</a></li>
@@ -130,7 +119,7 @@
                             <li><a href="#">Terms of service</a></li>
                             <li><a href="#">Privacy policy</a></li>
                         </ul>
-                    </div>
+                    </div> *@
 
                     <div class="col-lg-2 col-md-3 footer-links">
                         <h4>Our Services</h4>
@@ -146,7 +135,11 @@
             </div>
 
             <div class="container copyright text-center mt-4">
-                <p>Copyright <span>©</span> <span>2021.</span> <strong class="px-1 sitename">PT. Higertech Karya Sinergi</strong></p>
+                <p>Copyright <span>©</span> <span>
+                      <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                </span> <strong class="px-1 sitename">PT Tirta Rekayasa Konsultan</strong></p>
                 @* <div class="credits">
                     <!-- All the links in the footer should remain intact. -->
                     <!-- You can delete the links only if you've purchased the pro version. -->
@@ -179,6 +172,81 @@
     <script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
 
     <!-- Main JS File -->
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("/get-footer") // Menggunakan relative URL agar fleksibel
+                    .then(response => response.json())
+                    .then(data => {
+                        // Menampilkan data kontak
+                        document.getElementById("footer-address").textContent = data.contact.address || "-";
+                        document.getElementById("footer-phone").innerHTML = `<strong>Phone:</strong> <span>${data.contact.phone || "-"}</span>`;
+                        document.getElementById("footer-email").innerHTML = `<strong>Email:</strong> <span>${data.contact.email || "-"}</span>`;
+
+                        // Menampilkan link sosial media
+                        const socialContainer = document.getElementById("footer-social-links");
+                        socialContainer.innerHTML = ""; // Kosongkan elemen sebelum diisi ulang
+
+                        Object.keys(data.social_links).forEach(key => {
+                            // Skip jika key adalah "whatsapp1"
+                            if (key === "whatsapp1") {
+                                return; // Lewati iterasi ini
+                            }
+                            
+                            console.log("aa", key);
+                            let iconClass = `bi bi-${key}`;
+                            let linkElement = document.createElement("a");
+                            linkElement.href = data.social_links[key];
+                            linkElement.target = "_blank";
+                            linkElement.rel = "noopener noreferrer";
+                            linkElement.innerHTML = `<i class="${iconClass}"></i>`;
+                            socialContainer.appendChild(linkElement);
+
+                            // Tambahkan WhatsApp fixed button jika key adalah whatsapp
+                            if (key === "whatsapp") {
+                                // Buat elemen WhatsApp floating button
+                                const whatsappButton = document.createElement("a");
+                                whatsappButton.href = data.social_links[key];
+                                whatsappButton.target = "_blank";
+                                whatsappButton.rel = "noopener noreferrer";
+                                whatsappButton.className = "whatsapp-float";
+                                whatsappButton.innerHTML = `<i class="bi bi-whatsapp"></i>`;
+                                
+                                // Tambahkan ke body
+                                document.body.appendChild(whatsappButton);
+                            }
+                        });
+                    })
+                    .catch(error => console.error("Error fetching data:", error));
+                
+                // Tambahkan CSS untuk WhatsApp floating button
+                const styleElement = document.createElement("style");
+                styleElement.textContent = `
+                    .whatsapp-float {
+                        position: fixed;
+                        width: 50px;
+                        height: 50px;
+                        bottom: 80px;
+                        right: 20px;
+                        background-color: #25d366;
+                        color: #FFF;
+                        border-radius: 50px;
+                        text-align: center;
+                        font-size: 30px;
+                        box-shadow: 2px 2px 3px #999;
+                        z-index: 100;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-decoration: none;
+                    }
+                    
+                    .whatsapp-float:hover {
+                        background-color: #128C7E;
+                    }
+                `;
+                document.head.appendChild(styleElement);
+            });
+        </script>
     <script src="~/assets/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Styles", required: false)

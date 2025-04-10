@@ -8,6 +8,7 @@ using Serilog;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Higertech.ViewModels;
 
 namespace TirtaRK.Controllers;
 
@@ -853,5 +854,103 @@ public class AdminController : Controller
     }
     #endregion
     
+    #region  <=================================== Footer ========================================>
+    public IActionResult Footer()
+    {
+        return View("~/Views/Admin/Footer/Index.cshtml");
+    }
+
+    [HttpGet("footer/create")]
+    public IActionResult CreateEditFooter()
+    {
+        FooterVM model = new FooterVM();
+
+        return View("~/Views/Admin/Footer/CreateEdit.cshtml", model);
+    }
+
+    [HttpGet("footer/edit/{id}")]
+    public IActionResult EditFooter(Guid id)
+    {
+
+        var model = _unitOfWorkRepository.Footer.GetFooterByIdAsync(id).Result;
+
+        if (model == null)
+        {
+            return View("~/Views/404/PageNotFound.cshtml");
+        }
+        return View("~/Views/Admin/Footer/CreateEdit.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route("/Admin/Footer")]
+    public async Task<IActionResult> SaveFooter(FooterVM model)
+    {
+        AjaxResponse response = new();
+
+       
+        response = await _unitOfWorkRepository.Footer.SaveAsync(model);
+        return Json(response);
+    }
+
+    [HttpDelete]
+    [Route("/footer/delete/{id}")]
+    public async Task<IActionResult> DeleteFooter(Guid id)
+    {
+        AjaxResponse response = new();
+        var msg = await _unitOfWorkRepository.Footer.DeleteAsync(id);
+
+        if (msg)
+        {
+            response.Message = "Data berhasil dihapus";
+            response.Code = 200;
+        }
+        else
+        {
+            response.Message = "Data gagal dihapus";
+            response.Code = 500;
+        }
+
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetFooterData()
+    {
+        var ModelRequest = new JqueryDataTableRequest
+        {
+            Draw = Request.Form["draw"].FirstOrDefault() ?? "",
+            Start = Request.Form["start"].FirstOrDefault() ?? "",
+            Length = Request.Form["length"].FirstOrDefault() ?? "25",
+            SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault() ?? "",
+            SortColumnDirection = Request.Form["order[0]dir"].FirstOrDefault() ?? "",
+            SearchValue = Request.Form["search_value"].FirstOrDefault() ?? "",
+            Status = Request.Form["status"].FirstOrDefault() ?? ""
+
+        };
+
+        try
+        {
+            if (ModelRequest.Length == "-1")
+            {
+                ModelRequest.PageSize = int.MaxValue;
+            }
+            else
+            {
+                ModelRequest.PageSize = ModelRequest.PageSize != null ? Convert.ToInt32(ModelRequest.Length) : 0;
+            }
+
+            ModelRequest.Skip = ModelRequest.Start != null ? Convert.ToInt32(ModelRequest.Start) : 0;
+
+            var (rekomendasi, recordsTotal) = await _unitOfWorkRepository.Footer.GetDataFooter(ModelRequest);
+            var jsonData = new { draw = ModelRequest.Draw, recordsFiltered = recordsTotal, recordsTotal, data = rekomendasi };
+            return Json(jsonData);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "General Exception: {@ExceptionDetails}", new { ex.Message, ex.StackTrace, DatatableRequest = ModelRequest });
+            throw;
+        }
+    } 
+    #endregion
+
 }
 

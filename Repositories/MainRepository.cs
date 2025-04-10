@@ -16,6 +16,7 @@ public interface IMainRepository
     Task<Main?> UpdateMainAsync(Main main);
     Task<bool> DeleteMainAsync(Guid id);
     Task<AjaxResponse> ToggleHideAsync(Guid id);
+    Task<dynamic> GetFooterAsync();
 }
 
 public class MainRepository : IMainRepository
@@ -300,4 +301,47 @@ public class MainRepository : IMainRepository
         }
         return result;
     }
+      public async Task<dynamic> GetFooterAsync()
+    {
+        try
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+           var result = await connection.QueryAsync<dynamic>("SELECT name, value FROM footer_contact WHERE deleted_at IS NULL;");
+
+            var contactData = new Dictionary<string, string>();
+        var socialLinks = new Dictionary<string, string>();
+
+        foreach (var item in result)
+        {
+            string name = item.name.ToLower();
+            string value = item.value;
+
+            // Jika value adalah URL, masukkan ke socialLinks
+            if (value.StartsWith("http"))
+            {
+                socialLinks[name] = value;
+            }
+            else
+            {
+                contactData[name] = value;
+            }
+        }
+
+        var response = new
+        {
+            contact = contactData,
+            social_links = socialLinks
+        };
+
+        return response;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error fetching footer data: {@ExceptionDetails}",
+                new { ex.Message, ex.StackTrace });
+            throw;
+
+        }
+    }
+
 }

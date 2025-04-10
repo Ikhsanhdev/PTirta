@@ -302,20 +302,15 @@
 <section>
     <div class="container">
         <div class="row" data-aos="fade-up" data-aos-delay="200">
-            <div class="col-lg-4 text-center">
-                <i class="bi bi-gem icon-identifer" style="color: black;"></i>
-                <h3>Title Content</h3>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
-            <div class="col-lg-4 text-center">
-                <i class="bi bi-globe icon-identifer" style="color: black;"></i>
-                <h3>Title Content</h3>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div><div class="col-lg-4 text-center">
-                <i class="bi bi-tag icon-identifer" style="color: black;"></i>
-                <h3>Title Content</h3>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
+            
+            @foreach(var item in Model.Icons)
+            {
+                <div class="col-lg-4 text-center">
+                    <i class="bi bi-gem icon-identifer" style="color: black;"></i>
+                    <h3>@item.Title</h3>
+                    @Html.Raw(item.Description)
+                </div>
+            } 
         </div>
     </div>
 </section>
@@ -457,22 +452,29 @@
 <section class="section rating">
     <div class="container">
         <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="col-lg-3 text-center ">
-                <h1>95%</h1>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
-            <div class="col-lg-3 text-center">
-                 <h1>93%</h1>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
-            <div class="col-lg-3 text-center">
-                 <h1>91%</h1>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
-             <div class="col-lg-3 text-center">
-                  <h1>95%</h1>
-                <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit repellat minima unde, </p>
-            </div>
+            @if(Model.Ratings != null)
+            {
+                @foreach (var item in Model.Ratings)
+                {
+                    <div class="col-lg-3 text-center">
+                        <h1>@item.Title%</h1>
+                         @Html.Raw(item.Description)  
+                    </div>
+                }
+            }else{
+                <div class="col-lg-3 text-center">
+                    <h1>100%</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatibus.</p>
+                </div>
+                <div class="col-lg-3 text-center">
+                    <h1>100%</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatibus.</p>
+                </div>
+                <div class="col-lg-3 text-center">
+                    <h1>100%</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatibus.</p>
+                </div>
+            }
         </div>
     </div>
 </section>
@@ -492,8 +494,6 @@
                 <h1>OUTPUT YANG DITERIMA OLEH CLIENT ?</h1>
                 <p>Produk keluaran atau output yang diterima oleh client ketika menggunakan Jasa Penyelidikan Tanah</p>
                 <ul>
-                    <li>lorem ipsum</li>
-                    <li>lorem ipsum</li>
                     <li>lorem ipsum</li>
                 </ul>
             }

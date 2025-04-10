@@ -13,6 +13,7 @@ namespace TirtaRK.Interfaces
     IProjectRepository Project { get; }
     IMainRepository Main { get; }
     IActivitiesRepository Activities { get; }
+    IFooterRepository Footer { get; }
     
   }
 }

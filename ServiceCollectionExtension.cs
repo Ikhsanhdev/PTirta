@@ -28,6 +28,7 @@ namespace TirtaRK
       services.AddScoped<IProjectRepository, ProjectRepository>();
       services.AddScoped<IMainRepository, MainRepository>();
       services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
+      services.AddScoped<IFooterRepository, FooterRepository>();
       #endregion
     }
   }
