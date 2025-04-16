@@ -136,13 +136,13 @@
 
 
 <!-- Hero Section -->
-<section id="hero" class="hero section dark-background">
+<section id="hero" class="hero section tirta-background">
     <div class="info d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-lg-10 text-center">
                     <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Spesialis Sumber Daya Air")</h2>
-                    <p id="dynamicDescription" class="dynamic-text">@Html.Raw(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan"))</p>
+                    <p id="dynamicDescription" class="dynamic-text">@Html.Raw(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan")</p>
                     @if (Model.Tombol.Any())
                     {
                         <a href="#constructions" class="btn-get-started">@Model.Tombol.First().Title</a>
@@ -206,7 +206,12 @@
         </div>  
     </div>
 </div>
-<section class="section">
+
+ <section class="section about-us">
+    <div class="wave-wrapper">
+        <svg  style="transform:rotate(180deg); transition: 0.3s" viewBox="0 0 1440 140" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0"><stop stop-color="#0aa6f9" offset="0%"></stop><stop stop-color="#ffffff" offset="100%"></stop></linearGradient></defs><path style="transform:translate(0, 0px); opacity:1" fill="url(#sw-gradient-0)" d="M0,56L26.7,53.7C53.3,51,107,47,160,44.3C213.3,42,267,42,320,56C373.3,70,427,98,480,102.7C533.3,107,587,89,640,84C693.3,79,747,89,800,95.7C853.3,103,907,107,960,95.7C1013.3,84,1067,56,1120,53.7C1173.3,51,1227,75,1280,86.3C1333.3,98,1387,98,1440,91C1493.3,84,1547,70,1600,56C1653.3,42,1707,28,1760,39.7C1813.3,51,1867,89,1920,100.3C1973.3,112,2027,98,2080,95.7C2133.3,93,2187,103,2240,100.3C2293.3,98,2347,84,2400,77C2453.3,70,2507,70,2560,65.3C2613.3,61,2667,51,2720,56C2773.3,61,2827,79,2880,86.3C2933.3,93,2987,89,3040,81.7C3093.3,75,3147,65,3200,67.7C3253.3,70,3307,84,3360,86.3C3413.3,89,3467,79,3520,77C3573.3,75,3627,79,3680,79.3C3733.3,79,3787,75,3813,72.3L3840,70L3840,140L3813.3,140C3786.7,140,3733,140,3680,140C3626.7,140,3573,140,3520,140C3466.7,140,3413,140,3360,140C3306.7,140,3253,140,3200,140C3146.7,140,3093,140,3040,140C2986.7,140,2933,140,2880,140C2826.7,140,2773,140,2720,140C2666.7,140,2613,140,2560,140C2506.7,140,2453,140,2400,140C2346.7,140,2293,140,2240,140C2186.7,140,2133,140,2080,140C2026.7,140,1973,140,1920,140C1866.7,140,1813,140,1760,140C1706.7,140,1653,140,1600,140C1546.7,140,1493,140,1440,140C1386.7,140,1333,140,1280,140C1226.7,140,1173,140,1120,140C1066.7,140,1013,140,960,140C906.7,140,853,140,800,140C746.7,140,693,140,640,140C586.7,140,533,140,480,140C426.7,140,373,140,320,140C266.7,140,213,140,160,140C106.7,140,53,140,27,140L0,140Z"></path></svg>
+    </div>
+
      @if (Model.About != null)
         {
             <div class="container section-title" data-aos="fade-up">
@@ -299,23 +304,26 @@
     </div>
 </section>
 
-<section>
+<section class="section icons">
     <div class="container">
         <div class="row" data-aos="fade-up" data-aos-delay="200">
             
             @foreach(var item in Model.Icons)
             {
-                <div class="col-lg-4 text-center">
-                    <i class="bi bi-gem icon-identifer" style="color: black;"></i>
+                <div class="col-lg-4 text-center ">
+                <div class="card card-icons">
+
+                    <i class="bi bi-gem icon-identifer"></i>
                     <h3>@item.Title</h3>
                     @Html.Raw(item.Description)
+                </div>
                 </div>
             } 
         </div>
     </div>
 </section>
 
-<section class="section">
+<section class="section we-are">
     
         @if(Model.Profile != null)
         {
@@ -346,7 +354,7 @@
                 @foreach(var item in Model.Services)
                 {
                     <div class="col-md-4" data-aos="fade-up">
-                        <div class="card border-0 shadow">
+                        <div class="card border-0 shadow-item">
                             <!-- Tambahkan onclick di elemen <a> -->
                             <img src="@Url.Content(item.Image)" class="card-img-top" alt="...">
                             <div class="card-body text-center">
@@ -515,7 +523,7 @@
             {
                 <div class="row justify-content-md-center mb-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="col-lg-8">
-                        <div class="card border-0 shadow">
+                        <div class="card border-0 shadow-item">
                             <div class="card-body">
                                 <div class="float-start">
                                 <h5>@item.Title</h5>
@@ -551,12 +559,16 @@
     </div>
 </section>
 
+<div>
+    <svg  id="wave-top" width="100%" height="100%" id="svg" viewBox="0 0 1440 390" xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150"><path d="M 0,400 L 0,100 C 63.98564064801177,92.47717231222386 127.97128129602353,84.95434462444771 183,96 C 238.02871870397647,107.04565537555229 284.1005154639176,136.65979381443296 341,136 C 397.8994845360824,135.34020618556704 465.6266568483063,104.40648011782034 528,89 C 590.3733431516937,73.59351988217966 647.3928571428571,73.71428571428572 704,91 C 760.6071428571429,108.28571428571428 816.8019145802652,142.7363770250368 887,138 C 957.1980854197348,133.2636229749632 1041.3994845360824,89.34020618556701 1107,74 C 1172.6005154639176,58.659793814432994 1219.600147275405,71.90279823269515 1272,81 C 1324.399852724595,90.09720176730485 1382.1999263622974,95.04860088365243 1440,100 L 1440,400 L 0,400 Z" stroke="none" stroke-width="0" fill="#0aa6f9" fill-opacity="0.53" class="transition-all duration-300 ease-in-out delay-150 path-0"></path><path d="M 0,400 L 0,233 C 66.3687407952872,225.8880706921944 132.7374815905744,218.7761413843888 187,226 C 241.2625184094256,233.2238586156112 283.4188144329897,254.78350515463916 336,245 C 388.5811855670103,235.21649484536084 451.58726067746693,194.0898379970545 526,193 C 600.4127393225331,191.9101620029455 686.2321428571428,230.85714285714286 747,233 C 807.7678571428572,235.14285714285714 843.4841678939619,200.4815905743741 900,204 C 956.5158321060381,207.5184094256259 1033.8311855670102,249.21649484536078 1098,256 C 1162.1688144329898,262.7835051546392 1213.1910898379972,234.65243004418267 1268,225 C 1322.8089101620028,215.34756995581733 1381.4044550810013,224.17378497790867 1440,233 L 1440,400 L 0,400 Z" stroke="none" stroke-width="0" fill="#0aa6f9" fill-opacity="1" class="transition-all duration-300 ease-in-out delay-150 path-1"></path></svg>
+</div>
+    
     <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials section">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>OUR CLIENT</h2>
+        <h2 style="color: white;">OUR CLIENT</h2>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
