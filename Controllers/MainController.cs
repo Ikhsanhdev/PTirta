@@ -82,10 +82,12 @@ public class MainController : Controller
                 Icons = mains.Where(m => m.Category == "icon").OrderByDescending(d => d.CreatedAt).Take(3).ToList(),
                 Ratings = mains.Where(m => m.Category == "rate").OrderByDescending(d => d.CreatedAt).Take(4).ToList(),
             
+                
                 Works = works.OrderByDescending(w => w.CreatedAt).Take(4).ToList(),
                 Galleries = gallery.OrderByDescending(g => g.CreatedAt).Take(6).ToList(),
                 Services = services.OrderByDescending(s => s.CreatedAt).Take(6).ToList()
             };
+
             return View(viewModel);
         }
         catch (Exception ex)
