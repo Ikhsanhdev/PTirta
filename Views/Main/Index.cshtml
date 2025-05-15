@@ -142,7 +142,7 @@
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-lg-10 text-center">
                     <h2 id="dynamicTitle" class="dynamic-text">@(Model.Posters.FirstOrDefault()?.Title ?? "Spesialis Sumber Daya Air")</h2>
-                    <p id="dynamicDescription" class="dynamic-text">@Html.Raw(Model.Posters.FirstOrDefault()?.Description ?? "PT Tirta Rekayasa Konsultan")</p>
+                    <p id="dynamicDescription" class="dynamic-text"> PT Tirta Rekayasa Konsultan</p>
                     @if (Model.Tombol.Any())
                     {
                         <a href="#constructions" class="btn-get-started">@Model.Tombol.First().Title</a>
@@ -173,9 +173,9 @@
             {
                 <div class="carousel-item @(i == 0 ? "active" : "")" 
                         data-title="@Model.Posters[i].Title"
-                        data-description="@Model.Posters[i].Description">
+                        data-description="@Html.Raw(Model.Posters[i].Description)">
                     <img src="@Url.Content(Model.Posters[i].Img_Url ?? "")" 
-                            alt="@Model.Posters[i].Title"
+                            alt="@Html.Raw(Model.Posters[i].Title)"
                             onerror="this.src='\uploads/main/default-placeholder.jpg'">
                 </div>
             }
@@ -271,7 +271,7 @@
             </div>
             <!-- Kolom Tengah -->
             <div class="col-lg-4 text-center">
-                <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid center-img">
+                <img src="/assets/img/inov.png" alt="placeholder" class="img-fluid center-img">
             </div>
             <!-- Kolom Kanan -->
             <div class="col-lg-4 text-md-start text-center">
@@ -323,25 +323,31 @@
     </div>
 </section>
 
-<section class="section we-are">
-    
+     
         @if(Model.Profile != null)
         {
+        <section class="section we-are">
             <div class="container section-title" data-aos="fade-up">
             <h2>@Model.Profile.Title</h2>
             </div>
             <div class="container mt-2" data-aos="fade-up" data-aos-delay="200">
             @Html.Raw(Model.Profile.Description)
             </div>
+        </section>      
         }
-        else
+        
+        
+        @* else
         {
-            <h2>Profile</h2>
-            <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Profile</h2>
+            </div>
+            <div class="container mt-2" data-aos="fade-up" data-aos-delay="200">
+                <p class="mt-3 section-title-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit optio ab facilis quisquam eos. Impedit hic unde nihil necessitatibus, soluta quo magni. Odio, veritatis doloremque expedita nostrum aperiam voluptas eaque!
             Officiis praesentium eum hic molestiae, soluta debitis voluptatem in adipisci repellendus, quasi perferendis qui nesciunt ea neque reprehenderit veritatis corporis maiores sint minus repellat delectus atque id a? Quaerat, nemo.</p>
+            </div>
         }
-    
-</section>
+     *@
 
 <section class="section">
     <div class="container section-title" data-aos="fade-up">
