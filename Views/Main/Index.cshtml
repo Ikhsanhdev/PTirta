@@ -399,7 +399,7 @@
                     <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-remodeling" data-aos="fade-up">
                         <div class="portfolio-content h-100">
                             <div class="post-img position-relative overflow-hidden ">
-                                <img src="@Url.Content(item.Image)" class="img-fluid  w-100 gallery-image" alt="">
+                                <img src="@Url.Content(item.Image)" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" class="img-fluid  w-100 gallery-image" alt="">
                             </div>
                             <div class="portfolio-info">
                                 <h4>@item.Title</h4> 
@@ -435,20 +435,18 @@
                 <div class="row align-items-center mt-2 text-center text-lg-start" data-aos="fade-up" data-aos-delay="100">
                     @if (index % 2 == 0)
                     {
-                        <!-- Genap: Gambar di kanan, teks di kiri -->
                         <div class="col-lg-6 work-decs order-lg-1 order-2">
                             <h1>@item.Title</h1>
                             @Html.Raw(item.Description)
                         </div>
                         <div class="col-lg-6 justify-content-center order-lg-2">
-                            <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
+                            <img src="@item.Image" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="@item.Title" class="img-fluid square-image">
                         </div>
                     }
                     else
                     {
-                        <!-- Ganjil: Gambar di kiri, teks di kanan -->
                         <div class="col-lg-6 justify-content-center order-lg-1">
-                            <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
+                            <img src="@item.Image" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="@item.Title" class="img-fluid square-image">
                         </div>
                         <div class="col-lg-6 work-decs order-lg-2 order-1">
                             <h1>@item.Title</h1>

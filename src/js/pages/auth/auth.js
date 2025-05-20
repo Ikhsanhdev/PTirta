@@ -29,7 +29,7 @@ window.verifyLogin = (input, evt) => {
         $("#btn-login").enableBtn();
         if (response.code == 200) {
           $("#login-label").fadeOut(100);
-          window.location.href = '/Admin';
+          window.location.href = '/Admin/Main';
         } else {
           $("#login-label").fadeIn(100);
         }
