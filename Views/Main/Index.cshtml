@@ -245,56 +245,62 @@
     <div class="container" data-aos="fade-up">
         <div class="row justify-content-md-center" data-aos="fade-up" data-aos-delay="200">
             <!-- Kolom Kiri -->
-            <div class="col-lg-4 text-md-end text-center">
+            <div class="col-lg-5 text-md-end text-center">
             @if(Model.Vision != null)
             {
                 @foreach(var item in Model.Vision)
                 {
-                    <div>
-                        <img src="@Url.Content(item.Img_Url)" alt="placeholder" class="img-fluid side-img">
+                    <div class="wrapper-item">
+                        <img src="@Url.Content(item.Img_Url)" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="placeholder" class="img-fluid side-img">
                         <h3>@item.Title</h3>
+                    <div class="description-text">
                         @Html.Raw(item.Description)
+                    </div>
                     </div>
                 }
             }else{
                 <div>
-                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <img src="/assets/img/higertech-default.png" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="placeholder" class="img-fluid side-img">
                     <h3>Visi</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                 </div>
                 <div>
-                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <img src="/assets/img/higertech-default.png" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="placeholder" class="img-fluid side-img">
                     <h3>Visi</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                 </div>
             }
             </div>
             <!-- Kolom Tengah -->
-            <div class="col-lg-4 text-center">
-                <img src="/assets/img/inov.png" alt="placeholder" class="img-fluid center-img">
+            <div class="col-lg-2 middle-column">
+                <div class="divider-wrapper">
+                    <div class="vertical-divider"></div>
+                 </div>
             </div>
             <!-- Kolom Kanan -->
-            <div class="col-lg-4 text-md-start text-center">
+            <div class="col-lg-5 text-md-start text-center">
 
             @if(Model.Mission != null)
             {
                 @foreach(var item in Model.Mission)
                 {
-                    <div>
-                        <img src="@Url.Content(item.Img_Url)" alt="placeholder" class="img-fluid side-img">
+                    <div class="wrapper-item">
+                        <img src="@Url.Content(item.Img_Url)" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="placeholder" class="img-fluid side-img">
                         <h3>@item.Title</h3>
-                        @Html.Raw(item.Description)
+                         <div class="description-text">
+                            @Html.Raw(item.Description)
+                         </div>
                     </div>
                 }
             }else{
 
                 <div>
-                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <img src="/assets/img/higertech-default.png" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';"  alt="placeholder" class="img-fluid side-img">
                     <h3>Visi</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                 </div>
                 <div>
-                    <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid side-img">
+                    <img src="/assets/img/higertech-default.png" onerror="this.onerror=null;this.src='/assets/img/tirta-df.png';" alt="placeholder" class="img-fluid side-img">
                     <h3>Visi</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit..Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                 </div>
