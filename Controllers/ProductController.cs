@@ -20,16 +20,18 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Index()
     {
-        try
-        {
-            var products = await _unitOfWorkRepository.Product.GetAllAsync();
-            return View(products);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error loading products: {Message}", ex.Message);
-            return View(new List<Product>());
-        }
+        // try
+        // {
+        //     var products = await _unitOfWorkRepository.Product.GetAllAsync();
+        //     return View(products);
+        // }
+        // catch (Exception ex)
+        // {
+        //     Log.Error(ex, "Error loading products: {Message}", ex.Message);
+        //     return View(new List<Product>());
+        // }
+
+         return View("~/Views/404/PageNotFound.cshtml");
     }
 
     [HttpGet]
