@@ -496,7 +496,8 @@
         </div>
     </div>
 </section>
-
+@if(Model.Testimoni != null)
+{
 <section class="section">
     <div class="container">
         <div class="row d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
@@ -504,22 +505,15 @@
                 <img src="/assets/img/higertech-default.png" alt="placeholder" class="img-fluid square-image">
             </div>
             <div class="col-12 col-md-8 order-2 order-md-1">
-            @if(Model.Testimoni != null)
-            {
+           
                 <h1>@Model.Testimoni.Title</h1>
                 <p>@Html.Raw(Model.Testimoni.Description)</p>
-            }else{
-                <h1>OUTPUT YANG DITERIMA OLEH CLIENT ?</h1>
-                <p>Produk keluaran atau output yang diterima oleh client ketika menggunakan Jasa Penyelidikan Tanah</p>
-                <ul>
-                    <li>lorem ipsum</li>
-                </ul>
-            }
+          
             </div>
         </div>
     </div>
 </section>
-
+}
 
 
 <section class="section">
